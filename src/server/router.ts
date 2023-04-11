@@ -35,5 +35,5 @@ export const serverRouter = t.router({
     };
   }),
 });
-
+//Should this have "I" prefixed in the name? Since it's a type, not an interface.
 export type IServerRouter = typeof serverRouter;
