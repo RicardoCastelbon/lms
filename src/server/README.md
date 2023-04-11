@@ -42,3 +42,8 @@ const { username, email, password } = input;
 }),
 });
 ```
+
+## Router folder
+
+This is where all the specific routers go, e.g userRouter, courseRouter, authRouter etc.
+They are to be exported and imported into routers/index.ts which is the root-router of the application. It will bundle all routers and export them as one. As well as handling root-level endpoints.

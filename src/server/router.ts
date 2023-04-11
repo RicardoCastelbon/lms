@@ -7,7 +7,7 @@ import { signUpSchema } from "../common/validation/auth";
 
 // const t = initTRPC.context<IContext>().create();
 
-export const serverRouter = t.router({
+/* export const serverRouter = t.router({
   signup: t.procedure.input(signUpSchema).mutation(async ({ input, ctx }) => {
     const { username, email, password } = input;
 
@@ -36,4 +36,4 @@ export const serverRouter = t.router({
   }),
 });
 //Should this have "I" prefixed in the name? Since it's a type, not an interface.
-export type IServerRouter = typeof serverRouter;
+export type IServerRouter = typeof serverRouter; */
