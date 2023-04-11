@@ -1,10 +1,11 @@
-import { initTRPC, TRPCError } from "@trpc/server";
+import { TRPCError } from "@trpc/server";
+import { t } from "./trpc";
 import { hash } from "argon2";
 
-import { IContext } from "./context";
+// import { IContext } from "./context";
 import { signUpSchema } from "../common/validation/auth";
 
-const t = initTRPC.context<IContext>().create();
+// const t = initTRPC.context<IContext>().create();
 
 export const serverRouter = t.router({
   signup: t.procedure.input(signUpSchema).mutation(async ({ input, ctx }) => {
