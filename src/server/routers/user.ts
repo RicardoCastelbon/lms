@@ -4,10 +4,11 @@ import { t } from "../trpc";
 import { hash } from "argon2";
 import { signUpSchema } from "../../common/validation/auth";
 import { TRPCError } from "@trpc/server";
+import { Education } from "@prisma/client";
 
 export const userRouter = t.router({
   signup: t.procedure.input(signUpSchema).mutation(async ({ input, ctx }) => {
-    const { username, email, password } = input;
+    const { email, password, education } = input;
 
     const exists = await ctx.prisma.user.findFirst({
       where: { email },
@@ -21,9 +22,19 @@ export const userRouter = t.router({
     }
 
     const hashedPassword = await hash(password);
+    const edu: Education = {
+      id: 1,
+      name: "chas",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
 
     const result = await ctx.prisma.user.create({
-      data: { username, email, password: hashedPassword },
+      data: {
+        email,
+        password: hashedPassword,
+        education: { connect: { id: education } },
+      },
     });
 
     return {

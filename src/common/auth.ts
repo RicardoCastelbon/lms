@@ -31,7 +31,7 @@ export const nextAuthOptions: NextAuthOptions = {
 
           if (!isValidPassword) return null;
 
-          return { id: result.id, email, username: result.username };
+          return { id: result.id, email };
         } catch {
           return null;
         }
@@ -43,7 +43,6 @@ export const nextAuthOptions: NextAuthOptions = {
       if (user) {
         token.userId = user.id;
         token.email = user.email;
-        token.username = user.username;
       }
 
       return token;
@@ -52,9 +51,8 @@ export const nextAuthOptions: NextAuthOptions = {
       if (token) {
         session.user.userId = token.userId;
         session.user.email = token.email;
-        session.user.username = token.username;
       }
-   
+
       return session;
     },
   },

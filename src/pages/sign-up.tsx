@@ -13,7 +13,6 @@ const SignUp: NextPage = () => {
   const router = useRouter();
   const { handleSubmit, control, reset } = useForm<ISignUp>({
     defaultValues: {
-      username: "",
       email: "",
       password: "",
     },
@@ -53,18 +52,6 @@ const SignUp: NextPage = () => {
           <div className="card w-96 bg-base-100 shadow-xl">
             <div className="card-body">
               <h2 className="card-title">Create an account!</h2>
-              <Controller
-                name="username"
-                control={control}
-                render={({ field }) => (
-                  <input
-                    type="text"
-                    placeholder="Type your username..."
-                    className="input input-bordered w-full max-w-xs my-2"
-                    {...field}
-                  />
-                )}
-              />
 
               <Controller
                 name="email"
