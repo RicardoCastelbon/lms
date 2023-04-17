@@ -10,11 +10,25 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Education{
+  id    Int   @id @default(autoincrement())
+  name  String @default("NULL")
+  users User[] 
+  //courses
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model User {
   id        Int      @id @default(autoincrement())
-  username  String   @unique
+  userRole  String   @default("NULL")
+  education Education @relation(fields: [educationId], references: [id], onDelete: Restrict, onUpdate: Cascade)  
+  educationId Int    @unique
+  //username  String   @unique
   email     String   @unique
-  password  String
+  password  String   @default("NULL")
+  firstName String   @default("NULL")
+  lastName  String   @default("NULL")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
