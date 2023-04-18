@@ -4,6 +4,7 @@ import { verify } from "argon2";
 
 import { prisma } from "./prisma";
 import { loginSchema } from "./validation/auth";
+import { User } from "next-auth";
 
 export const nextAuthOptions: NextAuthOptions = {
   providers: [
@@ -24,6 +25,7 @@ export const nextAuthOptions: NextAuthOptions = {
           const result = await prisma.user.findFirst({
             where: { email },
           });
+          // const newId = String(result?.id);
 
           if (!result) return null;
 
@@ -40,7 +42,8 @@ export const nextAuthOptions: NextAuthOptions = {
   ],
   callbacks: {
     jwt: async ({ token, user }) => {
-      if (user) {
+      //infering user.id to be a number and not the optional string
+      if (user && typeof user.id === "number") {
         token.userId = user.id;
         token.email = user.email;
       }
