@@ -8,8 +8,8 @@ import { Education } from "@prisma/client";
 import { log } from "console";
 
 export const userRouter = t.router({
-  signup: t.procedure.input(loginSchema).mutation(async ({ input, ctx }) => {
-    const { email, password } = input;
+  signup: t.procedure.input(signUpSchema).mutation(async ({ input, ctx }) => {
+    const { email, password, education } = input;
     try {
       const exists = await ctx.prisma.user.findFirst({
         where: { email },
@@ -23,23 +23,23 @@ export const userRouter = t.router({
       }
 
       const hashedPassword = await hash(password);
-      const edu: Education = {
+      /*  const edu: Education = {
         id: 1,
         name: "chas",
         createdAt: new Date(),
         updatedAt: new Date(),
-      };
+      }; */
 
       const result = await ctx.prisma.user.create({
         data: {
           email,
           password: hashedPassword,
-          education: {
+          /* education: {
             create: {
               name: "Angular",
             },
-          },
-          // education: { connect: { id: education } },
+          }, */
+          education: { connect: { id: education } },
         },
       });
 

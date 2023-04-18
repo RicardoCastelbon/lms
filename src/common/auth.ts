@@ -1,7 +1,7 @@
 import { NextAuthOptions } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { verify } from "argon2";
-
+// import Providers from "next-auth/providers";
 import { prisma } from "./prisma";
 import { loginSchema } from "./validation/auth";
 import { User } from "next-auth";
@@ -9,6 +9,7 @@ import { User } from "next-auth";
 export const nextAuthOptions: NextAuthOptions = {
   providers: [
     Credentials({
+      id: "credentials",
       name: "credentials",
       credentials: {
         email: {
@@ -17,6 +18,40 @@ export const nextAuthOptions: NextAuthOptions = {
           placeholder: "jsmith@gmail.com",
         },
         password: { label: "Password", type: "password" },
+        education: { label: "Education", type: "number" },
+      },
+      authorize: async (credentials) => {
+        try {
+          const { email, password } = await loginSchema.parseAsync(credentials);
+
+          const result = await prisma.user.findFirst({
+            where: { email },
+          });
+          // const newId = String(result?.id);
+
+          if (!result) return null;
+
+          const isValidPassword = await verify(result.password, password);
+
+          if (!isValidPassword) return null;
+
+          return { id: result.id, email };
+        } catch {
+          return null;
+        }
+      },
+    }),
+    Credentials({
+      id: "Mycredentials",
+      name: "Mycredentials",
+      credentials: {
+        email: {
+          label: "Email",
+          type: "email",
+          placeholder: "asjohn@gmail.com",
+        },
+        password: { label: "Password", type: "password" },
+        education: { label: "Education", type: "number" },
       },
       authorize: async (credentials) => {
         try {

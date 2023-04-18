@@ -11,7 +11,7 @@ import { loginSchema, ILogin } from "../common/validation/auth";
 const Home: NextPage = () => {
   const { handleSubmit, control, reset } = useForm<ILogin>({
     defaultValues: {
-      email: "",
+      email: "jsmith@mail.com",
       password: "",
     },
     resolver: zodResolver(loginSchema),
