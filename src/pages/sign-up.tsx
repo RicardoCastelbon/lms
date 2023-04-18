@@ -6,23 +6,31 @@ import { useRouter } from "next/router";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { signUpSchema, ISignUp } from "../common/validation/auth";
+import {
+  signUpSchema,
+  ISignUp,
+  ILogin,
+  loginSchema,
+} from "../common/validation/auth";
 import { trpc } from "../common/trpc";
+import { log } from "console";
 
 const SignUp: NextPage = () => {
   const router = useRouter();
-  const { handleSubmit, control, reset } = useForm<ISignUp>({
+  const { handleSubmit, control, reset } = useForm<ILogin>({
     defaultValues: {
       email: "",
       password: "",
+      // education: 0,
     },
-    resolver: zodResolver(signUpSchema),
+    resolver: zodResolver(loginSchema),
   });
 
   const { mutateAsync } = trpc.users.signup.useMutation();
 
   const onSubmit = useCallback(
-    async (data: ISignUp) => {
+    async (data: ILogin) => {
+      console.log("hej");
       try {
         const result = await mutateAsync(data);
         if (result.status === 201) {
@@ -78,6 +86,18 @@ const SignUp: NextPage = () => {
                   />
                 )}
               />
+              {/* <Controller
+                name="education"
+                control={control}
+                render={({ field }) => (
+                  <input
+                    type="number"
+                    placeholder="Type your email..."
+                    className="input input-bordered w-full max-w-xs"
+                    {...field}
+                  />
+                )}
+              /> */}
 
               <div className="card-actions items-center justify-between">
                 <Link href="/" className="link">
