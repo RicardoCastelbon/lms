@@ -15,6 +15,14 @@ declare module "next-auth" {
     image?: string | null; // Default property
     //username: string;
   }
+
+  interface Admin {
+    id: number;
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
+    //username: string;
+  }
 }
 
 declare module "next-auth/jwt" {
