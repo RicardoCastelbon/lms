@@ -67,8 +67,8 @@ export const nextAuthOptions: NextAuthOptions = {
 
           if (!isValidPassword) return null;
 
-          return { id: result.id, email };
-        } catch {
+          return { id: result.id, email, nextPage: "/admin/dashboard" };
+                } catch {
           return null;
         }
       },
@@ -99,7 +99,9 @@ export const nextAuthOptions: NextAuthOptions = {
   },
   pages: {
     signIn: "/",
+
     newUser: "/sign-up",
+
   },
   secret: "super-secret",
 };
