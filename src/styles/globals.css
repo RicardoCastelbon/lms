@@ -45,7 +45,7 @@ hsla(216, 41%, 55%, 1)
     /* --background: 0 0% 100%;
     --foreground: 222.2 47.4% 11.2%; */
 
-    --muted: 210 40% 96.1%; /* Not configured */
+    --muted: 261, 48%, 78%, 1; /* course-card-btn */
     --muted-foreground: 215.4 16.3% 46.9%; /* Not configured */
 
     --popover: 0 0% 100%; /* Not configured */
