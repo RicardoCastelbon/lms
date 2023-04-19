@@ -7,7 +7,7 @@ export const getServerSideProps = requireAuth(async (ctx) => {
   return { props: {} };
 });
 
-const Dashboard: NextPage = () => {
+const Dashboard: NextPage = () => {  
   const { data } = useSession();
 
   return (

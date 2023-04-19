@@ -22,7 +22,7 @@ const Home: NextPage = () => {
       try {
         await signIn("AdminCredentials", {
           ...data,
-          callbackUrl: "admin/dashboard",
+          callbackUrl: "/admin/adminDashboard",
         });
         reset();
       } catch (err) {
@@ -47,7 +47,7 @@ const Home: NextPage = () => {
         >
           <div className='card w-96 bg-base-100 shadow-xl'>
             <div className='card-body'>
-              <h2 className='card-title'>Welcome back!</h2>
+              <h2 className='card-title'>ADMIN</h2>
               <Controller
                 name='email'
                 control={control}
