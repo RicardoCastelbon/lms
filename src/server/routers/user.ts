@@ -9,8 +9,10 @@ import { log } from "console";
 
 export const userRouter = t.router({
   signup: t.procedure.input(signUpSchema).mutation(async ({ input, ctx }) => {
-    const { email, password, education } = input;
+    const { email, password, education, firstName, lastName } = input;
     try {
+      console.log(input);
+
       const exists = await ctx.prisma.user.findFirst({
         where: { email },
       });
@@ -40,6 +42,8 @@ export const userRouter = t.router({
             },
           }, */
           education: { connect: { id: education } },
+          firstName,
+          lastName,
         },
       });
 

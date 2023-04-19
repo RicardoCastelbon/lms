@@ -48,11 +48,11 @@ const SignUp: NextPage = () => {
       try {
         console.log(data);
 
-        /*  const result = await mutateAsync(data);
+        const result = await mutateAsync(data);
         if (result.status === 201) {
           reset();
           router.push("/login");
-        } */
+        }
       } catch (err) {
         console.error(err);
       }
