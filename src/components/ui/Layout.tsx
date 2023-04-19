@@ -10,7 +10,9 @@ const Layout = ({ children }: Props) => {
   return (
     <>
       <NavBar />
-      <div className="w-full h-full">{children}</div>
+      <main className=" flex flex-col w-full min-h-screen font-popp">
+        {children}
+      </main>
       <Footer />
     </>
   );

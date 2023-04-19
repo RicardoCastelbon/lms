@@ -1,11 +1,13 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import { useCallback } from "react";
+import { ChangeEvent, useCallback } from "react";
 import { useRouter } from "next/router";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Layout from "../components/ui/Layout";
+import { Button } from "../components/ui/button";
+import Select, { SingleValue } from "react-select";
 
 import {
   signUpSchema,
@@ -16,16 +18,27 @@ import {
 import { trpc } from "../common/trpc";
 import { log } from "console";
 
+const educations = [
+  { label: "Education 1", value: 1 },
+  { label: "Education 2", value: 2 },
+  { label: "Education 3", value: 3 },
+  { label: "Education 4", value: 4 },
+];
+
 const SignUp: NextPage = () => {
   const router = useRouter();
-  const { handleSubmit, control, reset } = useForm<ISignUp>({
-    defaultValues: {
-      email: "",
-      password: "",
-      education: 1,
-    },
-    resolver: zodResolver(signUpSchema),
-  });
+  const { handleSubmit, control, register, setValue, reset } = useForm<ISignUp>(
+    {
+      defaultValues: {
+        email: "",
+        password: "",
+        education: 1,
+        firstName: "",
+        lastName: "",
+      },
+      resolver: zodResolver(signUpSchema),
+    }
+  );
 
   const { mutateAsync } = trpc.users.signup.useMutation();
 
@@ -33,17 +46,26 @@ const SignUp: NextPage = () => {
     async (data: ISignUp) => {
       console.log("hej");
       try {
-        const result = await mutateAsync(data);
+        console.log(data);
+
+        /*  const result = await mutateAsync(data);
         if (result.status === 201) {
           reset();
-          router.push("/");
-        }
+          router.push("/login");
+        } */
       } catch (err) {
         console.error(err);
       }
     },
     [mutateAsync, router, reset]
   );
+
+  const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    const value = Number(e.target.value);
+    console.log(value);
+
+    setValue("education", value);
+  };
 
   return (
     <div>
@@ -53,65 +75,152 @@ const SignUp: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Layout>
-        <main>
+        {/* 
+          id        Int      @id @default(autoincrement())
+          userRole  String   @default("NULL")
+          education Education @relation(fields: [educationId], references: [id], onDelete: Restrict, onUpdate: Cascade)  
+          educationId Int    @unique
+          //username  String   @unique
+          email     String   @unique
+          password  String   @default("NULL")
+          firstName String   @default("NULL")
+          lastName  String   @default("NULL")
+          createdAt DateTime @default(now())
+          updatedAt DateTime @updatedAt
+        */}
+        <div className="flex flex-1 items-center justify-center relative w-full h-full">
           <form
-            className="flex items-center justify-center h-screen w-full"
+            className="flex flex-col gap-4 h-full w-5/6 bg-white px-4 py-10 "
             onSubmit={handleSubmit(onSubmit)}
           >
-            <div className="card w-96 bg-base-100 shadow-xl">
-              <div className="card-body">
-                <h2 className="card-title">Create an account!</h2>
-                <Controller
-                  name="education"
-                  control={control}
-                  render={({ field }) => (
-                    <input
-                      type="number"
-                      placeholder="Choose education"
-                      className="input input-bordered w-full max-w-xs"
-                      {...field}
-                    />
-                  )}
-                />
-                <Controller
-                  name="email"
-                  control={control}
-                  render={({ field }) => (
-                    <input
-                      type="email"
-                      placeholder="Type your email..."
-                      className="input input-bordered w-full max-w-xs"
-                      {...field}
-                    />
-                  )}
-                />
-
-                <Controller
-                  name="password"
-                  control={control}
-                  render={({ field }) => (
-                    <input
-                      type="password"
-                      placeholder="Type your password..."
-                      className="input input-bordered w-full max-w-xs my-2"
-                      {...field}
-                    />
-                  )}
-                />
-
-                <div className="card-actions items-center justify-between">
-                  <Link href="/" className="link">
-                    Go to login
-                  </Link>
-
-                  <button className="btn btn-secondary" type="submit">
-                    Sign Up
-                  </button>
+            <h2 className="text-xl mb-8">Skapa ett konto</h2>
+            {/*          <div className="flex flex-col">
+              <label htmlFor="education">Choose education</label>
+              <select
+                className="input bg-muted input-bordered w-full max-w-xs"
+                name="education"
+                id="education"
+              >
+                <option value="1">Education 1</option>
+                <option value="1">Education 1</option>
+                <option value="1">Education 1</option>
+              </select>
+            </div>
+            <div className="flex flex-col">
+              <label htmlFor="education">Enter your email</label>
+              <input
+                className="input input-bordered w-full max-w-xs"
+                type="text"
+                placeholder="Email"
+              />
+            </div> */}
+            <Controller
+              name="education"
+              control={control}
+              /*   render={(field) => (
+                <select
+                  options={educations}
+                  // value={educations.find((c) => c.value === field)}
+                  onChange={(e) => handleSelectChange(e)}
+                ></select>
+              )} */
+              rules={{ required: true }}
+              render={({ field }) => (
+                <div className="flex flex-col">
+                  <label htmlFor="education">Choose education</label>
+                  <select
+                    className="input h-[40px] bg-muted input-bordered w-full max-w-xs"
+                    name="education"
+                    id="education"
+                    onChange={(e) => handleSelectChange(e)}
+                  >
+                    <option value="default" disabled>
+                      Choose education
+                    </option>
+                    <option value="1">Education 1</option>
+                    <option value="2">Education 2</option>
+                    <option value="3">Education 3</option>
+                  </select>
                 </div>
-              </div>
+              )}
+            />
+            <Controller
+              name="email"
+              control={control}
+              render={({ field }) => (
+                <div className="flex flex-col">
+                  <label htmlFor="email">Email</label>
+                  <input
+                    id="email"
+                    type="email"
+                    placeholder="Type your email..."
+                    className="input bg-muted h-[40px] input-bordered w-full max-w-xs mt-4"
+                    {...field}
+                  />
+                </div>
+              )}
+            />
+
+            <Controller
+              name="password"
+              control={control}
+              render={({ field }) => (
+                <div className="flex flex-col">
+                  <label htmlFor="password">Enter your password</label>
+                  <input
+                    id="password"
+                    type="password"
+                    placeholder="Type your password..."
+                    className="input bg-muted h-[40px] input-bordered w-full max-w-xs my-2"
+                    {...field}
+                  />
+                </div>
+              )}
+            />
+            <Controller
+              name="firstName"
+              control={control}
+              render={({ field }) => (
+                <div className="flex flex-col">
+                  <label htmlFor="firstName">First name</label>
+                  <input
+                    id="firstName"
+                    type="text"
+                    placeholder="Your first name"
+                    className="input bg-muted h-[40px] input-bordered w-full max-w-xs mt-4"
+                    {...field}
+                  />
+                </div>
+              )}
+            />
+            <Controller
+              name="lastName"
+              control={control}
+              render={({ field }) => (
+                <div className="flex flex-col">
+                  <label htmlFor="lastName">Last name</label>
+                  <input
+                    id="lastName"
+                    type="text"
+                    placeholder="Type your email..."
+                    className="input bg-muted h-[40px] input-bordered w-full max-w-xs mt-4"
+                    {...field}
+                  />
+                </div>
+              )}
+            />
+
+            <div className="flex items-center justify-between max-w-xs">
+              <Link href="/login" className="link">
+                Go to login
+              </Link>
+              <Button>Become a member</Button>
+              {/* <button className="btn btn-secondary" type="submit">
+                Sign Up
+              </button> */}
             </div>
           </form>
-        </main>
+        </div>
       </Layout>
     </div>
   );

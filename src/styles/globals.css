@@ -10,7 +10,7 @@ hsla(245, 41%, 55%, 1)
 layout-bg
 hsla(261, 29%, 80%, 1)
 
-login-input-bg
+input-bg
 hsla(245, 100%, 96%, 1)
 
 font-color
@@ -45,7 +45,7 @@ hsla(216, 41%, 55%, 1)
     /* --background: 0 0% 100%;
     --foreground: 222.2 47.4% 11.2%; */
 
-    --muted: 261, 48%, 78%, 1; /* course-card-btn */
+    --muted: 245, 100%, 96%, 1; /* input-bg */
     --muted-foreground: 215.4 16.3% 46.9%; /* Not configured */
 
     --popover: 0 0% 100%; /* Not configured */
