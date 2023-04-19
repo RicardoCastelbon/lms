@@ -8,6 +8,8 @@ import { trpc } from "../common/trpc";
 import {
   createEducationSchema,
   CreateEducationInput,
+  UpdateEducationInput,
+  updateEducationSchema,
 } from "../common/validation/education";
 import { useCallback } from "react";
 
@@ -43,7 +45,7 @@ const EducationPage: NextPage = () => {
 
       <main>
         <form
-          className="flex items-center justify-center h-screen w-full"
+          className="flex items-center justify-center h-44 w-full"
           onSubmit={handleSubmit(onSubmit)}
         >
           <div className="card w-96 bg-base-100 shadow-xl">
@@ -55,7 +57,7 @@ const EducationPage: NextPage = () => {
                 render={({ field }) => (
                   <input
                     type="text"
-                    placeholder="Type your username..."
+                    placeholder="Type an education..."
                     className="input input-bordered w-full max-w-xs my-2"
                     {...field}
                   />
@@ -69,6 +71,50 @@ const EducationPage: NextPage = () => {
 
                 <button className="btn btn-secondary" type="submit">
                   Create
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+        <form
+          className="flex items-center justify-center h-44 w-full"
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <div className="card w-96 bg-base-100 shadow-xl">
+            <div className="card-body">
+              <h2 className="card-title">Update an education</h2>
+              <Controller
+                name="name"
+                control={control}
+                render={({ field }) => (
+                  <input
+                    type="text"
+                    placeholder="Type the education to change..."
+                    className="input input-bordered w-full max-w-xs my-2"
+                    {...field}
+                  />
+                )}
+              />
+              <Controller
+                name="name"
+                control={control}
+                render={({ field }) => (
+                  <input
+                    type="text"
+                    placeholder="Type the new education..."
+                    className="input input-bordered w-full max-w-xs my-2"
+                    {...field}
+                  />
+                )}
+              />
+
+              <div className="card-actions items-center justify-between">
+                <Link href="/" className="link">
+                  Go to login
+                </Link>
+
+                <button className="btn btn-secondary" type="submit">
+                  Update
                 </button>
               </div>
             </div>
