@@ -11,33 +11,76 @@ const adminDashboard: NextPage = () => {
   const { data } = useSession();
 
   return (
-    <div className="hero min-h-screen bg-base-200">
-      <div className="hero-content">
-        <div className="max-w-lg">
-          <h1 className="text-5xl text-center font-bold leading-snug text-gray-400">
-            HALLOJ ADMIN!
-          </h1>
-          <p className="my-4 text-center leading-loose">
-            You are allowed to visit this page because you have a session,
-            otherwise you would be redirected to the login page.
-          </p>
-          <div className="my-4 bg-gray-700 rounded-lg p-4">
-            <pre>
-              <code>{JSON.stringify(data, null, 2)}</code>
-            </pre>
-          </div>
-          <div className="text-center">
-            <button
-              className="btn btn-secondary"
-              onClick={() => signOut({ callbackUrl: "/" })}
-            >
-              Logout
-            </button>
-          </div>
+<div className="bg-purple-100 h-screen">
+  <div className="flex flex-row h-full">
+    <div className="bg-purple-200 w-1/5 p-4 flex flex-col justify-between">
+      <div>
+        <h2 className="text-lg font-semibold mb-4">Admin Dashboard</h2>
+        <ul className="flex flex-col gap-2">
+          <li>
+            <a href="#" className="text-purple-800 hover:text-purple-600">
+              Title 1
+            </a>
+          </li>
+          <li>
+            <a href="#" className="text-purple-800 hover:text-purple-600">
+              Title 2
+            </a>
+          </li>
+          <li>
+            <a href="#" className="text-purple-800 hover:text-purple-600">
+              Title 3
+            </a>
+          </li>
+          <li>
+            <a href="#" className="text-purple-800 hover:text-purple-600">
+              Title 4
+            </a>
+          </li>
+          <li>
+            <a href="#" className="text-purple-800 hover:text-purple-600">
+              Title 5
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div className="mt-auto">
+        <button className="btn btn-secondary mr-2">Settings</button>
+        <button
+          className="btn btn-secondary"
+          onClick={() => signOut({ callbackUrl: "/" })}
+        >
+          Logout
+        </button>
+      </div>
+    </div>
+    <div className="bg-white flex-1 min-h-screen p-8 mx-auto my-4 mr-4">
+      <h1 className="text-2xl font-semibold mb-8">Kurser</h1>
+      <div className="grid grid-cols-4 gap-4">
+        <div className="bg-purple-200 rounded-lg p-2 m-2 h-64">
+          <h2 className="text-lg font-semibold mb-2">Card 1</h2>
+          <p>Card content goes here.</p>
+        </div>
+        <div className="bg-purple-200 rounded-lg p-2 m-2 h-64">
+          <h2 className="text-lg font-semibold mb-2">Card 2</h2>
+          <p>Card content goes here.</p>
+        </div>
+        <div className="bg-purple-200 rounded-lg p-2 m-2 h-64">
+          <h2 className="text-lg font-semibold mb-2">Card 3</h2>
+          <p>Card content goes here.</p>
+        </div>
+        <div className="bg-purple-200 rounded-lg p-2 m-2 h-64">
+          <h2 className="text-lg font-semibold mb-2">Card 4</h2>
+          <p>Card content goes here.</p>
         </div>
       </div>
     </div>
+  </div>
+</div>
+
   );
+  
+  
 };
 
 export default adminDashboard;
