@@ -4,6 +4,7 @@ import type { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 
 import { trpc } from "../common/trpc";
+import Head from "next/head";
 
 interface CustomAppProps extends AppProps {
   pageProps: {

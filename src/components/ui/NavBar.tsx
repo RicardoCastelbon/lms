@@ -5,10 +5,12 @@ type Props = {};
 
 const NavBar = (props: Props) => {
   return (
-    <nav className="">
-      <div className="">
+    <nav className="w-full h-[70px] bg-primary text-primary-foreground">
+      <div className="h-full flex flex-row items-center justify-between">
         {/* Logo */}
-        <div>Logo goes here</div>
+        <div>
+          <h3 className="font-mont">Logo goes here</h3>
+        </div>
 
         {/* menu items */}
         <div>
