@@ -11,8 +11,10 @@ export const adminLoginSchema = z.object({
 });
 
 export const adminSignUpSchema = loginSchema.extend({
-  education: z.number(),
+  email: z.string().email(),
+  password: z.string().min(6),
 });
+
 export const signUpSchema = loginSchema.extend({
   education: z.number(),
 });

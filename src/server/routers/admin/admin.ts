@@ -14,6 +14,8 @@ export const adminRouter = t.router({
   signup: t.procedure
     .input(adminLoginSchema)
     .mutation(async ({ input, ctx }) => {
+      console.log("Inside signup mutation", input);
+
       const { email, password } = input;
       try {
         const exists = await ctx.prisma.admin.findFirst({

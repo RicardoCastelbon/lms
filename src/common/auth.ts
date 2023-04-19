@@ -100,7 +100,6 @@ export const nextAuthOptions: NextAuthOptions = {
   pages: {
     signIn: "/",
     newUser: "/sign-up",
-    // adminSignUp: "/admin-sign-up",
   },
   secret: "super-secret",
 };

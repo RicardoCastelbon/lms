@@ -29,10 +29,13 @@ const adminSignUp: NextPage = () => {
 
   const onSubmit = useCallback(
     async (data: IAdminLogin) => {
-      console.log("hej");
+      console.log("hej", data); // log the data object
+
       try {
         const result = await mutateAsync(data);
-        if (result.status === 201) {
+        console.log("result", result); // log the result object
+
+        if (result && result.status === 201) {
           reset();
           router.push("/admin/login");
         }
