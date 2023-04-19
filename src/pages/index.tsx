@@ -10,7 +10,7 @@ import { loginSchema, ILogin } from "../common/validation/auth";
 import Layout from "../components/ui/Layout";
 
 const Home: NextPage = () => {
-  const { handleSubmit, control, reset } = useForm<ILogin>({
+  /*   const { handleSubmit, control, reset } = useForm<ILogin>({
     defaultValues: {
       email: "jsmith@mail.com",
       password: "",
@@ -28,7 +28,7 @@ const Home: NextPage = () => {
       }
     },
     [reset]
-  );
+  ); */
 
   return (
     <div>
@@ -39,50 +39,7 @@ const Home: NextPage = () => {
       </Head>
       <Layout>
         <main>
-          <form
-            className="flex items-center justify-center h-screen w-full"
-            onSubmit={handleSubmit(onSubmit)}
-          >
-            <div className="card w-96 bg-base-100 shadow-xl">
-              <div className="card-body">
-                <h2 className="card-title">Welcome back!</h2>
-                <Controller
-                  name="email"
-                  control={control}
-                  render={({ field }) => (
-                    <input
-                      type="email"
-                      placeholder="Type your email..."
-                      className="input input-bordered w-full max-w-xs"
-                      {...field}
-                    />
-                  )}
-                />
-
-                <Controller
-                  name="password"
-                  control={control}
-                  render={({ field }) => (
-                    <input
-                      type="password"
-                      placeholder="Type your password..."
-                      className="input input-bordered w-full max-w-xs my-2"
-                      {...field}
-                    />
-                  )}
-                />
-                <div className="card-actions items-center justify-between">
-                  <Link href="/sign-up" className="link">
-                    Go to sign up
-                  </Link>
-
-                  <button className="btn btn-secondary" type="submit">
-                    Login
-                  </button>
-                </div>
-              </div>
-            </div>
-          </form>
+          <h1>Landing page</h1>
         </main>
       </Layout>
     </div>
