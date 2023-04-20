@@ -19,10 +19,10 @@ import { trpc } from "../common/trpc";
 import { log } from "console";
 
 const educations = [
-  { label: "Education 1", value: 1 },
-  { label: "Education 2", value: 2 },
-  { label: "Education 3", value: 3 },
-  { label: "Education 4", value: 4 },
+  { label: "React", value: "9eb843b8-df6f-11ed-9839-af2ccb7afe8e" },
+  { label: "Angular", value: "9eb846d8-df6f-11ed-9839-af2ccb7afe8e" },
+  // { label: "Angular 2", value: "317774eb-7d44-4d01-a93a-22b3f30f17df" },
+  // { label: "FWD22", value: "ea70de22-e81d-4c6c-a6e3-d1a18fe43aea" },
 ];
 
 const SignUp: NextPage = () => {
@@ -32,9 +32,10 @@ const SignUp: NextPage = () => {
       defaultValues: {
         email: "",
         password: "",
-        education: 1,
+        education: "",
         firstName: "",
         lastName: "",
+        userRole: "student",
       },
       resolver: zodResolver(signUpSchema),
     }
@@ -44,10 +45,9 @@ const SignUp: NextPage = () => {
 
   const onSubmit = useCallback(
     async (data: ISignUp) => {
-      console.log("hej");
       try {
+        data.userRole = "student";
         console.log(data);
-
         const result = await mutateAsync(data);
         if (result.status === 201) {
           reset();
@@ -61,7 +61,7 @@ const SignUp: NextPage = () => {
   );
 
   const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    const value = Number(e.target.value);
+    const value = e.target.value;
     console.log(value);
 
     setValue("education", value);
@@ -94,12 +94,12 @@ const SignUp: NextPage = () => {
                     id="education"
                     onChange={(e) => handleSelectChange(e)}
                   >
-                    <option value="default" disabled>
-                      Choose education
-                    </option>
-                    <option value="1">Education 1</option>
-                    <option value="2">Education 2</option>
-                    <option value="3">Education 3</option>
+                    <option value="default">Choose education</option>
+                    {educations.map((edu) => (
+                      <option key={edu.value} value={edu.value}>
+                        {edu.label}
+                      </option>
+                    ))}
                   </select>
                 </div>
               )}

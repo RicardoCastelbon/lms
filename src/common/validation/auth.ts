@@ -16,9 +16,10 @@ export const adminSignUpSchema = loginSchema.extend({
 });
 
 export const signUpSchema = loginSchema.extend({
-  education: z.number(),
+  education: z.string(),
   firstName: z.string(),
   lastName: z.string(),
+  userRole: z.string(),
 });
 
 export type ILogin = z.infer<typeof loginSchema>;
