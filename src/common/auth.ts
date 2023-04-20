@@ -102,8 +102,12 @@ export const nextAuthOptions: NextAuthOptions = {
 
           if (!isValidPassword) return null;
 
-          return { id: result.id, email, nextPage: "/admin/dashboard" };
-                } catch {
+          return {
+            id: result.id,
+            email,
+            nextPage: "/admin/dashboard",
+          };
+        } catch {
           return null;
         }
       },
