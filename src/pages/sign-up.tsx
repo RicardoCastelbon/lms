@@ -9,18 +9,12 @@ import Layout from "../components/ui/Layout";
 import { Button } from "../components/ui/button";
 import Select, { SingleValue } from "react-select";
 
-import {
-  signUpSchema,
-  ISignUp,
-  ILogin,
-  loginSchema,
-} from "../common/validation/auth";
+import { signUpSchema, ISignUp } from "../common/validation/auth";
 import { trpc } from "../common/trpc";
-import { log } from "console";
 
 const educations = [
-  { label: "React", value: "9eb843b8-df6f-11ed-9839-af2ccb7afe8e" },
-  { label: "Angular", value: "9eb846d8-df6f-11ed-9839-af2ccb7afe8e" },
+  { label: "React", value: 1 },
+  { label: "Angular", value: 2 },
   // { label: "Angular 2", value: "317774eb-7d44-4d01-a93a-22b3f30f17df" },
   // { label: "FWD22", value: "ea70de22-e81d-4c6c-a6e3-d1a18fe43aea" },
 ];
@@ -32,7 +26,7 @@ const SignUp: NextPage = () => {
       defaultValues: {
         email: "",
         password: "",
-        education: "",
+        education: 1,
         firstName: "",
         lastName: "",
         userRole: "student",
@@ -61,7 +55,7 @@ const SignUp: NextPage = () => {
   );
 
   const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value;
+    const value = Number(e.target.value);
     console.log(value);
 
     setValue("education", value);

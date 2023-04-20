@@ -16,7 +16,7 @@ export const adminSignUpSchema = loginSchema.extend({
 });
 
 export const signUpSchema = loginSchema.extend({
-  education: z.string(),
+  education: z.number(),
   firstName: z.string(),
   lastName: z.string(),
   userRole: z.string(),

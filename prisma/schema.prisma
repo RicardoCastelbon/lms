@@ -11,7 +11,7 @@ datasource db {
 }
 
 model Education {
-  id        String   @id @default(uuid())
+  id        Int      @id @default(autoincrement())
   name      String   @default("NULL")
   users     User[]
   //courses
@@ -20,10 +20,10 @@ model Education {
 }
 
 model User {
-  id          String    @id @default(uuid())
+  id          Int       @id @default(autoincrement())
   userRole    String    @default("NULL")
   education   Education @relation(fields: [educationId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-  educationId String
+  educationId Int
   email       String    @unique
   password    String    @default("NULL")
   firstName   String    @default("NULL")
@@ -33,7 +33,7 @@ model User {
 }
 
 model Admin {
-  id        String   @id @default(uuid())
+  id        Int      @id @default(autoincrement())
   email     String   @unique
   password  String   @default("NULL")
   createdAt DateTime @default(now())
@@ -41,7 +41,7 @@ model Admin {
 }
 
 model Course_lib {
-  id          String       @id @default(uuid())
+  id          Int          @id @default(autoincrement())
   modules     Module_lib[]
   title       String
   description String
@@ -49,9 +49,9 @@ model Course_lib {
 }
 
 model Module_lib {
-  id          String         @id @default(uuid())
+  id          Int            @id @default(autoincrement())
   course      Course_lib     @relation(fields: [courseId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-  courseId    String
+  courseId    Int
   exercises   Exercise_lib[]
   title       String
   description String
@@ -59,16 +59,16 @@ model Module_lib {
 }
 
 model Exercise_lib {
-  id          String      @id @default(uuid())
+  id          Int         @id @default(autoincrement())
   module      Module_lib? @relation(fields: [moduleId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-  moduleId    String
+  moduleId    Int
   title       String
   description String
   content     String
 }
 
 model Course {
-  id          String   @id @default(uuid())
+  id          Int      @id @default(autoincrement())
   modules     Module[]
   title       String
   description String
@@ -76,9 +76,9 @@ model Course {
 }
 
 model Module {
-  id          String     @id @default(uuid())
+  id          Int        @id @default(autoincrement())
   course      Course     @relation(fields: [courseId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-  courseId    String
+  courseId    Int
   exercises   Exercise[]
   title       String
   description String
@@ -86,9 +86,9 @@ model Module {
 }
 
 model Exercise {
-  id          String  @id @default(uuid())
+  id          Int     @id @default(autoincrement())
   module      Module? @relation(fields: [moduleId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-  moduleId    String
+  moduleId    Int
   title       String
   description String
   content     String
