@@ -5,6 +5,7 @@ import { verify } from "argon2";
 import { prisma } from "./prisma";
 import { loginSchema, adminLoginSchema } from "./validation/auth";
 import { User } from "next-auth";
+import { isValid } from "zod";
 
 export const nextAuthOptions: NextAuthOptions = {
   providers: [
@@ -75,7 +76,7 @@ export const nextAuthOptions: NextAuthOptions = {
       },
     }),
     Credentials({
-      id: "AdminCredentails",
+      id: "AdminCredentials",
       name: "AdminCredentials",
       credentials: {
         email: {
@@ -86,6 +87,7 @@ export const nextAuthOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       authorize: async (credentials) => {
+        console.log("credentials", credentials);
         try {
           const { email, password } = await adminLoginSchema.parseAsync(
             credentials
@@ -97,10 +99,12 @@ export const nextAuthOptions: NextAuthOptions = {
           // const newId = String(result?.id);
 
           if (!result) return null;
+          console.log("result", result);
 
           const isValidPassword = await verify(result.password, password);
 
           if (!isValidPassword) return null;
+          console.log("isValid", isValid);
 
           return {
             id: result.id,
@@ -140,7 +144,6 @@ export const nextAuthOptions: NextAuthOptions = {
     signIn: "/",
 
     newUser: "/sign-up",
-
   },
   secret: "super-secret",
 };
