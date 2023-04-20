@@ -1,13 +1,8 @@
 import type { NextPage } from "next";
 import { useSession, signOut } from "next-auth/react";
-import { LogOutIcon, Settings } from "lucide-react";
-import { LogOut } from "lucide-react";
+
 import { requireAuth } from "../../common/requireAuth";
-import { Settings2 } from "lucide-react";
 import { useRouter } from "next/router";
-import { Link } from "lucide-react";
-import { ChevronLeftIcon } from "lucide-react";
-import { Layout } from "lucide-react";
 import Head from "next/head";
 import { useForm, Controller } from "react-hook-form";
 import { ChangeEvent, useState } from "react";
