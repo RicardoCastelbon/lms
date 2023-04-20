@@ -83,7 +83,9 @@ const createCourse: NextPage = () => {
                 Back
               </button>
             </div>
+            <h1 className='text-2xl font-bold'>Skapa en ny och lärorik kurs</h1>
           </div>
+
           <div className='grid grid-cols-1 gap-6'>
             <div>
               <label className='block mb-2 font-bold text-lg text-gray-700'>
