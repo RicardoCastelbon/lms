@@ -2,41 +2,55 @@ import type { NextPage } from "next";
 import { useSession, signOut } from "next-auth/react";
 
 import { requireAuth } from "../../common/requireAuth";
+import Link from "next/link";
 
 export const getServerSideProps = requireAuth(async (ctx) => {
   return { props: {} };
 });
 
-const Dashboard: NextPage = () => {  
+const Dashboard: NextPage = () => {
   const { data } = useSession();
 
   return (
-    <div className="hero min-h-screen bg-base-200">
-      <div className="hero-content">
-        <div className="max-w-lg">
-          <h1 className="text-5xl text-center font-bold leading-snug text-gray-400">
-            You are logged in!
-          </h1>
-          <p className="my-4 text-center leading-loose">
-            You are allowed to visit this page because you have a session,
-            otherwise you would be redirected to the login page.
-          </p>
-          <div className="my-4 bg-gray-700 rounded-lg p-4">
-            <pre>
-              <code>{JSON.stringify(data, null, 2)}</code>
-            </pre>
-          </div>
-          <div className="text-center">
-            <button
+    <>
+      {/* pagewrapper */}
+      <div className="w-full p-4 bg-layout font-mont">
+        {/* sidebar wrapper */}
+        <div className="">
+          <nav className="h-[calc(100vh-2rem)] flex flex-col justify-between">
+            {/* nav top items */}
+            <div className="flex flex-col gap-4">
+              <Link className="" href="/dashboard">
+                Kurser
+              </Link>
+              <Link className="" href="/dashboard">
+                Personer
+              </Link>
+              <Link className="" href="/dashboard">
+                Omdömen
+              </Link>
+            </div>
+            {/* nav bottom items */}
+            <div className="flex flex-col gap-4 justify-self-end">
+              <Link className="" href="/dashboard">
+                Inställningar
+              </Link>
+              <Link className="" href="/dashboard">
+                Logga ut
+              </Link>
+            </div>
+          </nav>
+        </div>
+        {/* main content */}
+        <main className=""></main>
+      </div>
+      {/*  <button
               className="btn btn-secondary"
               onClick={() => signOut({ callbackUrl: "/" })}
             >
               Logout
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+            </button> */}
+    </>
   );
 };
 
