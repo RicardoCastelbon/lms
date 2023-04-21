@@ -3,46 +3,75 @@ import { useSession, signOut } from "next-auth/react";
 
 import { requireAuth } from "../../common/requireAuth";
 import Link from "next/link";
+import { Menu } from "lucide-react";
+import { log } from "console";
+import { useState } from "react";
 
-export const getServerSideProps = requireAuth(async (ctx) => {
+/* export const getServerSideProps = requireAuth(async (ctx) => {
   return { props: {} };
-});
-
+}); */
+//yaki soba fläsk
 const Dashboard: NextPage = () => {
+  const [sideBarClass, setSideBarClass] = useState<boolean>(false);
   const { data } = useSession();
+  console.log(data);
+
+  const menuClickHandler = () => {
+    setSideBarClass((prev) => !prev);
+  };
 
   return (
     <>
       {/* pagewrapper */}
-      <div className="w-full p-4 bg-layout font-mont">
+      <div className="w-full flex flex-col md:flex-row md:p-4 bg-layout font-mont">
         {/* sidebar wrapper */}
-        <div className="">
-          <nav className="h-[calc(100vh-2rem)] flex flex-col justify-between">
-            {/* nav top items */}
-            <div className="flex flex-col gap-4">
-              <Link className="" href="/dashboard">
-                Kurser
-              </Link>
-              <Link className="" href="/dashboard">
-                Personer
-              </Link>
-              <Link className="" href="/dashboard">
-                Omdömen
-              </Link>
-            </div>
-            {/* nav bottom items */}
-            <div className="flex flex-col gap-4 justify-self-end">
-              <Link className="" href="/dashboard">
-                Inställningar
-              </Link>
-              <Link className="" href="/dashboard">
-                Logga ut
-              </Link>
-            </div>
-          </nav>
-        </div>
+        {/* <div className=""> */}
+        {/* mobile nav */}
+        <nav className="w-full h-[70px] flex justify-between items-center px-4 md:hidden bg-primary">
+          {/* Not sure the logo link has to be conditional - niclas */}
+          {data?.user ? (
+            <Link href="/dashboard">
+              <h2>Logo</h2>
+            </Link>
+          ) : (
+            <Link href="/">
+              <h2>Logo</h2>
+            </Link>
+          )}
+          <Menu
+            className="hover:cursor-pointer"
+            color="white"
+            size={32}
+            onClick={menuClickHandler}
+          />
+        </nav>
+        {/* sidenav */}
+        <nav className="h-[calc(100vh-2rem)] w-1/6 max-w-[364px] flex flex-col justify-between absolute -left-full md:relative md:left-0 ">
+          {/* nav top items */}
+          <div className="flex flex-col gap-4">
+            <Link className="" href="/dashboard">
+              Kurser
+            </Link>
+            <Link className="" href="/dashboard">
+              Personer
+            </Link>
+            <Link className="" href="/dashboard">
+              Omdömen
+            </Link>
+          </div>
+          {/* nav bottom items */}
+          <div className="flex flex-col gap-4 justify-self-end">
+            <Link className="" href="/dashboard">
+              Inställningar
+            </Link>
+            <Link className="" href="/dashboard">
+              Logga ut
+            </Link>
+          </div>
+        </nav>
+        {/* </div> */}
         {/* main content */}
-        <main className=""></main>
+        <main className="flex-1 bg-white rounded-lg"></main>
       </div>
       {/*  <button
               className="btn btn-secondary"
