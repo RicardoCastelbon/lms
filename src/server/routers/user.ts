@@ -4,12 +4,12 @@ import { t } from "../trpc";
 import { hash } from "argon2";
 import { loginSchema, signUpSchema } from "../../common/validation/auth";
 import { TRPCError } from "@trpc/server";
-import { Education } from "@prisma/client";
+import { Education, Role } from "@prisma/client";
 import { log } from "console";
 
 export const userRouter = t.router({
   signup: t.procedure.input(signUpSchema).mutation(async ({ input, ctx }) => {
-    const { email, password, education, firstName, lastName, userRole } = input;
+    const { email, password, education, firstName, lastName } = input;
     try {
       console.log(input);
 
@@ -44,7 +44,7 @@ export const userRouter = t.router({
           education: { connect: { id: education } },
           firstName,
           lastName,
-          userRole,
+          userRole: Role.STUDENT,
         },
       });
 

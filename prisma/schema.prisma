@@ -10,6 +10,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  ADMIN
+  TEACHER
+  STUDENT
+}
+
 model Education {
   id        Int      @id @default(autoincrement())
   name      String   @default("NULL")
@@ -21,9 +27,10 @@ model Education {
 
 model User {
   id          Int       @id @default(autoincrement())
-  userRole    String    @default("NULL")
+  userRole    Role      @default(STUDENT)
   education   Education @relation(fields: [educationId], references: [id], onDelete: Restrict, onUpdate: Cascade)
   educationId Int
+  //username  String   @unique
   email       String    @unique
   password    String    @default("NULL")
   firstName   String    @default("NULL")
@@ -34,6 +41,7 @@ model User {
 
 model Admin {
   id        Int      @id @default(autoincrement())
+  userRole  Role     @default(ADMIN)
   email     String   @unique
   password  String   @default("NULL")
   createdAt DateTime @default(now())
@@ -61,7 +69,7 @@ model Module_lib {
 model Exercise_lib {
   id          Int         @id @default(autoincrement())
   module      Module_lib? @relation(fields: [moduleId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-  moduleId    Int
+  moduleId    Int?
   title       String
   description String
   content     String
@@ -77,8 +85,8 @@ model Course {
 
 model Module {
   id          Int        @id @default(autoincrement())
-  course      Course     @relation(fields: [courseId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-  courseId    Int
+  course      Course?    @relation(fields: [courseId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  courseId    Int?
   exercises   Exercise[]
   title       String
   description String
@@ -88,7 +96,7 @@ model Module {
 model Exercise {
   id          Int     @id @default(autoincrement())
   module      Module? @relation(fields: [moduleId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-  moduleId    Int
+  moduleId    Int?
   title       String
   description String
   content     String
