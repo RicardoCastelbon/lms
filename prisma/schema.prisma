@@ -23,8 +23,7 @@ model User {
   id          Int       @id @default(autoincrement())
   userRole    String    @default("NULL")
   education   Education @relation(fields: [educationId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-  educationId Int //@unique
-  //username  String   @unique
+  educationId Int
   email       String    @unique
   password    String    @default("NULL")
   firstName   String    @default("NULL")
@@ -52,7 +51,7 @@ model Course_lib {
 model Module_lib {
   id          Int            @id @default(autoincrement())
   course      Course_lib     @relation(fields: [courseId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-  courseId    Int            @unique
+  courseId    Int
   exercises   Exercise_lib[]
   title       String
   description String
@@ -62,7 +61,7 @@ model Module_lib {
 model Exercise_lib {
   id          Int         @id @default(autoincrement())
   module      Module_lib? @relation(fields: [moduleId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-  moduleId    Int         @unique
+  moduleId    Int
   title       String
   description String
   content     String
@@ -79,7 +78,7 @@ model Course {
 model Module {
   id          Int        @id @default(autoincrement())
   course      Course     @relation(fields: [courseId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-  courseId    Int        @unique
+  courseId    Int
   exercises   Exercise[]
   title       String
   description String
@@ -89,7 +88,7 @@ model Module {
 model Exercise {
   id          Int     @id @default(autoincrement())
   module      Module? @relation(fields: [moduleId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-  moduleId    Int     @unique
+  moduleId    Int
   title       String
   description String
   content     String

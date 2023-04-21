@@ -35,8 +35,8 @@ hsla(216, 41%, 55%, 1)
   :root {
     /* Fonts */
 
-    --font-primary: "Montserrat";
-    --font-secondary: "Poppins";
+    /*     --font-primary: "Montserrat";
+    --font-secondary: "Poppins"; */
 
     /* Fonts end */
 
@@ -79,8 +79,8 @@ hsla(216, 41%, 55%, 1)
     primary
     hsla(245, 41%, 55%, 1)  
     */
-    --secondary: 210 40% 96.1%; /* Not configured */
-    --secondary-foreground: 222.2 47.4% 11.2%; /* Not configured */
+    --secondary: 261, 29%, 80%, 1; /* layout-bg*/
+    --secondary-foreground: 0, 0%, 25%, 1; /* Font color */
 
     --accent: 210 40% 96.1%; /* Not configured */
     --accent-foreground: 222.2 47.4% 11.2%; /* Not configured */

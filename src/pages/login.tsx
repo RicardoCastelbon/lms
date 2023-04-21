@@ -8,11 +8,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { loginSchema, ILogin } from "../common/validation/auth";
 import Layout from "../components/ui/Layout";
+import { Button } from "../components/ui/button";
 
 const Login: NextPage = () => {
   const { handleSubmit, control, reset } = useForm<ILogin>({
     defaultValues: {
-      email: "jsmith@mail.com",
+      email: "",
       password: "",
     },
     resolver: zodResolver(loginSchema),
@@ -38,52 +39,55 @@ const Login: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Layout>
-        <main>
+        <div className="flex flex-1 items-center justify-center relative w-full h-full p-4">
           <form
-            className="flex items-center justify-center h-screen w-full"
+            className="flex flex-col items-center gap-4 h-full w-full md:w-4/6 bg-white px-4 py-10 rounded-lg shadow-xl"
             onSubmit={handleSubmit(onSubmit)}
           >
-            <div className="card w-96 bg-base-100 shadow-xl">
-              <div className="card-body">
-                <h2 className="card-title">Welcome back!</h2>
-                <Controller
-                  name="email"
-                  control={control}
-                  render={({ field }) => (
-                    <input
-                      type="email"
-                      placeholder="Type your email..."
-                      className="input input-bordered w-full max-w-xs"
-                      {...field}
-                    />
-                  )}
-                />
-
-                <Controller
-                  name="password"
-                  control={control}
-                  render={({ field }) => (
-                    <input
-                      type="password"
-                      placeholder="Type your password..."
-                      className="input input-bordered w-full max-w-xs my-2"
-                      {...field}
-                    />
-                  )}
-                />
-                <div className="card-actions items-center justify-between">
-                  <Link href="/sign-up" className="link">
-                    Go to sign up
-                  </Link>
-
-                  <button className="btn btn-secondary" type="submit">
-                    Login
-                  </button>
+            <h2 className="text-xl mb-8">Welcome back!</h2>
+            <Controller
+              name="email"
+              control={control}
+              render={({ field }) => (
+                <div className="w-full max-w-md flex flex-col mb-4">
+                  <label htmlFor="education">Email</label>
+                  <input
+                    type="email"
+                    placeholder="Type your email..."
+                    className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
+                    {...field}
+                  />
                 </div>
-              </div>
+              )}
+            />
+
+            <Controller
+              name="password"
+              control={control}
+              render={({ field }) => (
+                <div className="w-full max-w-md flex flex-col mb-4">
+                  <label htmlFor="education">Password</label>
+                  <input
+                    type="password"
+                    placeholder="Type your password..."
+                    className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
+                    {...field}
+                  />
+                </div>
+              )}
+            />
+
+            <div className="w-full flex items-center justify-between max-w-md text-primary mt-8 hover:text-muted">
+              <Link href="/login" className="link">
+                Not a member?
+              </Link>
+              <Button>Login</Button>
+              {/* <button className="btn btn-secondary" type="submit">
+                Sign Up
+              </button> */}
             </div>
           </form>
-        </main>
+        </div>
       </Layout>
     </>
   );

@@ -9,7 +9,7 @@ import { log } from "console";
 
 export const userRouter = t.router({
   signup: t.procedure.input(signUpSchema).mutation(async ({ input, ctx }) => {
-    const { email, password, education, firstName, lastName } = input;
+    const { email, password, education, firstName, lastName, userRole } = input;
     try {
       console.log(input);
 
@@ -44,6 +44,7 @@ export const userRouter = t.router({
           education: { connect: { id: education } },
           firstName,
           lastName,
+          userRole,
         },
       });
 
