@@ -119,7 +119,7 @@ const createModule: NextPage = () => {
             </div>
 
             <div>
-              <Button> Skapa modul</Button>
+              <Button type='submit'> Skapa modul</Button>
             </div>
           </div>
         </div>

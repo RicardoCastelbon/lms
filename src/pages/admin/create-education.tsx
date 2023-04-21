@@ -149,13 +149,6 @@ const createEducation: NextPage = () => {
               />
             </div>
             <div>
-              {/* <button
-                type='submit'
-                className='bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded w-full'
-              >
-                Skapa kurs
-              </button> */}
-
               <Button> Skapa utbildning</Button>
             </div>
           </div>

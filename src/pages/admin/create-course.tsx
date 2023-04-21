@@ -158,7 +158,7 @@ const createCourse: NextPage = () => {
                 Skapa kurs
               </button> */}
 
-              <Button> Skapa kurs</Button>
+              <Button type='submit'> Skapa modul</Button>
             </div>
           </div>
         </div>
