@@ -9,20 +9,14 @@ import Layout from "../components/ui/Layout";
 import { Button } from "../components/ui/button";
 import Select, { SingleValue } from "react-select";
 
-import {
-  signUpSchema,
-  ISignUp,
-  ILogin,
-  loginSchema,
-} from "../common/validation/auth";
+import { signUpSchema, ISignUp } from "../common/validation/auth";
 import { trpc } from "../common/trpc";
-import { log } from "console";
 
 const educations = [
-  { label: "Education 1", value: 1 },
-  { label: "Education 2", value: 2 },
-  { label: "Education 3", value: 3 },
-  { label: "Education 4", value: 4 },
+  { label: "React", value: 1 },
+  { label: "Angular", value: 2 },
+  // { label: "Angular 2", value: "317774eb-7d44-4d01-a93a-22b3f30f17df" },
+  // { label: "FWD22", value: "ea70de22-e81d-4c6c-a6e3-d1a18fe43aea" },
 ];
 
 const SignUp: NextPage = () => {
@@ -35,6 +29,7 @@ const SignUp: NextPage = () => {
         education: 1,
         firstName: "",
         lastName: "",
+        userRole: "student",
       },
       resolver: zodResolver(signUpSchema),
     }
@@ -44,10 +39,9 @@ const SignUp: NextPage = () => {
 
   const onSubmit = useCallback(
     async (data: ISignUp) => {
-      console.log("hej");
       try {
+        data.userRole = "student";
         console.log(data);
-
         const result = await mutateAsync(data);
         if (result.status === 201) {
           reset();
@@ -75,71 +69,31 @@ const SignUp: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Layout>
-        {/* 
-          id        Int      @id @default(autoincrement())
-          userRole  String   @default("NULL")
-          education Education @relation(fields: [educationId], references: [id], onDelete: Restrict, onUpdate: Cascade)  
-          educationId Int    @unique
-          //username  String   @unique
-          email     String   @unique
-          password  String   @default("NULL")
-          firstName String   @default("NULL")
-          lastName  String   @default("NULL")
-          createdAt DateTime @default(now())
-          updatedAt DateTime @updatedAt
-        */}
-        <div className="flex flex-1 items-center justify-center relative w-full h-full">
+        <div className="flex flex-1 items-center justify-center relative w-full h-full p-4">
           <form
-            className="flex flex-col gap-4 h-full w-5/6 bg-white px-4 py-10 "
+            className="flex flex-col items-center gap-4 h-full w-full md:w-4/6 bg-white px-4 py-10 rounded-lg"
             onSubmit={handleSubmit(onSubmit)}
           >
             <h2 className="text-xl mb-8">Skapa ett konto</h2>
-            {/*          <div className="flex flex-col">
-              <label htmlFor="education">Choose education</label>
-              <select
-                className="input bg-muted input-bordered w-full max-w-xs"
-                name="education"
-                id="education"
-              >
-                <option value="1">Education 1</option>
-                <option value="1">Education 1</option>
-                <option value="1">Education 1</option>
-              </select>
-            </div>
-            <div className="flex flex-col">
-              <label htmlFor="education">Enter your email</label>
-              <input
-                className="input input-bordered w-full max-w-xs"
-                type="text"
-                placeholder="Email"
-              />
-            </div> */}
             <Controller
               name="education"
               control={control}
-              /*   render={(field) => (
-                <select
-                  options={educations}
-                  // value={educations.find((c) => c.value === field)}
-                  onChange={(e) => handleSelectChange(e)}
-                ></select>
-              )} */
               rules={{ required: true }}
               render={({ field }) => (
-                <div className="flex flex-col">
+                <div className="w-full max-w-md flex flex-col mb-4">
                   <label htmlFor="education">Choose education</label>
                   <select
-                    className="input h-[40px] bg-muted input-bordered w-full max-w-xs"
+                    className="input h-[40px] bg-muted input-bordered w-full mt-2 rounded-md"
                     name="education"
                     id="education"
                     onChange={(e) => handleSelectChange(e)}
                   >
-                    <option value="default" disabled>
-                      Choose education
-                    </option>
-                    <option value="1">Education 1</option>
-                    <option value="2">Education 2</option>
-                    <option value="3">Education 3</option>
+                    <option value="default">Choose education</option>
+                    {educations.map((edu) => (
+                      <option key={edu.value} value={edu.value}>
+                        {edu.label}
+                      </option>
+                    ))}
                   </select>
                 </div>
               )}
@@ -148,13 +102,13 @@ const SignUp: NextPage = () => {
               name="email"
               control={control}
               render={({ field }) => (
-                <div className="flex flex-col">
+                <div className="w-full max-w-md flex flex-col mb-4">
                   <label htmlFor="email">Email</label>
                   <input
                     id="email"
                     type="email"
                     placeholder="Type your email..."
-                    className="input bg-muted h-[40px] input-bordered w-full max-w-xs mt-4"
+                    className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
                     {...field}
                   />
                 </div>
@@ -165,13 +119,13 @@ const SignUp: NextPage = () => {
               name="password"
               control={control}
               render={({ field }) => (
-                <div className="flex flex-col">
+                <div className="w-full max-w-md flex flex-col mb-4">
                   <label htmlFor="password">Enter your password</label>
                   <input
                     id="password"
                     type="password"
                     placeholder="Type your password..."
-                    className="input bg-muted h-[40px] input-bordered w-full max-w-xs my-2"
+                    className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
                     {...field}
                   />
                 </div>
@@ -181,13 +135,13 @@ const SignUp: NextPage = () => {
               name="firstName"
               control={control}
               render={({ field }) => (
-                <div className="flex flex-col">
+                <div className="w-full max-w-md flex flex-col mb-4">
                   <label htmlFor="firstName">First name</label>
                   <input
                     id="firstName"
                     type="text"
                     placeholder="Your first name"
-                    className="input bg-muted h-[40px] input-bordered w-full max-w-xs mt-4"
+                    className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
                     {...field}
                   />
                 </div>
@@ -197,27 +151,24 @@ const SignUp: NextPage = () => {
               name="lastName"
               control={control}
               render={({ field }) => (
-                <div className="flex flex-col">
+                <div className="w-full max-w-md flex flex-col">
                   <label htmlFor="lastName">Last name</label>
                   <input
                     id="lastName"
                     type="text"
                     placeholder="Type your email..."
-                    className="input bg-muted h-[40px] input-bordered w-full max-w-xs mt-4"
+                    className="input bg-muted h-[40px] input-bordered w-full rounded-md  mt-2 pl-2"
                     {...field}
                   />
                 </div>
               )}
             />
 
-            <div className="flex items-center justify-between max-w-xs">
+            <div className="w-full flex items-center justify-between max-w-md text-primary mt-8 hover:text-muted">
               <Link href="/login" className="link">
                 Go to login
               </Link>
               <Button>Become a member</Button>
-              {/* <button className="btn btn-secondary" type="submit">
-                Sign Up
-              </button> */}
             </div>
           </form>
         </div>
