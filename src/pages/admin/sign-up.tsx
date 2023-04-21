@@ -54,56 +54,56 @@ const adminSignUp: NextPage = () => {
         <link rel='icon' href='/favicon.ico' />
       </Head>
 
-      <main>
-        <form
-          className='flex items-center justify-center h-screen w-full'
-          onSubmit={handleSubmit(onSubmit)}
+      <main className="flex items-center justify-center min-h-screen">
+  <form
+    className="flex flex-col items-center justify-center w-full px-4 sm:px-8"
+    onSubmit={handleSubmit(onSubmit)}
+  >
+    <div className="flex flex-col items-center justify-center bg-white p-8 shadow-xl rounded-lg w-80">
+      <h2 className="text-2xl mb-6">Create an account!</h2>
+
+      <Controller
+        name="email"
+        control={control}
+        render={({ field }) => (
+          <input
+            type="email"
+            placeholder="Type your email..."
+            className="input input-bordered w-full mb-4 bg-gray-200 rounded"
+            {...field}
+          />
+        )}
+      />
+
+      <Controller
+        name="password"
+        control={control}
+        render={({ field }) => (
+          <input
+            type="password"
+            placeholder="Type your password..."
+            className="input input-bordered w-full mb-4 bg-gray-200 rounded"
+            {...field}
+          />
+        )}
+      />
+
+      <div className="flex items-center justify-between w-full">
+        <Link href="/admin/login">
+          <p className="text-purple-600 hover:text-purple-800">Go to login</p>
+        </Link>
+
+        <button
+          className="btn btn-secondary bg-purple-600 text-white py-2 px-4 rounded"
+          type="submit"
         >
-          <div className='card w-96 bg-base-100 shadow-xl'>
-            <div className='card-body'>
-              <h2 className='card-title'>
-                Create an account and start admining people!
-              </h2>
+          Sign Up
+        </button>
+      </div>
+    </div>
+  </form>
+</main>
 
-              <Controller
-                name='email'
-                control={control}
-                render={({ field }) => (
-                  <input
-                    type='email'
-                    placeholder='Type your email...'
-                    className='input input-bordered w-full max-w-xs'
-                    {...field}
-                  />
-                )}
-              />
-
-              <Controller
-                name='password'
-                control={control}
-                render={({ field }) => (
-                  <input
-                    type='password'
-                    placeholder='Type your password...'
-                    className='input input-bordered w-full max-w-xs my-2'
-                    {...field}
-                  />
-                )}
-              />
-
-              <div className='card-actions items-center justify-between'>
-                <Link href='/admin/login' className='link'>
-                  Go to login
-                </Link>
-
-                <button className='btn btn-secondary' type='submit'>
-                  Sign Up
-                </button>
-              </div>
-            </div>
-          </div>
-        </form>
-      </main>
     </div>
   );
 };

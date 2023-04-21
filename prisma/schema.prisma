@@ -41,6 +41,7 @@ model User {
 
 model Admin {
   id        Int      @id @default(autoincrement())
+  userRole  Role     @default(ADMIN)
   email     String   @unique
   password  String   @default("NULL")
   createdAt DateTime @default(now())
@@ -84,8 +85,8 @@ model Course {
 
 model Module {
   id          Int        @id @default(autoincrement())
-  course      Course     @relation(fields: [courseId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-  courseId    Int
+  course      Course?    @relation(fields: [courseId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  courseId    Int?
   exercises   Exercise[]
   title       String
   description String

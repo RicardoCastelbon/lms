@@ -1,14 +1,16 @@
 import { NextAuthOptions } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { verify } from "argon2";
-
+// import Providers from "next-auth/providers";
 import { prisma } from "./prisma";
 import { loginSchema, adminLoginSchema } from "./validation/auth";
 import { User } from "next-auth";
+import { isValid } from "zod";
 
 export const nextAuthOptions: NextAuthOptions = {
   providers: [
     Credentials({
+      id: "credentials",
       name: "credentials",
       credentials: {
         email: {
@@ -17,6 +19,7 @@ export const nextAuthOptions: NextAuthOptions = {
           placeholder: "jsmith@gmail.com",
         },
         password: { label: "Password", type: "password" },
+        education: { label: "Education", type: "number" },
       },
       authorize: async (credentials) => {
         try {
@@ -40,23 +43,22 @@ export const nextAuthOptions: NextAuthOptions = {
       },
     }),
     Credentials({
-      id: "AdminCredentails",
-      name: "AdminCredentials",
+      id: "Mycredentials",
+      name: "Mycredentials",
       credentials: {
         email: {
           label: "Email",
           type: "email",
-          placeholder: "jsmith@gmail.com",
+          placeholder: "asjohn@gmail.com",
         },
         password: { label: "Password", type: "password" },
+        education: { label: "Education", type: "number" },
       },
       authorize: async (credentials) => {
         try {
-          const { email, password } = await adminLoginSchema.parseAsync(
-            credentials
-          );
+          const { email, password } = await loginSchema.parseAsync(credentials);
 
-          const result = await prisma.admin.findFirst({
+          const result = await prisma.user.findFirst({
             where: { email },
           });
           // const newId = String(result?.id);
@@ -68,6 +70,47 @@ export const nextAuthOptions: NextAuthOptions = {
           if (!isValidPassword) return null;
 
           return { id: result.id, email };
+        } catch {
+          return null;
+        }
+      },
+    }),
+    Credentials({
+      id: "AdminCredentials",
+      name: "AdminCredentials",
+      credentials: {
+        email: {
+          label: "Email",
+          type: "email",
+          placeholder: "jsmith@gmail.com",
+        },
+        password: { label: "Password", type: "password" },
+      },
+      authorize: async (credentials) => {
+        console.log("credentials", credentials);
+        try {
+          const { email, password } = await adminLoginSchema.parseAsync(
+            credentials
+          );
+
+          const result = await prisma.admin.findFirst({
+            where: { email },
+          });
+          // const newId = String(result?.id);
+
+          if (!result) return null;
+          console.log("result", result);
+
+          const isValidPassword = await verify(result.password, password);
+
+          if (!isValidPassword) return null;
+          console.log("isValid", isValid);
+
+          return {
+            id: result.id,
+            email,
+            nextPage: "/admin/dashboard",
+          };
         } catch {
           return null;
         }
@@ -98,7 +141,7 @@ export const nextAuthOptions: NextAuthOptions = {
     maxAge: 15 * 24 * 30 * 60, // 15 days
   },
   pages: {
-    signIn: "/",
+    signIn: "/login",
     newUser: "/sign-up",
   },
   secret: "super-secret",
