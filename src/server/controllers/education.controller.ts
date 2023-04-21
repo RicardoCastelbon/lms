@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { Education, Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { Context } from "vm";
 import {
@@ -16,7 +16,7 @@ export const createEducationController = async ({
   ctx: Context;
 }) => {
   try {
-    const education = await ctx.prisma.education.create({
+    const education: Education = await ctx.prisma.education.create({
       data: {
         name: input.name,
       },
@@ -49,11 +49,10 @@ export const createEducationController = async ({
 
     return {
       status: "success",
-      data: {
-        education,
-      },
+      education,
     };
   } catch (error) {
+    console.log(error);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       /* 
       EXAMPLE OF ERROR CATCH. 
@@ -65,8 +64,8 @@ export const createEducationController = async ({
         });
       } */
       console.log(error.code, error.message);
+      return error;
     }
-    //throw error;
   }
 };
 
@@ -80,18 +79,20 @@ export const updateEducationController = async ({
   ctx: Context;
 }) => {
   try {
-    const updatedEducation = await ctx.prisma.education.update({
-      where: { id: paramsInput.educationId },
+    const education = await ctx.prisma.education.update({
+      where: { id: Number(paramsInput.educationId) },
       data: input,
     });
 
     return {
       status: "success",
-      note: updatedEducation,
+      education,
     };
   } catch (error) {
+    console.log(error);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       console.log(error.code, error.message);
+      return error;
     }
   }
 };
@@ -104,12 +105,12 @@ export const findEducationController = async ({
   ctx: Context;
 }) => {
   try {
-    const education = await ctx.prisma.education.findFirst({
-      where: { id: paramsInput.educationId },
+    const education: Education = await ctx.prisma.education.findFirst({
+      where: { id: Number(paramsInput.educationId) },
     });
 
     if (!education) {
-      throw new TRPCError({
+      return new TRPCError({
         code: "NOT_FOUND",
         message: `Education with ID: ${paramsInput.educationId} not found`,
       });
@@ -120,8 +121,10 @@ export const findEducationController = async ({
       education,
     };
   } catch (error) {
+    console.log(error);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       console.log(error.code, error.message);
+      return error;
     }
   }
 };
@@ -138,19 +141,21 @@ export const findAllEducationsController = async ({
     const limit = filterQuery.limit || 10;
     const skip = (page - 1) * limit;
 
-    const educations = await ctx.prisma.education.findMany({
+    const education = await ctx.prisma.education.findMany({
       skip,
       take: limit,
     });
 
     return {
       status: "success",
-      results: educations.length,
-      educations,
+      results: education.length,
+      education,
     };
   } catch (error) {
+    console.log(error);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       console.log(error.code, error.message);
+      return error;
     }
   }
 };
@@ -163,16 +168,19 @@ export const deleteEducationController = async ({
   ctx: Context;
 }) => {
   try {
-    await ctx.prisma.education.delete({
-      where: { id: paramsInput.educationId },
+    const education = await ctx.prisma.education.delete({
+      where: { id: Number(paramsInput.educationId) },
     });
 
     return {
       status: "success",
+      education,
     };
   } catch (error) {
+    console.log(error);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       console.log(error.code, error.message);
+      return error;
     }
   }
 };

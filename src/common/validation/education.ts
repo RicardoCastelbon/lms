@@ -1,5 +1,27 @@
 import * as z from "zod";
 
+export const educationSchema = z.object({
+  status: z.string(),
+  education: z.object({
+    id: z.number(),
+    name: z.string(),
+    createdAt: z.date(),
+    updatedAt: z.date(),
+  }),
+});
+export const educationsSchema = z.object({
+  status: z.string(),
+  results: z.number(),
+  education: z.array(
+    z.object({
+      id: z.number(),
+      name: z.string(),
+      createdAt: z.date(),
+      updatedAt: z.date(),
+    })
+  ),
+});
+
 export const createEducationSchema = z.object({
   name: z.string({ required_error: "Name is required" }),
 });
@@ -9,12 +31,18 @@ export const params = z.object({
 });
 
 export const updateEducationSchema = z.object({
-  params,
+  educationId: z.string(),
   body: z
     .object({
       name: z.string(),
     })
     .partial(),
+});
+
+export const updatedEducationResponse = z.object({
+  status: z.string(),
+  updateEducationSchema,
+  //data: z.string(),
 });
 
 export const filterQuery = z.object({
