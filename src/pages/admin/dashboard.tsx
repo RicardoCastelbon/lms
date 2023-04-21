@@ -19,25 +19,31 @@ const Dashboard: NextPage = () => {
         <div className='bg-purple-200 w-full sm:w-1/5 p-4'>
           <h2 className='text-lg font-semibold mb-4'>Admin Dashboard</h2>
           <ul className='flex flex-col gap-2'>
-            <li>
-              <a href='#' className='text-purple-800 hover:text-purple-600'>
-                Utbildning
-              </a>
-            </li>
-            <Link href='/admin/createCourse' className='link'>
-              Kurser
+            <Link
+              href='/admin/create-education'
+              className='link text-black hover:text-purple-600'
+            >
+              Utbildning
             </Link>
 
-            <li>
-              <a href='#' className='text-purple-800 hover:text-purple-600'>
-                Moduler
-              </a>
-            </li>
-            <li>
-              <a href='#' className='text-purple-800 hover:text-purple-600'>
-                Tester
-              </a>
-            </li>
+            <Link
+              href='/admin/create-course'
+              className='link text-black hover:text-white'
+            >
+              Kurser
+            </Link>
+            <Link
+              href='/admin/create-module'
+              className='link text-black hover:text-white'
+            >
+              Moduler
+            </Link>
+            <Link
+              href='/admin/create-exercise'
+              className='link text-black hover:text-white'
+            >
+              Tester
+            </Link>
             <div className='flex '>
               <ul className='flex flex-col gap-2 mt-50'>
                 <li className='flex items-center'>
@@ -85,11 +91,6 @@ const Dashboard: NextPage = () => {
               <p>Card content goes here.</p>
             </div>
           </div>
-          {/* <div className='flex justify-center sm:justify-between items-center mt-8'>
-            <div className='inline-block bg-blue-50 p-2 rounded-lg'>
-              <button className='btn btn-primary'>Lägg till kurs</button>
-            </div>
-          </div> */}
         </div>
       </div>
     </div>
