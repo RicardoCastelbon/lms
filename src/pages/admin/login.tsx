@@ -1,11 +1,12 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import { useCallback } from "react";
-import { signIn } from "next-auth/react";
+import { useCallback, useEffect } from "react";
+import { signIn, useSession } from "next-auth/react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Layout from "../../components/ui/Layout";
+import { useRouter } from 'next/router';
 
 import { IAdminLogin, adminLoginSchema } from "../../common/validation/auth";
 
@@ -17,6 +18,15 @@ const adminLogin: NextPage = () => {
     },
     resolver: zodResolver(adminLoginSchema),
   });
+
+  const { status } = useSession();
+  const Router = useRouter();
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      Router.replace("/admin/dashboard");
+    }
+  }, [status]);
 
   const onSubmit = useCallback(
     async (data: IAdminLogin) => {
@@ -35,6 +45,10 @@ const adminLogin: NextPage = () => {
     [reset]
   );
 
+  if(status === "authenticated"){
+    return <div>Redirecting to dashboard...</div>;
+  }
+  
   return (
     // return (
     <>
