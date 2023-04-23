@@ -106,6 +106,15 @@ export const nextAuthOptions: NextAuthOptions = {
           if (!isValidPassword) return null;
           console.log("isValid", isValid);
 
+            // Check if the authenticated user has the admin role
+          const user = await prisma.user.findFirst({
+            where: { email },
+            select: { userRole: true },
+          });
+
+          if (!user || user.userRole !== "admin") {
+            return null;
+          }
           return {
             id: result.id,
             email,
