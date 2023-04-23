@@ -5,28 +5,27 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { Controller, useForm } from "react-hook-form";
 import { trpc } from "../common/trpc";
-import { ISignUp } from "../common/validation/auth";
-import { educationSchema, IEducation } from "../common/validation/education";
+import {
+  createEducationSchema,
+  CreateEducationInput,
+} from "../common/validation/education";
 import { useCallback } from "react";
 
 const EducationPage: NextPage = () => {
   const router = useRouter();
-  const { handleSubmit, control, reset } = useForm<IEducation>({
+  const { handleSubmit, control, reset } = useForm<CreateEducationInput>({
     defaultValues: {
       name: "",
     },
-    resolver: zodResolver(educationSchema),
+    resolver: zodResolver(createEducationSchema),
   });
 
   const { mutateAsync } = trpc.education.create.useMutation();
 
   const onSubmit = useCallback(
-    async (data: IEducation) => {
+    async (data: CreateEducationInput) => {
       try {
         const result = await mutateAsync(data);
-        if (result.status === 201) {
-          reset();
-        }
       } catch (err) {
         console.error(err);
       }
