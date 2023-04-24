@@ -16,27 +16,27 @@ const Dashboard: NextPage = () => {
 
   return (
     <div className="bg-purple-100 min-h-screen">
-      <div className="flex flex sm:flex-row">
-        <Sidebar />
-        <section className="pl-8 md:pl-24">
-          <div className="container mx-auto px-4 py-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="bg-white shadow-md rounded-md p-20 w-full h-64 md:h-[20rem] md:min-w-[30rem]">
+    <div className="flex flex sm:flex-row">
+      <Sidebar />
+      <section className="pl-8 md:pl-24 ml-64 md:ml-96">
+        <div className="container mx-auto px-4 py-8">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-x-8 h-full justify-center items-center">
+            <div className="bg-white shadow-md rounded-md p-4 md:p-20 h-64 w-full md:w-auto md:min-w-[35rem] max-w-[60rem] mx-auto mb-8 md:mb-0 card">
+              <h1 className="text-2xl font-semibold mb-8 text-center sm:text-left">
+                Utbildningar
+              </h1>
+            </div>
+              <div className="bg-white shadow-md rounded-md p-4 md:p-20 h-64 w-full md:w-auto md:min-w-[35rem] max-w-[60rem] mx-auto">
                 <h1 className="text-2xl font-semibold mb-8 text-center sm:text-left">
-                  Utbildningar
+                  Kurser
                 </h1>
               </div>
-              <div className="bg-white shadow-md rounded-md p-20 w-full h-64 md:h-[20rem] md:min-w-[30rem]">
-                <h1 className="text-2xl font-semibold mb-8 text-center sm:text-left">
-                  Kurser{" "}
-                </h1>
-              </div>
-              <div className="bg-white shadow-md rounded-md p-20 w-full h-64 md:h-[20rem] md:min-w-[30rem]">
+              <div className="bg-white shadow-md rounded-md p-4 md:p-20 h-64 w-full md:w-auto md:min-w-[35rem] max-w-[60rem] mx-auto mb-8 md:mb-0">
                 <h1 className="text-2xl font-semibold mb-8 text-center sm:text-left">
                   Moduler
                 </h1>
               </div>
-              <div className="bg-white shadow-md rounded-md p-20 w-full h-64 md:h-[20rem] md:min-w-[30rem]">
+              <div className="bg-white shadow-md rounded-md p-4 md:p-20 h-64 w-full md:w-auto md:min-w-[35rem] max-w-[60rem] mx-auto">
                 <h1 className="text-2xl font-semibold mb-8 text-center sm:text-left">
                   Tester
                 </h1>

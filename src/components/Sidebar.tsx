@@ -12,6 +12,7 @@ const Sidebar = () => {
   const toggleSidebar = () => {
     setShowSidebar(!showSidebar);
   };
+
   return (
     <>
       {/* Hamburger menu button */}
@@ -19,7 +20,6 @@ const Sidebar = () => {
         className="fixed top-4 left-4 z-50 text-black md:hidden"
         onClick={toggleSidebar}
       >
-        {/* <Menu size={24} /> */}
         <span className="sr-only">Menu</span>
         <svg
           className="h-6 w-6"
@@ -40,7 +40,7 @@ const Sidebar = () => {
       <div
         className={`fixed w-full h-full top-0 left-0 bg-white z-40 overflow-y-auto ${
           showSidebar ? "" : "hidden"
-        } md:block md:w-1/5 md:h-auto`}
+        } md:block md:w-56 md:h-auto`}
       >
         <div className="md:bg-purple-200 md:h-full md:pt-4 md:pb-6 md:px-4">
           <h2 className="text-lg font-semibold mb-4 mt-0 md:hidden">Admin Dashboard</h2>
@@ -98,9 +98,10 @@ const Sidebar = () => {
         </div>
       </div>
       {/* Dark purple sidebar on desktop */}
-      <div className="hidden md:block bg-purple-200 w-1/5 h-screen absolute top-0 left-0"></div>
+      <div className="hidden md:block bg-purple-200 w-56 h-screen absolute top-0 left-0"></div>
     </>
   );
 };
+
 
 export default Sidebar;
