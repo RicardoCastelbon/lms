@@ -22,7 +22,7 @@ const Login: NextPage = () => {
   const onSubmit = useCallback(
     async (data: ILogin) => {
       try {
-        await signIn("credentials", { ...data, callbackUrl: "/dashboard" });
+        await signIn("Mycredentials", { ...data, callbackUrl: "/dashboard" });
         reset();
       } catch (err) {
         console.error(err);
