@@ -10,39 +10,6 @@ import { isValid } from "zod";
 export const nextAuthOptions: NextAuthOptions = {
   providers: [
     Credentials({
-      id: "credentials",
-      name: "credentials",
-      credentials: {
-        email: {
-          label: "Email",
-          type: "email",
-          placeholder: "jsmith@gmail.com",
-        },
-        password: { label: "Password", type: "password" },
-        education: { label: "Education", type: "number" },
-      },
-      authorize: async (credentials) => {
-        try {
-          const { email, password } = await loginSchema.parseAsync(credentials);
-
-          const result = await prisma.user.findFirst({
-            where: { email },
-          });
-          // const newId = String(result?.id);
-
-          if (!result) return null;
-
-          const isValidPassword = await verify(result.password, password);
-
-          if (!isValidPassword) return null;
-
-          return { id: result.id, email };
-        } catch {
-          return null;
-        }
-      },
-    }),
-    Credentials({
       id: "Mycredentials",
       name: "Mycredentials",
       credentials: {
