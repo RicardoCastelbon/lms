@@ -71,7 +71,7 @@ const Dashboard: NextPage = () => {
         <nav
           className={`h-[calc(100vh-2rem)] w-1/6 max-w-[364px] flex flex-col justify-between fixed -left-full md:relative md:left-0 ${
             sideBarClass ? "left-0 top-[70px] p-4 h-[calc(100vh-70px)]" : ""
-          } transition-all ease-in-out`}
+          } transition-left ease-in-out`}
         >
           {/* nav top items */}
           <div className="flex flex-col gap-4">
