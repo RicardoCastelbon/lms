@@ -5,7 +5,7 @@ import { requireAuth } from "../../common/requireAuth";
 import Link from "next/link";
 import { Menu } from "lucide-react";
 import { log } from "console";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 /* export const getServerSideProps = requireAuth(async (ctx) => {
   return { props: {} };
@@ -15,6 +15,12 @@ const Dashboard: NextPage = () => {
   const [sideBarClass, setSideBarClass] = useState<boolean>(false);
   const { data } = useSession();
   console.log(data);
+
+  useEffect(() => {
+    console.log(sideBarClass);
+  }, [sideBarClass]);
+
+  // set sideBarClass to "false" if window width is > 768px
 
   const menuClickHandler = () => {
     setSideBarClass((prev) => !prev);
@@ -46,7 +52,11 @@ const Dashboard: NextPage = () => {
           />
         </nav>
         {/* sidenav */}
-        <nav className="h-[calc(100vh-2rem)] w-1/6 max-w-[364px] flex flex-col justify-between absolute -left-full md:relative md:left-0 ">
+        <nav
+          className={`h-[calc(100vh-2rem)] w-1/6 max-w-[364px] flex flex-col justify-between absolute -left-full md:relative md:left-0 ${
+            sideBarClass ? "left-0 top-[70px] p-4 h-[calc(100vh-70px)]" : ""
+          } transition-all ease-in-out`}
+        >
           {/* nav top items */}
           <div className="flex flex-col gap-4">
             <Link className="" href="/dashboard">
