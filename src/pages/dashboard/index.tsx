@@ -71,7 +71,7 @@ const Dashboard: NextPage = () => {
         <nav
           className={`h-[calc(100vh-2rem)] w-1/6 max-w-[364px] flex flex-col justify-between fixed -left-full md:relative md:left-0 ${
             sideBarClass ? "left-0 top-[70px] p-4 h-[calc(100vh-70px)]" : ""
-          } transition-left ease-in-out`}
+          } transition-left ease-in-out bg-primary md:bg-inherit md:text-primary-font text-white`}
         >
           {/* nav top items */}
           <div className="flex flex-col gap-4">
@@ -97,7 +97,7 @@ const Dashboard: NextPage = () => {
         </nav>
         {/* </div> */}
         {/* main content */}
-        <main className="flex-1 bg-white rounded-lg h-[1500px] w-full"></main>
+        <main className="md:flex-1 bg-white rounded-lg h-[1500px] w-full"></main>
       </div>
       {/*  <button
               className="btn btn-secondary"
