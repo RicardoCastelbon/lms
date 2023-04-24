@@ -10,17 +10,33 @@ import { useEffect, useState } from "react";
 /* export const getServerSideProps = requireAuth(async (ctx) => {
   return { props: {} };
 }); */
-//yaki soba fläsk
+
 const Dashboard: NextPage = () => {
   const [sideBarClass, setSideBarClass] = useState<boolean>(false);
+  const [screenWidth, setScreenWidth] = useState<number>();
   const { data } = useSession();
   console.log(data);
 
   useEffect(() => {
-    console.log(sideBarClass);
+    console.log("sidebarclass", sideBarClass);
   }, [sideBarClass]);
 
-  // set sideBarClass to "false" if window width is > 768px
+  useEffect(() => {
+    function getScreenSize() {
+      if (typeof window !== "undefined") {
+        setScreenWidth(window.innerWidth);
+
+        if (window.innerWidth > 768) {
+          setSideBarClass(false);
+        }
+      }
+    }
+    window.addEventListener("resize", getScreenSize);
+
+    return () => {
+      window.removeEventListener("resize", getScreenSize);
+    };
+  }, [screenWidth]);
 
   const menuClickHandler = () => {
     setSideBarClass((prev) => !prev);
@@ -53,7 +69,7 @@ const Dashboard: NextPage = () => {
         </nav>
         {/* sidenav */}
         <nav
-          className={`h-[calc(100vh-2rem)] w-1/6 max-w-[364px] flex flex-col justify-between absolute -left-full md:relative md:left-0 ${
+          className={`h-[calc(100vh-2rem)] w-1/6 max-w-[364px] flex flex-col justify-between fixed -left-full md:relative md:left-0 ${
             sideBarClass ? "left-0 top-[70px] p-4 h-[calc(100vh-70px)]" : ""
           } transition-all ease-in-out`}
         >
@@ -81,7 +97,7 @@ const Dashboard: NextPage = () => {
         </nav>
         {/* </div> */}
         {/* main content */}
-        <main className="flex-1 bg-white rounded-lg"></main>
+        <main className="flex-1 bg-white rounded-lg h-[1500px] w-full"></main>
       </div>
       {/*  <button
               className="btn btn-secondary"
