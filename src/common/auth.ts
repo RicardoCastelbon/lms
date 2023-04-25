@@ -49,6 +49,7 @@ export const nextAuthOptions: NextAuthOptions = {
             nextPage: `/${result.education.name}/dashboard`,
             educationName: result.education.name,
             name: result.firstName,
+            image: null,
           };
         } catch {
           return null;
@@ -124,6 +125,7 @@ export const nextAuthOptions: NextAuthOptions = {
         token.role = user.role;
         token.educationName = user.educationName;
         token.name = user.name;
+        token.image = user.image;
       }
 
       return token;
@@ -135,6 +137,7 @@ export const nextAuthOptions: NextAuthOptions = {
         session.user.role = token.role;
         session.user.educationName = token.educationName;
         session.user.name = token.name;
+        session.user.image = token.image;
         // session.admin = token.admin;
       }
 

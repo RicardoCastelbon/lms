@@ -8,21 +8,21 @@ import { useRouter } from "next/router";
 import { AuthOptions, Session, getServerSession } from "next-auth";
 import { nextAuthOptions } from "@/src/common/auth";
 
-const Dashboard: NextPage = ({ session }: any) => {
+const Dashboard: NextPage = () => {
   const [sideBarClass, setSideBarClass] = useState<boolean>(false);
   const [screenWidth, setScreenWidth] = useState<number>();
-  const { data } = useSession();
+  const { data: session } = useSession();
   const router = useRouter();
-  console.log(session);
+  // console.log(session);
 
   useEffect(() => {
-    console.log(data);
+    console.log(session);
 
     // console.log("sidebarclass", sideBarClass);
-    /*  if (!data) {
+    if (!session) {
       router.push("/401");
-    } */
-  }, [data]);
+    }
+  }, [session]);
 
   useEffect(() => {
     function getScreenSize() {
@@ -50,20 +50,13 @@ const Dashboard: NextPage = ({ session }: any) => {
 
 /* getServerSideProps */
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const session = await getServerSession(
-    context.req,
-    context.res,
-    nextAuthOptions
-  );
-  console.log(session);
-
   return {
     props: {
-      /* session: await getServerSession(
+      session: await getServerSession(
         context.req,
         context.res,
         nextAuthOptions
-      ), */
+      ),
     },
   };
 };
