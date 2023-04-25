@@ -1,11 +1,13 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import { useCallback } from "react";
-import { signIn } from "next-auth/react";
+import { useCallback, useEffect } from "react";
+import { signIn, useSession } from "next-auth/react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Layout from "../../components/ui/Layout";
+import { useRouter } from "next/router";
+import { Role } from "@prisma/client";
 
 import { IAdminLogin, adminLoginSchema } from "../../common/validation/auth";
 
@@ -18,6 +20,33 @@ const adminLogin: NextPage = () => {
     resolver: zodResolver(adminLoginSchema),
   });
 
+  // const { status } = useSession();
+  const Router = useRouter();
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  useEffect(() => {
+    if (status === "authenticated" && session.user.role === Role.ADMIN) {
+      // if user is an admin and is logged in, redirect to admin dashboard
+      router.push("/admin/dashboard");
+    }
+  }, [status, session, router]);
+
+  // useEffect(() => {
+  //   if (status === "authenticated") {
+  //     if (session.user.role === Role.ADMIN) {
+  //       Router.replace("/admin/dashboard");
+  //     } else {
+  //       router.push("/");
+  //     }
+  //   }
+  // }, [status, session, router]);
+
+  // useEffect(() => {
+  //   if (status === "authenticated") {
+  //     Router.replace("/admin/dashboard");
+  //   }
+  // }, [status]);
+
   const onSubmit = useCallback(
     async (data: IAdminLogin) => {
       console.log(onSubmit);
@@ -25,8 +54,9 @@ const adminLogin: NextPage = () => {
         await signIn("AdminCredentials", {
           ...data,
           callbackUrl: "/admin/dashboard",
+          redirect: false, // Add this line
         });
-        console.log("DATA", data);
+
         reset();
       } catch (err) {
         console.error(err);
@@ -36,7 +66,6 @@ const adminLogin: NextPage = () => {
   );
 
   return (
-    // return (
     <>
       <Head>
         <title>Next App - Login Admin</title>
