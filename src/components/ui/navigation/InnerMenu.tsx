@@ -1,14 +1,12 @@
-import { User } from "lucide-react";
+import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React from "react";
+import { User } from "lucide-react";
 
 type Props = {};
 
 const InnerMenu = (props: Props) => {
   const router = useRouter();
-  console.log(router.query.education);
-  console.log(router.query.course);
 
   return (
     <nav className="w-full flex justify-between items-center border-b mb-4">
