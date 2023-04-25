@@ -7,12 +7,12 @@ import {
   adminSignUpSchema,
 } from "../../../common/validation/auth";
 import { TRPCError } from "@trpc/server";
-import { Education } from "@prisma/client";
+import { Role } from "@prisma/client";
 import { log } from "console";
 
 export const adminRouter = t.router({
   signup: t.procedure
-    .input(adminLoginSchema)
+    .input(adminSignUpSchema)
     .mutation(async ({ input, ctx }) => {
       console.log("Inside signup mutation", input);
 
@@ -34,6 +34,7 @@ export const adminRouter = t.router({
         const result = await ctx.prisma.admin.create({
           data: {
             email,
+            userRole: Role.ADMIN,
             password: hashedPassword,
           },
         });
