@@ -23,8 +23,6 @@ const Login: NextPage = () => {
         router.replace(
           `/${data.user.educationName?.toLocaleLowerCase()}/dashboard`
         );
-      } else {
-        router.push("/401");
       }
     }
   }, [status, data, router, loginAttempt]);
@@ -41,22 +39,13 @@ const Login: NextPage = () => {
       try {
         const res = await signIn("Mycredentials", {
           ...credentials,
-          // callbackUrl: "/dashboard",
           redirect: false,
         });
         if (res?.status === 200) {
           setLoginAttempt(true);
-
-          /* router.push(
-            `/${data?.user.educationName?.toLocaleLowerCase()}/dashboard`
-          ); */
         }
-
-        /*   if (res?.status === 200) {
-        } */
         console.log("res", res);
 
-        /*  callbackUrl: "/dashboard"  */
         reset();
       } catch (err) {
         console.error(err);

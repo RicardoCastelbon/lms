@@ -4,16 +4,21 @@ import { useSession, signOut } from "next-auth/react";
 import { useEffect, useState } from "react";
 // import TopNavbar from "@/src/components/ui/navigation/TopNavbar";
 import UserLayout from "@/src/components/ui/UserLayout";
+import { useRouter } from "next/router";
 
 const Dashboard: NextPage = () => {
   const [sideBarClass, setSideBarClass] = useState<boolean>(false);
   const [screenWidth, setScreenWidth] = useState<number>();
   const { data } = useSession();
+  const router = useRouter();
   // console.log(data);
 
   useEffect(() => {
-    console.log("sidebarclass", sideBarClass);
-  }, [sideBarClass]);
+    // console.log("sidebarclass", sideBarClass);
+    if (!data) {
+      router.push("/401");
+    }
+  }, [data]);
 
   useEffect(() => {
     function getScreenSize() {
