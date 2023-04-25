@@ -1,42 +1,41 @@
 import type { NextPage } from "next";
 import { useSession, signOut } from "next-auth/react";
 
-import { requireAuth } from "../../common/requireAuth";
+import { useEffect, useState } from "react";
+// import TopNavbar from "@/src/components/ui/navigation/TopNavbar";
+import UserLayout from "@/src/components/ui/UserLayout";
 
-export const getServerSideProps = requireAuth(async (ctx) => {
-  return { props: {} };
-});
-
-const Dashboard: NextPage = () => {  
+const Dashboard: NextPage = () => {
+  const [sideBarClass, setSideBarClass] = useState<boolean>(false);
+  const [screenWidth, setScreenWidth] = useState<number>();
   const { data } = useSession();
+  console.log(data);
+
+  useEffect(() => {
+    console.log("sidebarclass", sideBarClass);
+  }, [sideBarClass]);
+
+  useEffect(() => {
+    function getScreenSize() {
+      if (typeof window !== "undefined") {
+        setScreenWidth(window.innerWidth);
+
+        if (window.innerWidth > 768) {
+          setSideBarClass(false);
+        }
+      }
+    }
+    window.addEventListener("resize", getScreenSize);
+
+    return () => {
+      window.removeEventListener("resize", getScreenSize);
+    };
+  }, [screenWidth]);
 
   return (
-    <div className="hero min-h-screen bg-base-200">
-      <div className="hero-content">
-        <div className="max-w-lg">
-          <h1 className="text-5xl text-center font-bold leading-snug text-gray-400">
-            You are logged in!
-          </h1>
-          <p className="my-4 text-center leading-loose">
-            You are allowed to visit this page because you have a session,
-            otherwise you would be redirected to the login page.
-          </p>
-          <div className="my-4 bg-gray-700 rounded-lg p-4">
-            <pre>
-              <code>{JSON.stringify(data, null, 2)}</code>
-            </pre>
-          </div>
-          <div className="text-center">
-            <button
-              className="btn btn-secondary"
-              onClick={() => signOut({ callbackUrl: "/" })}
-            >
-              Logout
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+    <UserLayout>
+      <h1>I am page</h1>
+    </UserLayout>
   );
 };
 
