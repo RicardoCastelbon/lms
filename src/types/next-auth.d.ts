@@ -6,6 +6,7 @@ declare module "next-auth" {
       userId: number;
       role: string | null;
       educationName?: string | null;
+      name?: string | null;
       // provider?: any | null;
       //username: string;
     } & DefaultSession["user"];
@@ -20,7 +21,7 @@ declare module "next-auth" {
     id: number;
     name?: string | null;
     email?: string | null;
-    image?: string | null; // Default property
+    // image?: string | null; // Default property
     role: string | null;
     educationName?: string | null;
     //username: string;
