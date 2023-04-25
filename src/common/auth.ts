@@ -75,15 +75,27 @@ export const nextAuthOptions: NextAuthOptions = {
           const result = await prisma.admin.findFirst({
             where: { email },
           });
-          // const newId = String(result?.id);
 
-          if (!result) return null;
           console.log("result", result);
+
+          if (!result) {
+            console.error("Admin not found");
+            return null;
+          }
 
           const isValidPassword = await verify(result.password, password);
 
-          if (!isValidPassword) return null;
-          console.log("isValid", isValid);
+          if (!isValidPassword) {
+            console.error("Invalid password");
+            return null;
+          }
+
+          console.log("Admin authorized", {
+            id: result.id,
+            email,
+            nextPage: "/admin/dashboard",
+            role: result.userRole,
+          });
 
           return {
             id: result.id,
@@ -91,7 +103,8 @@ export const nextAuthOptions: NextAuthOptions = {
             nextPage: "/admin/dashboard",
             role: result.userRole,
           };
-        } catch {
+        } catch (error) {
+          console.error("Error in authorize function:", error);
           return null;
         }
       },

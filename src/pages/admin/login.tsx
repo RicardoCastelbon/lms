@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,31 +24,23 @@ const adminLogin: NextPage = () => {
   const Router = useRouter();
   const { data: session, status } = useSession();
   const router = useRouter();
+
+  const [loginAttempted, setLoginAttempted] = useState(false);
+
   useEffect(() => {
-    if (status === "authenticated" && session.user.role === Role.ADMIN) {
-      // if user is an admin and is logged in, redirect to admin dashboard
-      router.push("/admin/dashboard");
+    if (status === "authenticated" && loginAttempted) {
+      if (session.user.role === Role.ADMIN) {
+        Router.replace("/admin/dashboard");
+      } else {
+        router.push("/401");
+      }
     }
-  }, [status, session, router]);
-
-  // useEffect(() => {
-  //   if (status === "authenticated") {
-  //     if (session.user.role === Role.ADMIN) {
-  //       Router.replace("/admin/dashboard");
-  //     } else {
-  //       router.push("/");
-  //     }
-  //   }
-  // }, [status, session, router]);
-
-  // useEffect(() => {
-  //   if (status === "authenticated") {
-  //     Router.replace("/admin/dashboard");
-  //   }
-  // }, [status]);
+  }, [status, session, router, loginAttempted]);
 
   const onSubmit = useCallback(
     async (data: IAdminLogin) => {
+      setLoginAttempted(true); // Add this line
+
       console.log(onSubmit);
       try {
         await signIn("AdminCredentials", {
