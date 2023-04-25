@@ -1,8 +1,8 @@
 import React, { ReactNode, useEffect, useState } from "react";
 import TopNavbar from "./navigation/TopNavbar";
 import { useSession } from "next-auth/react";
-import Link from "next/link";
 import UserSideNav from "./navigation/UserSideNav";
+import InnerMenu from "./navigation/InnerMenu";
 
 type Props = {
   children: ReactNode;
@@ -37,7 +37,8 @@ const UserLayout = ({ children }: Props) => {
       <div className="h-[calc(100vh-2rem)] w-2/6 max-w-[364px] md:w-1/6">
         <UserSideNav sideBarClass={sideBarClass} />
       </div>
-      <main className="md:flex-1 absolute top-[70px] md:top-0 md:relative bg-white rounded-lg h-[1500px] w-full">
+      <main className="md:flex-1 absolute top-[70px] md:top-0 md:relative bg-white rounded-lg h-[1500px] w-full p-4">
+        <InnerMenu />
         {children}
       </main>
     </div>
