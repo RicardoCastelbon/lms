@@ -29,7 +29,6 @@ export const nextAuthOptions: NextAuthOptions = {
           const result = await prisma.user.findFirst({
             where: { email },
           });
-          // const newId = String(result?.id);
 
           if (!result) return null;
 

@@ -3,11 +3,13 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { Role } from "@prisma/client";
 import Sidebar from "../../components/Sidebar";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import Spinner from "@/src/components/ui/Spinner";
 
 const Dashboard: NextPage = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     console.log("USEeffect dashboard", Role.ADMIN);
@@ -15,6 +17,10 @@ const Dashboard: NextPage = () => {
       router.push("/login");
     }
   }, [status, session]);
+
+  if (loading) {
+    return <Spinner />;
+  }
 
   return (
     <div className='bg-purple-100 min-h-screen'>
