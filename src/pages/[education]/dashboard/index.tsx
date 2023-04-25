@@ -1,19 +1,28 @@
-import type { NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
 import { useSession, signOut } from "next-auth/react";
 
-import { useEffect, useState } from "react";
+import { Context, useEffect, useState } from "react";
 // import TopNavbar from "@/src/components/ui/navigation/TopNavbar";
 import UserLayout from "@/src/components/ui/UserLayout";
+import { useRouter } from "next/router";
+import { AuthOptions, Session, getServerSession } from "next-auth";
+import { nextAuthOptions } from "@/src/common/auth";
 
 const Dashboard: NextPage = () => {
   const [sideBarClass, setSideBarClass] = useState<boolean>(false);
   const [screenWidth, setScreenWidth] = useState<number>();
-  const { data } = useSession();
-  // console.log(data);
+  const { data: session } = useSession();
+  const router = useRouter();
+  // console.log(session);
 
   useEffect(() => {
-    console.log("sidebarclass", sideBarClass);
-  }, [sideBarClass]);
+    console.log(session);
+
+    // console.log("sidebarclass", sideBarClass);
+    if (!session) {
+      router.push("/401");
+    }
+  }, [session]);
 
   useEffect(() => {
     function getScreenSize() {
@@ -40,4 +49,15 @@ const Dashboard: NextPage = () => {
 };
 
 /* getServerSideProps */
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  return {
+    props: {
+      session: await getServerSession(
+        context.req,
+        context.res,
+        nextAuthOptions
+      ),
+    },
+  };
+};
 export default Dashboard;
