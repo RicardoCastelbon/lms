@@ -7,6 +7,7 @@ import { loginSchema, adminLoginSchema } from "./validation/auth";
 import { User } from "next-auth";
 import { isValid } from "zod";
 import { Role } from "@prisma/client";
+import { log } from "console";
 
 export const nextAuthOptions: NextAuthOptions = {
   providers: [
@@ -28,7 +29,12 @@ export const nextAuthOptions: NextAuthOptions = {
 
           const result = await prisma.user.findFirst({
             where: { email },
+            include: {
+              education: true,
+            },
           });
+
+          console.log(result);
 
           if (!result) return null;
 
@@ -36,7 +42,13 @@ export const nextAuthOptions: NextAuthOptions = {
 
           if (!isValidPassword) return null;
 
-          return { id: result.id, email, role: "user" };
+          return {
+            id: result.id,
+            email,
+            role: result.userRole,
+            nextPage: `/${result.education.name}/dashboard`,
+            educationName: result.education.name,
+          };
         } catch {
           return null;
         }
@@ -92,6 +104,7 @@ export const nextAuthOptions: NextAuthOptions = {
         token.userId = user.id;
         token.email = user.email;
         token.role = user.role;
+        token.education = user.education;
       }
 
       return token;
@@ -101,6 +114,7 @@ export const nextAuthOptions: NextAuthOptions = {
         session.user.userId = token.userId;
         session.user.email = token.email;
         session.user.role = token.role;
+        session.user.education = token.education;
         // session.admin = token.admin;
       }
 
