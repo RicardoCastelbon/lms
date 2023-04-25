@@ -1,3 +1,4 @@
+import { signOut } from "next-auth/react";
 import Link from "next/link";
 import React from "react";
 
@@ -30,9 +31,15 @@ const UserSideNav = ({ sideBarClass }: Props) => {
         <Link className="" href="/dashboard">
           Inställningar
         </Link>
-        <Link className="" href="/dashboard">
+        <button
+          className="border-none text-left"
+          onClick={() => signOut({ callbackUrl: "/" })}
+        >
           Logga ut
-        </Link>
+        </button>
+        {/* <Link className="" href="/dashboard">
+          Logga ut
+        </Link> */}
       </div>
     </nav>
   );

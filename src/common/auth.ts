@@ -111,13 +111,17 @@ export const nextAuthOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
+    /* signIn: async ({ user }) => {
+      console.log(user);
+      return user;
+    }, */
     jwt: async ({ token, user }) => {
       //infering user.id to be a number and not the optional string
       if (user && typeof user.id === "number") {
         token.userId = user.id;
         token.email = user.email;
         token.role = user.role;
-        token.education = user.education;
+        token.educationName = user.educationName;
       }
 
       return token;
@@ -127,7 +131,7 @@ export const nextAuthOptions: NextAuthOptions = {
         session.user.userId = token.userId;
         session.user.email = token.email;
         session.user.role = token.role;
-        session.user.education = token.education;
+        session.user.educationName = token.educationName;
         // session.admin = token.admin;
       }
 
