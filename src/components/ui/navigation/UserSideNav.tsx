@@ -1,11 +1,14 @@
 import Link from "next/link";
 import React from "react";
-
+import { Role } from "@prisma/client";
 type Props = {
   sideBarClass: boolean;
+  role?: string | null;
+  admin?: string| null;
+
 };
 
-const UserSideNav = ({ sideBarClass }: Props) => {
+const UserSideNav = ({ sideBarClass, role }: Props) => {
   return (
     <nav
       /* h-[calc(100vh-2rem)] w-2/6 max-w-[364px] */
@@ -15,17 +18,40 @@ const UserSideNav = ({ sideBarClass }: Props) => {
     >
       {/* nav top items */}
       <div className="flex flex-col gap-4">
-        <Link className="" href="/dashboard">
-          Kurser
-        </Link>
-        <Link className="" href="/dashboard">
-          Personer
-        </Link>
-        <Link className="" href="/dashboard">
-          Omdömen
-        </Link>
+      {role === Role.ADMIN ? (
+          <>
+            {/* Add links specific to the Admin role here */}
+            <Link href="/admin/dashboard">
+              Admin Dashboard
+            </Link>
+            <Link href="/admin/educations">
+              Educations
+            </Link>
+            <Link href="/admin/courses">
+              Courses
+            </Link>
+            <Link href="/admin/modules">
+              Moduler
+            </Link>
+            <Link href="/admin/exercises">
+              Exerscises
+            </Link>
+            {/* Add more links as needed */}
+          </>
+        ) : (
+          <>
+            <Link className="" href="/dashboard">
+              Kurser
+            </Link>
+            <Link className="" href="/dashboard">
+              Personer
+            </Link>
+            <Link className="" href="/dashboard">
+              Omdömen
+            </Link>
+          </>
+        )}
       </div>
-      {/* nav bottom items */}
       <div className="flex flex-col gap-4 justify-self-end">
         <Link className="" href="/dashboard">
           Inställningar

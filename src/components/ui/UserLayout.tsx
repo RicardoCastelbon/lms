@@ -6,9 +6,10 @@ import UserSideNav from "./navigation/UserSideNav";
 
 type Props = {
   children: ReactNode;
+  role?: string; // Add this line
 };
 
-const UserLayout = ({ children }: Props) => {
+const UserLayout = ({ children, role }: Props) => {
   const [sideBarClass, setSideBarClass] = useState<boolean>(false);
   const [screenWidth, setScreenWidth] = useState<number>();
   const { data } = useSession();
@@ -35,7 +36,8 @@ const UserLayout = ({ children }: Props) => {
       <TopNavbar data={data} setSideBarClass={setSideBarClass} />
       {/* sidenav */}
       <div className="h-[calc(100vh-2rem)] w-2/6 max-w-[364px] md:w-1/6">
-        <UserSideNav sideBarClass={sideBarClass} />
+        {/* Pass the role prop to the UserSideNav component */}
+        <UserSideNav sideBarClass={sideBarClass} role={role} />
       </div>
       <main className="md:flex-1 absolute top-[70px] md:top-0 md:relative bg-white rounded-lg h-[1500px] w-full">
         {children}
