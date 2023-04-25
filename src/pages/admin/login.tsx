@@ -56,12 +56,7 @@ const adminLogin: NextPage = () => {
           callbackUrl: "/admin/dashboard",
           redirect: false, // Add this line
         });
-        // if (response.error) {
-        //   console.error("Failed to sign in", response.error);
-        //   // Handle error here, e.g., show an error message
-        // } else {
-        //   window.location.href = response.url;
-        // }
+
         reset();
       } catch (err) {
         console.error(err);
@@ -70,12 +65,7 @@ const adminLogin: NextPage = () => {
     [reset]
   );
 
-  // if (status === "authenticated") {
-  //   return <div>Redirecting to dashboard...</div>;
-  // }
-
   return (
-    // return (
     <>
       <Head>
         <title>Next App - Login Admin</title>
