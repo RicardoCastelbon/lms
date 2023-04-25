@@ -1,16 +1,31 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import { useCallback } from "react";
-import { signIn } from "next-auth/react";
+import { useCallback, useEffect, useState } from "react";
+import { signIn, useSession } from "next-auth/react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { loginSchema, ILogin } from "../common/validation/auth";
 import Layout from "../components/ui/Layout";
 import { Button } from "../components/ui/button";
+import { useRouter } from "next/router";
+import { Role } from "@prisma/client";
 
 const Login: NextPage = () => {
+  const router = useRouter();
+  const { data, status } = useSession();
+  const [loginAttempt, setLoginAttempt] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (status === "authenticated" && loginAttempt) {
+      if (data.user.role === Role.STUDENT || Role.TEACHER) {
+        router.replace(
+          `/${data.user.educationName?.toLocaleLowerCase()}/dashboard`
+        );
+      }
+    }
+  }, [status, data, router, loginAttempt]);
   const { handleSubmit, control, reset } = useForm<ILogin>({
     defaultValues: {
       email: "",
@@ -20,15 +35,17 @@ const Login: NextPage = () => {
   });
 
   const onSubmit = useCallback(
-    async (data: ILogin) => {
+    async (credentials: ILogin) => {
       try {
-        await signIn("Mycredentials", {
-          ...data,
-          callbackUrl: "/dashboard",
+        const res = await signIn("Mycredentials", {
+          ...credentials,
+          redirect: false,
         });
-        // console.log("res", res);
+        if (res?.status === 200) {
+          setLoginAttempt(true);
+        }
+        console.log("res", res);
 
-        /*  callbackUrl: "/dashboard"  */
         reset();
       } catch (err) {
         console.error(err);
