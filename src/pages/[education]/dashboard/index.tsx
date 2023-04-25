@@ -9,7 +9,7 @@ const Dashboard: NextPage = () => {
   const [sideBarClass, setSideBarClass] = useState<boolean>(false);
   const [screenWidth, setScreenWidth] = useState<number>();
   const { data } = useSession();
-  console.log(data);
+  // console.log(data);
 
   useEffect(() => {
     console.log("sidebarclass", sideBarClass);
@@ -39,4 +39,5 @@ const Dashboard: NextPage = () => {
   );
 };
 
+/* getServerSideProps */
 export default Dashboard;
