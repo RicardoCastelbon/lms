@@ -12,13 +12,16 @@ const Dashboard: NextPage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    console.log("USEeffect dashboard", Role.ADMIN);
-    if (session?.user?.role !== Role.ADMIN) {
+    if (status === "authenticated") {
+      if (session?.user?.role !== Role.ADMIN) {
+        router.push("/401");
+      }
+    } else if (status === "unauthenticated") {
       router.push("/login");
     }
-  }, [status, session]);
+  }, [status, session, router]);
 
-  if (loading) {
+  if (status === "loading") {
     return <Spinner />;
   }
 
