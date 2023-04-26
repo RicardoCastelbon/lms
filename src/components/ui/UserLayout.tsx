@@ -6,7 +6,7 @@ import InnerMenu from "./navigation/InnerMenu";
 
 type Props = {
   children: ReactNode;
-  role?: string; // Add this line
+  role?: string | undefined | null; // Add this line
 };
 
 const UserLayout = ({ children, role }: Props) => {
@@ -37,7 +37,11 @@ const UserLayout = ({ children, role }: Props) => {
       {/* sidenav */}
       <div className="h-[calc(100vh-2rem)] w-2/6 max-w-[364px] md:w-1/6">
         {/* Pass the role prop to the UserSideNav component */}
-        <UserSideNav sideBarClass={sideBarClass} role={role} />
+        <UserSideNav
+          sideBarClass={sideBarClass}
+          role={role}
+          education={session?.user.educationName}
+        />
       </div>
       <main className="md:flex-1 absolute top-[70px] md:top-0 md:relative bg-white rounded-lg w-full p-4">
         {session?.user.role !== "ADMIN" && <InnerMenu />}

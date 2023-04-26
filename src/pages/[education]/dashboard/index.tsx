@@ -90,7 +90,7 @@ const Dashboard: NextPage = () => {
 
   return (
     <IconContext.Provider value={{ className: "text-primary " }}>
-      <UserLayout>
+      <UserLayout role={session?.user.role}>
         <div className="w-full flex flex-col md:flex-row gap-8">
           {/* Main content */}
           <div className="w-full h-full flex flex-wrap justify-center gap-4 md:justify-start md:w-3/6 lg:w-4/6">
