@@ -14,7 +14,7 @@ type Props = {
 };
 
 const CourseCard = ({ course }: Props) => {
-  console.log(course);
+  // console.log(course);
 
   return (
     <div className="w-[232px] h-[338px] shadow-lg flex flex-col rounded-lg">

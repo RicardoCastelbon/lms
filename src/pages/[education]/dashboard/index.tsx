@@ -9,6 +9,7 @@ import { IconContext } from "react-icons";
 import { nextAuthOptions } from "@/src/common/auth";
 import CourseCard from "@/src/components/ui/cards/CourseCard";
 import { Plus, X } from "lucide-react";
+import ColorSelect from "@/src/components/ui/dropdowns/ColorSelect";
 
 const courses = [
   {
@@ -103,7 +104,7 @@ const Dashboard: NextPage = () => {
         <div
           className={`${
             showModal ? "fixed" : "hidden"
-          } top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 w-5/6 h-5/6 max-w-[1000px] bg-white rounded-lg`}
+          } z-20 top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 w-5/6 h-5/6 max-w-[1000px] bg-white rounded-lg`}
           style={{ opacity: "1" }}
         >
           {/* modal header */}
@@ -130,11 +131,12 @@ const Dashboard: NextPage = () => {
                     placeholder="Ge kursen ett namn"
                   />
                 </div>
-                <div>
+                <div className="flex flex-col">
                   <p>Välj ikon</p>
                 </div>
-                <div>
-                  <p>Välj en bakgrundsfärg</p>
+                <div className="flex flex-col">
+                  {/* <label htmlFor="color">Välj en bakgrundsfärg</label> */}
+                  <ColorSelect />
                 </div>
               </section>
               {/* Right side */}

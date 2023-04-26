@@ -101,6 +101,9 @@ hsla(216, 41%, 55%, 1)
     --ring: 215 20.2% 65.1%; /* Not configured */
 
     --radius: 0.5rem; /* Not configured */
+
+    /* Colors for color select */
+    --colpu: 245, 41%, 55%, 1;
   }
 
   .dark {
