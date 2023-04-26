@@ -27,7 +27,9 @@ const CreateCourseForm = (props: Props) => {
         </div>
       </section>
       {/* Right side */}
-      <section className="flex-1 bg-primary"></section>
+      <section className="flex-1 bg-primary text-white">
+        Tiptap goes here
+      </section>
     </form>
   );
 };

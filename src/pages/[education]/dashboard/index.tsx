@@ -11,6 +11,7 @@ import CourseCard from "@/src/components/ui/cards/CourseCard";
 import { Plus, X } from "lucide-react";
 import ColorSelect from "@/src/components/ui/dropdowns/ColorSelect";
 import CreateCourseForm from "@/src/components/ui/forms/teacher/CreateCourseForm";
+import Modal from "@/src/components/ui/modals/Modal";
 
 const courses = [
   {
@@ -116,37 +117,13 @@ const Dashboard: NextPage = () => {
             </div>
           </aside>
         </div>
-
-        {/* Create course modal overlay */}
-        <div
-          className={`${
-            showModal ? "fixed" : "hidden"
-          } top-0 left-0 w-screen h-screen bg-black flex justify-center items-center`}
-          style={{ opacity: "0.6" }}
-        ></div>
-        {/* popup modal */}
-        <div
-          className={`${
-            showModal ? "fixed" : "hidden"
-          } z-20 top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 w-5/6 h-5/6 max-w-[1000px] bg-white rounded-lg`}
-          style={{ opacity: "1" }}
-          ref={modalRef}
+        <Modal
+          header={"Skapa en kurs"}
+          showModal={showModal}
+          setShowModal={setShowModal}
         >
-          {/* modal header */}
-          <div className="w-full justify-between flex p-4 border-b border-foreground">
-            <h2 className="text-lg font-semibold text-foreground">
-              Skapa en kurs
-            </h2>
-            <X
-              id="closeModal"
-              className="hover:text-primary hover:cursor-pointer"
-              onClick={modalClickHandler}
-            />
-          </div>
-          <div className="w-full p-4">
-            <CreateCourseForm />
-          </div>
-        </div>
+          <CreateCourseForm />
+        </Modal>
       </UserLayout>
     </IconContext.Provider>
   );
