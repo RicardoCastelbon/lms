@@ -19,7 +19,7 @@ const CourseCard = ({ course }: Props) => {
   return (
     <div className="w-[232px] h-[338px] shadow-lg flex flex-col rounded-lg">
       {/* card header */}
-      <div className="flex flex-1 justify-center items-center bg-background rounded-t-lg">
+      <div className="flex flex-1 justify-center items-center bg-card rounded-t-lg">
         <FaHtml5 size="4em" />
       </div>
       {/* card body */}

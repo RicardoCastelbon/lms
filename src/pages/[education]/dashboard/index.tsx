@@ -1,17 +1,15 @@
+import { useEffect, useState } from "react";
 import type { GetServerSideProps, NextPage } from "next";
-import { useSession, signOut } from "next-auth/react";
-import { IconContext } from "react-icons";
-
-import { Context, useEffect, useState } from "react";
-// import TopNavbar from "@/src/components/ui/navigation/TopNavbar";
-import UserLayout from "@/src/components/ui/UserLayout";
+import { useSession } from "next-auth/react";
+import { getServerSession } from "next-auth";
 import { useRouter } from "next/router";
-import { AuthOptions, Session, getServerSession } from "next-auth";
+
+import UserLayout from "@/src/components/ui/UserLayout";
+import { IconContext } from "react-icons";
 import { nextAuthOptions } from "@/src/common/auth";
-import { Button } from "@/src/components/ui/button";
-import { FaHtml5 } from "react-icons/fa";
-import Link from "next/link";
 import CourseCard from "@/src/components/ui/cards/CourseCard";
+import { Plus } from "lucide-react";
+
 const courses = [
   {
     id: 1,
@@ -37,12 +35,8 @@ const Dashboard: NextPage = () => {
   const [screenWidth, setScreenWidth] = useState<number>();
   const { data: session } = useSession();
   const router = useRouter();
-  // console.log(session);
 
   useEffect(() => {
-    console.log(session);
-
-    // console.log("sidebarclass", sideBarClass);
     if (!session) {
       router.push("/401");
     }
@@ -68,15 +62,26 @@ const Dashboard: NextPage = () => {
   return (
     <IconContext.Provider value={{ className: "text-primary " }}>
       <UserLayout>
-        <div className="w-full flex">
+        <div className="w-full flex flex-col md:flex-row gap-8">
           {/* Main content */}
-          <div className="w-full h-full flex flex-wrap justify-center gap-4 md:justify-start md:w-5/6">
+          <div className="w-full h-full flex flex-wrap justify-center gap-4 md:justify-start md:w-3/6 lg:w-4/6">
             {courses.map((course) => (
               <CourseCard key={course.id} course={course} />
             ))}
           </div>
           {/* Aside right */}
-          <aside className="flex-1 bg-green"></aside>
+          <aside className="flex-1 bg-green">
+            {/* quick-menu */}
+            <div className="w-full p-2">
+              {/* quick menu items */}
+              <div className="flex items-center gap-2 bg-card p-4 rounded-lg hover:cursor-pointer hover:bg-background">
+                <div className="rounded-full bg-primary text-white p-2">
+                  <Plus />
+                </div>
+                <p>Lägg till kurs</p>
+              </div>
+            </div>
+          </aside>
         </div>
       </UserLayout>
     </IconContext.Provider>
