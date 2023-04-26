@@ -1,17 +1,18 @@
 import React, { ReactNode, useEffect, useState } from "react";
 import TopNavbar from "./navigation/TopNavbar";
 import { useSession } from "next-auth/react";
-import Link from "next/link";
 import UserSideNav from "./navigation/UserSideNav";
+import InnerMenu from "./navigation/InnerMenu";
 
 type Props = {
   children: ReactNode;
+  role?: string | undefined | null; // Add this line
 };
 
-const UserLayout = ({ children }: Props) => {
+const UserLayout = ({ children, role }: Props) => {
   const [sideBarClass, setSideBarClass] = useState<boolean>(false);
   const [screenWidth, setScreenWidth] = useState<number>();
-  const { data } = useSession();
+  const { data: session } = useSession();
 
   //Remove open state for sidenav when screen width > 768px
   useEffect(() => {
@@ -32,12 +33,18 @@ const UserLayout = ({ children }: Props) => {
   }, [screenWidth]);
   return (
     <div className="w-full flex flex-col md:flex-row md:p-4 bg-layout font-mont">
-      <TopNavbar data={data} setSideBarClass={setSideBarClass} />
+      <TopNavbar session={session} setSideBarClass={setSideBarClass} />
       {/* sidenav */}
       <div className="h-[calc(100vh-2rem)] w-2/6 max-w-[364px] md:w-1/6">
-        <UserSideNav sideBarClass={sideBarClass} />
+        {/* Pass the role prop to the UserSideNav component */}
+        <UserSideNav
+          sideBarClass={sideBarClass}
+          role={role}
+          education={session?.user.educationName}
+        />
       </div>
-      <main className="md:flex-1 absolute top-[70px] md:top-0 md:relative bg-white rounded-lg h-[1500px] w-full">
+      <main className="md:flex-1 absolute top-[70px] md:top-0 md:relative bg-white rounded-lg w-full p-4">
+        {session?.user.role !== "ADMIN" && <InnerMenu />}
         {children}
       </main>
     </div>

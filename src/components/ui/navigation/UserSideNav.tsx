@@ -1,11 +1,18 @@
+import { signOut } from "next-auth/react";
 import Link from "next/link";
 import React from "react";
-
+import { Role } from "@prisma/client";
+import { FileText, Users, BarChart2, Settings, LogOut } from "lucide-react";
 type Props = {
   sideBarClass: boolean;
+  role?: string | undefined | null; // Add this line
+  admin?: string | null;
+  education?: string | null;
 };
 
-const UserSideNav = ({ sideBarClass }: Props) => {
+const UserSideNav = ({ sideBarClass, role, education }: Props) => {
+  console.log(role);
+
   return (
     <nav
       /* h-[calc(100vh-2rem)] w-2/6 max-w-[364px] */
@@ -15,24 +22,59 @@ const UserSideNav = ({ sideBarClass }: Props) => {
     >
       {/* nav top items */}
       <div className="flex flex-col gap-4">
-        <Link className="" href="/dashboard">
-          Kurser
-        </Link>
-        <Link className="" href="/dashboard">
-          Personer
-        </Link>
-        <Link className="" href="/dashboard">
-          Omdömen
-        </Link>
+        {role === Role.ADMIN ? (
+          <>
+            {/* Add links specific to the Admin role here */}
+            <Link href="/admin/dashboard">Admin Dashboard</Link>
+            <Link href="/admin/educations">Educations</Link>
+            <Link href="/admin/courses">Courses</Link>
+            <Link href="/admin/modules">Moduler</Link>
+            <Link href="/admin/exercises">Exerscises</Link>
+            {/* Add more links as needed */}
+          </>
+        ) : (
+          <>
+            <Link
+              className="flex gap-2 items-center hover:text-primary"
+              href={`/${education?.toLocaleLowerCase()}/dashboard`}
+            >
+              <FileText />
+              <span className="text-sm">Kurser</span>
+            </Link>
+            <Link
+              className="flex gap-2 items-center hover:text-primary"
+              href={`/${education?.toLocaleLowerCase()}/dashboard`}
+            >
+              <Users />
+              <span className="text-sm">Personer</span>
+            </Link>
+            {role === Role.STUDENT && (
+              <Link
+                className="flex gap-2 items-center hover:text-primary"
+                href={`/${education?.toLocaleLowerCase()}/dashboard`}
+              >
+                <BarChart2 />
+                <span className="text-sm">Omdömen</span>
+              </Link>
+            )}
+          </>
+        )}
       </div>
-      {/* nav bottom items */}
       <div className="flex flex-col gap-4 justify-self-end">
-        <Link className="" href="/dashboard">
-          Inställningar
+        <Link
+          className="flex gap-2 items-center hover:text-primary"
+          href={`/${education?.toLocaleLowerCase()}/dashboard`}
+        >
+          <Settings />
+          <span className="text-sm">Inställningar</span>
         </Link>
-        <Link className="" href="/dashboard">
-          Logga ut
-        </Link>
+        <button
+          className=" flex items-center gap-2 border-none text-left hover:text-primary"
+          onClick={() => signOut({ callbackUrl: "/" })}
+        >
+          <LogOut />
+          <span className="text-sm">Logga ut</span>
+        </button>
       </div>
     </nav>
   );
