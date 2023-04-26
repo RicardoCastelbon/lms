@@ -39,7 +39,7 @@ const UserLayout = ({ children, role }: Props) => {
         {/* Pass the role prop to the UserSideNav component */}
         <UserSideNav sideBarClass={sideBarClass} role={role} />
       </div>
-      <main className="md:flex-1 absolute top-[70px] md:top-0 md:relative bg-white rounded-lg h-[1500px] w-full p-4">
+      <main className="md:flex-1 absolute top-[70px] md:top-0 md:relative bg-white rounded-lg w-full p-4">
         <InnerMenu />
         {children}
       </main>
