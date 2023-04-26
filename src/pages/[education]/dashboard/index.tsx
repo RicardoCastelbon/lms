@@ -8,7 +8,7 @@ import UserLayout from "@/src/components/ui/UserLayout";
 import { IconContext } from "react-icons";
 import { nextAuthOptions } from "@/src/common/auth";
 import CourseCard from "@/src/components/ui/cards/CourseCard";
-import { Plus } from "lucide-react";
+import { Plus, X } from "lucide-react";
 
 const courses = [
   {
@@ -33,6 +33,7 @@ const courses = [
 const Dashboard: NextPage = () => {
   const [sideBarClass, setSideBarClass] = useState<boolean>(false);
   const [screenWidth, setScreenWidth] = useState<number>();
+  const [showModal, setShowModal] = useState<boolean>(false);
   const { data: session } = useSession();
   const router = useRouter();
 
@@ -59,6 +60,10 @@ const Dashboard: NextPage = () => {
     };
   }, [screenWidth]);
 
+  const modalClickHandler = () => {
+    setShowModal((prev) => !prev);
+  };
+
   return (
     <IconContext.Provider value={{ className: "text-primary " }}>
       <UserLayout>
@@ -74,7 +79,10 @@ const Dashboard: NextPage = () => {
             {/* quick-menu */}
             <div className="w-full p-2">
               {/* quick menu items */}
-              <div className="flex items-center gap-2 bg-card p-4 rounded-lg hover:cursor-pointer hover:bg-background">
+              <div
+                className="flex items-center gap-2 bg-card p-4 rounded-lg hover:cursor-pointer hover:bg-background"
+                onClick={modalClickHandler}
+              >
                 <div className="rounded-full bg-primary text-white p-2">
                   <Plus />
                 </div>
@@ -84,17 +92,56 @@ const Dashboard: NextPage = () => {
           </aside>
         </div>
 
-        {/* Create course modal bg */}
+        {/* Create course modal overlay */}
         <div
-          className="fixed top-0 left-0 w-screen h-screen bg-black flex justify-center items-center"
+          className={`${
+            showModal ? "fixed" : "hidden"
+          } top-0 left-0 w-screen h-screen bg-black flex justify-center items-center`}
           style={{ opacity: "0.6" }}
-        >
-          {/* popup modal */}
-        </div>
-        <div
-          className="absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 w-4/6 h-4/6 bg-white"
-          style={{ opacity: "1" }}
         ></div>
+        {/* popup modal */}
+        <div
+          className={`${
+            showModal ? "fixed" : "hidden"
+          } top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 w-5/6 h-5/6 max-w-[1000px] bg-white rounded-lg`}
+          style={{ opacity: "1" }}
+        >
+          {/* modal header */}
+          <div className="w-full justify-between flex p-4 border-b border-foreground">
+            <h2 className="text-lg font-semibold text-foreground">
+              Skapa en kurs
+            </h2>
+            <X
+              className="hover:text-primary hover:cursor-pointer"
+              onClick={modalClickHandler}
+            />
+          </div>
+          <div className="w-full p-4">
+            <form className="flex gap-4">
+              {/* left side */}
+              <section className="flex-1 flex flex-col gap-4">
+                {/* form group */}
+                <div className="flex flex-col">
+                  <label htmlFor="title">Titel</label>
+                  <input
+                    id="title"
+                    className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2 text-sm"
+                    type="text"
+                    placeholder="Ge kursen ett namn"
+                  />
+                </div>
+                <div>
+                  <p>Välj ikon</p>
+                </div>
+                <div>
+                  <p>Välj en bakgrundsfärg</p>
+                </div>
+              </section>
+              {/* Right side */}
+              <section className="flex-1 bg-primary"></section>
+            </form>
+          </div>
+        </div>
       </UserLayout>
     </IconContext.Provider>
   );
