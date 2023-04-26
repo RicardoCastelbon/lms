@@ -10,6 +10,8 @@ import { AuthOptions, Session, getServerSession } from "next-auth";
 import { nextAuthOptions } from "@/src/common/auth";
 import { Button } from "@/src/components/ui/button";
 import { FaHtml5 } from "react-icons/fa";
+import Link from "next/link";
+import CourseCard from "@/src/components/ui/cards/CourseCard";
 
 const Dashboard: NextPage = () => {
   const [sideBarClass, setSideBarClass] = useState<boolean>(false);
@@ -49,21 +51,10 @@ const Dashboard: NextPage = () => {
       <UserLayout>
         <div className="w-full flex">
           {/* Main content */}
-          <div className="w-full flex-col md:flex-row md:flex-wrap md:w-4/6 h-full bg-blue">
-            {/* course card */}
-            <div className="w-[232px] h-[300px] shadow-lg flex flex-col rounded-lg p-2">
-              {/* card header */}
-              <div className="flex flex-1 justify-center items-center">
-                <FaHtml5 size="4em" />
-              </div>
-              {/* card body */}
-              <div className="flex flex-col gap-2">
-                <h2>Frontend-utveckling</h2>
-                <p>Uppgifter</p>
-                <p>14</p>
-                <Button className="pointer-cursor">Till kurs</Button>
-              </div>
-            </div>
+          <div className="w-full h-full flex flex-wrap justify-center gap-4 md:justify-start md:w-5/6">
+            <CourseCard />
+            <CourseCard />
+            <CourseCard />
           </div>
           {/* Aside right */}
           <aside className="flex-1 bg-green"></aside>
