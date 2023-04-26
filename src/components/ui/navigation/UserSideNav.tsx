@@ -57,12 +57,6 @@ const UserSideNav = ({ sideBarClass, role, education }: Props) => {
                 <span className="text-sm">Omdömen</span>
               </Link>
             )}
-            {/* <Link className="" href="/dashboard">
-              Personer
-            </Link>
-            <Link className="" href="/dashboard">
-              Omdömen
-            </Link> */}
           </>
         )}
       </div>
@@ -81,9 +75,6 @@ const UserSideNav = ({ sideBarClass, role, education }: Props) => {
           <LogOut />
           <span className="text-sm">Logga ut</span>
         </button>
-        {/* <Link className="" href="/dashboard">
-          Logga ut
-        </Link> */}
       </div>
     </nav>
   );
