@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { GetServerSideProps, NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { getServerSession } from "next-auth";
@@ -38,6 +38,8 @@ const Dashboard: NextPage = () => {
   const { data: session } = useSession();
   const router = useRouter();
 
+  const modalRef = useRef(null);
+
   useEffect(() => {
     if (!session) {
       router.push("/401");
@@ -60,6 +62,27 @@ const Dashboard: NextPage = () => {
       window.removeEventListener("resize", getScreenSize);
     };
   }, [screenWidth]);
+
+  // handling click outside modal to close.
+  useEffect(() => {
+    const handleClickOutside = (e: any) => {
+      //if close button in modal is pressed, dont run following if
+      if (e.target.id !== "closeModal") {
+        if (
+          modalRef.current &&
+          /* @ts-ignore */
+          !modalRef.current.contains(e.target)
+        ) {
+          showModal && setShowModal(false);
+        }
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside, true);
+    return () => {
+      document.removeEventListener("click", handleClickOutside, true);
+    };
+  }, [modalRef, showModal]);
 
   const modalClickHandler = () => {
     setShowModal((prev) => !prev);
@@ -106,6 +129,7 @@ const Dashboard: NextPage = () => {
             showModal ? "fixed" : "hidden"
           } z-20 top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 w-5/6 h-5/6 max-w-[1000px] bg-white rounded-lg`}
           style={{ opacity: "1" }}
+          ref={modalRef}
         >
           {/* modal header */}
           <div className="w-full justify-between flex p-4 border-b border-foreground">
@@ -113,6 +137,7 @@ const Dashboard: NextPage = () => {
               Skapa en kurs
             </h2>
             <X
+              id="closeModal"
               className="hover:text-primary hover:cursor-pointer"
               onClick={modalClickHandler}
             />

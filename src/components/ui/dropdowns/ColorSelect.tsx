@@ -36,13 +36,7 @@ const colors = [
 ];
 
 const ColorSelect = () => {
-  //   const [position, setPosition] = React.useState("bottom");
   const [selectedColor, setSelectedColor] = useState<string>("");
-
-  /*  useEffect(() => {
-    const select = colors.filter((col: any) => col.name === color);
-    setSelectedColor(select[0].name);
-  }, []); */
 
   const colorSelectHandle = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const col = e.target.value;
