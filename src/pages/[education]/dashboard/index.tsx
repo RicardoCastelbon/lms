@@ -83,6 +83,18 @@ const Dashboard: NextPage = () => {
             </div>
           </aside>
         </div>
+
+        {/* Create course modal bg */}
+        <div
+          className="fixed top-0 left-0 w-screen h-screen bg-black flex justify-center items-center"
+          style={{ opacity: "0.6" }}
+        >
+          {/* popup modal */}
+        </div>
+        <div
+          className="absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 w-4/6 h-4/6 bg-white"
+          style={{ opacity: "1" }}
+        ></div>
       </UserLayout>
     </IconContext.Provider>
   );
