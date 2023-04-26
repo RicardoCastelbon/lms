@@ -14,6 +14,8 @@ declare module "next-auth" {
       id: number;
       provider: any | null;
       role: string | null;
+      name?: string | null;
+
     };
   }
   //& DefaultSession["user"];
@@ -34,6 +36,8 @@ declare module "next-auth" {
     email?: string | null;
     // image?: string | null;
     role: string | null;
+    name?: string | null;
+
     // image?: null;
 
     //username: string;
@@ -48,5 +52,7 @@ declare module "next-auth/jwt" {
     educationName?: string | null;
     email?: string | null;
     image?: null;
+    name?: string | null;
+
   }
 }

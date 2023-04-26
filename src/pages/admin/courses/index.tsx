@@ -1,6 +1,7 @@
 import { Button } from "@/src/components/ui/button";
 import { Calendar } from "@/src/components/ui/calendar";
 import Layout from "@/src/components/ui/Layout";
+import Modal from "@/src/components/ui/modals/Modal";
 import UserSideNav from "@/src/components/ui/navigation/UserSideNav";
 import UserLayout from "@/src/components/ui/UserLayout";
 import { CalendarIcon, PlusIcon } from "lucide-react";
@@ -28,14 +29,18 @@ return(
           Skapa kurs
         </Button>
       </div>
-      <div className="flex items-center">
+
+      {/* <div className="flex items-center">
         <CalendarIcon className="h-5 w-5 mr-1" />
         <p className="text-gray-500 text-sm">Datum:</p>
         <p className="ml-2 text-sm">01/01/2022 - 31/12/2022</p>
-      </div>
+      </div> */}
       {/* <div className="bg-white rounded-md shadow-md p-4 mt-4">
       </div> */}
     </div>
+    <Modal showModal={false} setShowModal={function (value: React.SetStateAction<boolean>): void {
+        throw new Error("Function not implemented.");
+      } } children={undefined} header={""}></Modal>
   </UserLayout>
   )
 };

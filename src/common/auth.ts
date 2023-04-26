@@ -124,8 +124,11 @@ export const nextAuthOptions: NextAuthOptions = {
         token.email = user.email;
         token.role = user.role;
         token.educationName = user.educationName;
-        token.name = user.name;
-        token.image = user.image;
+        token.name = user.name || null;
+        token.image = user.image || null;
+      
+    
+      console.log("JWT callback:", token);
       }
 
       return token;
@@ -134,13 +137,15 @@ export const nextAuthOptions: NextAuthOptions = {
       if (token) {
         session.user.userId = token.userId;
         session.user.email = token.email;
-        session.user.role = token.role;
-        session.user.educationName = token.educationName;
+        session.user.role = token.role || null;
+        session.user.educationName = token.educationName || null;
         session.user.name = token.name;
         session.user.image = token.image;
-        // session.admin = token.admin;
+        session.user.name = token.name || null;
+        session.user.image = token.image || null;
       }
-
+    
+      console.log("Session callback:", session);
       return session;
     },
   },
