@@ -4,9 +4,11 @@ import Layout from "@/src/components/ui/Layout";
 import Modal from "@/src/components/ui/modals/Modal";
 import UserSideNav from "@/src/components/ui/navigation/UserSideNav";
 import UserLayout from "@/src/components/ui/UserLayout";
-import { CalendarIcon, PlusIcon } from "lucide-react";
+import { CalendarIcon, Plus, PlusIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
-import React from "react";
+import React, { useState } from "react";
+import ModulesPage from "../modules";
+import CreateCourseAdminForm from "@/src/components/ui/forms/admin/CreateCourseAdminForm";
 
 
 type Props = {
@@ -16,32 +18,52 @@ type Props = {
 };
 
 const CoursesPage = (props: Props) => {
+  const [showModal, setShowModal] = useState<boolean>(false);
+
   const { data: session } = useSession(); 
+  const modalClickHandler = () => {
+    setShowModal((prev) => !prev);
+  };
 
 return(
   <UserLayout role={session?.user.role ?? ""}>
-    <div className="ml-32">
-      <h1 className="text-2xl font-bold mb-4">Skapa en ny spännande kurs</h1>
-      <div className="flex mb-4 items-center" style={{marginLeft: '-20px'}}>
-        <input type="text" placeholder="Sök kurser här..." className="border border-gray-300 rounded-md py-2 px-3 w-80 mr-2" />
-        <Button className="bg-purple-500 hover:bg-purple-600 text-white py-2 px-4 rounded-md flex items-center" style={{marginLeft: 'auto'}}>
-          <PlusIcon className="h-5 w-5 mr-1" />
-          Skapa kurs
-        </Button>
+      <div className="ml-10">
+        <h1 className="text-2xl font-bold mb-4">
+          Skapa en ny spännande kurs
+        </h1>
+        <div className="flex mb-4 items-center">
+          <input
+            type="text"
+            placeholder="Sök kurser här..."
+            className="border border-gray-300 rounded-md py-2 px-3 w-80 mr-2 flex-grow"
+          />
+          <aside className="flex-initial">
+            {/* quick-menu */}
+            <div className="w-full p-2">
+              {/* quick menu items */}
+              <div
+                className="flex items-center gap-2 bg-card p-2 rounded-lg hover:cursor-pointer hover:bg-background"
+                onClick={modalClickHandler}
+              >
+                <div className="rounded-full bg-primary text-white p-1">
+                  <Plus className="h-4 w-4" />
+                </div>
+                <p className="text-sm">Lägg till kurs</p>
+              </div>
+            </div>
+          </aside>
+        </div>
       </div>
+      <Modal
+        showModal={showModal}
+        setShowModal={setShowModal}
+        // children={undefined}
+        header={""}
+      >
 
-      {/* <div className="flex items-center">
-        <CalendarIcon className="h-5 w-5 mr-1" />
-        <p className="text-gray-500 text-sm">Datum:</p>
-        <p className="ml-2 text-sm">01/01/2022 - 31/12/2022</p>
-      </div> */}
-      {/* <div className="bg-white rounded-md shadow-md p-4 mt-4">
-      </div> */}
-    </div>
-    <Modal showModal={false} setShowModal={function (value: React.SetStateAction<boolean>): void {
-        throw new Error("Function not implemented.");
-      } } children={undefined} header={""}></Modal>
-  </UserLayout>
+        <CreateCourseAdminForm/>
+      </Modal>
+    </UserLayout>
   )
 };
 
