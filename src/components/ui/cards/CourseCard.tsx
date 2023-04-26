@@ -1,10 +1,21 @@
+import { log } from "console";
 import Link from "next/link";
 import React from "react";
 import { FaHtml5 } from "react-icons/fa";
+interface ICourse {
+  id: number;
+  name: string;
+  exercises: number;
+  slug: string;
+}
 
-type Props = {};
+type Props = {
+  course: ICourse;
+};
 
-const CourseCard = (props: Props) => {
+const CourseCard = ({ course }: Props) => {
+  console.log(course);
+
   return (
     <div className="w-[232px] h-[338px] shadow-lg flex flex-col rounded-lg">
       {/* card header */}
@@ -13,11 +24,11 @@ const CourseCard = (props: Props) => {
       </div>
       {/* card body */}
       <div className="flex flex-col gap-2 p-2 text-center">
-        <h2 className="font-semibold text-lg mb-2">Frontend-utveckling</h2>
+        <h2 className="font-semibold text-lg mb-2">{course.name}</h2>
         <p>Uppgifter</p>
-        <p>14</p>
+        <p>{course.exercises}</p>
         <Link
-          href=""
+          href={`${course.slug}`}
           className="pointer-cursor bg-primary rounded-sm py-2 text-white hover:bg-background hover:text-foreground"
         >
           Till kurs

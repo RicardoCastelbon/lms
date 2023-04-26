@@ -12,7 +12,26 @@ import { Button } from "@/src/components/ui/button";
 import { FaHtml5 } from "react-icons/fa";
 import Link from "next/link";
 import CourseCard from "@/src/components/ui/cards/CourseCard";
-
+const courses = [
+  {
+    id: 1,
+    name: "Frontend-utveckling",
+    exercises: 14,
+    slug: "frontend-utveckling",
+  },
+  {
+    id: 2,
+    name: "Backend-utveckling",
+    exercises: 12,
+    slug: "backend-utveckling",
+  },
+  {
+    id: 3,
+    name: "UX-Design",
+    exercises: 14,
+    slug: "ux-design",
+  },
+];
 const Dashboard: NextPage = () => {
   const [sideBarClass, setSideBarClass] = useState<boolean>(false);
   const [screenWidth, setScreenWidth] = useState<number>();
@@ -52,9 +71,9 @@ const Dashboard: NextPage = () => {
         <div className="w-full flex">
           {/* Main content */}
           <div className="w-full h-full flex flex-wrap justify-center gap-4 md:justify-start md:w-5/6">
-            <CourseCard />
-            <CourseCard />
-            <CourseCard />
+            {courses.map((course) => (
+              <CourseCard key={course.id} course={course} />
+            ))}
           </div>
           {/* Aside right */}
           <aside className="flex-1 bg-green"></aside>
