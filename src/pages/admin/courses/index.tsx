@@ -38,9 +38,7 @@ return(
             className="border border-gray-300 rounded-md py-2 px-3 w-80 mr-2 flex-grow"
           />
           <aside className="flex-initial">
-            {/* quick-menu */}
             <div className="w-full p-2">
-              {/* quick menu items */}
               <div
                 className="flex items-center gap-2 bg-card p-2 rounded-lg hover:cursor-pointer hover:bg-background"
                 onClick={modalClickHandler}
