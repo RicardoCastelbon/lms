@@ -9,10 +9,41 @@ import Layout from "@/src/components/ui/Layout";
 import UserSideNav from "@/src/components/ui/navigation/UserSideNav";
 import Link from "next/link";
 import UserLayout from "@/src/components/ui/UserLayout";
-import { Calendar } from "lucide-react";
-
+import CourseCard from "@/src/components/ui/cards/CourseCard";
+import AdminCreateCards from "@/src/components/ui/cards/AdminCreateCards";
+// import CalendarDemo from "@/src/components/ui/CalendarDemo";
 
 const Dashboard: NextPage = ( )=> {
+
+
+const adminCreate = [
+  {
+    id: 1,
+    name: "Utbildningar",
+    exercises: 14,
+    slug: "/admin/educations",
+  },
+  {
+    id: 2,
+    name: "Kurser",
+    exercises: 12,
+    slug: "/admin/courses",
+  },
+  {
+    id: 3,
+    name: "Moduler",
+    exercises: 14,
+    slug: "/admin/modules",
+  },
+  {
+    id: 4,
+    name: "Övningar",
+    exercises: 14,
+    slug: "/admin/exercises",
+    
+  },
+
+];
   const [sideBarClass, setSideBarClass] = useState<boolean>(false);
 
   const { data: session, status } = useSession();
@@ -34,52 +65,22 @@ const Dashboard: NextPage = ( )=> {
   }
 
   return (
-    <div className='bg-purple-100 min-h-screen'>
-    <div className='flex-flex sm:flex-row'>
-    {/* <UserSideNav sideBarClass={sideBarClass} role={session?.user.role ?? ""} /> */}
-      <UserLayout  role={session?.user.role ?? ""}>
-        <div className='px-10 py-10 mt-8 md:mt-32'>
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mx-auto md:w-10/12'>
-                    <div className='bg-gray-300 shadow-md rounded-md p-4 h-32 md:h-64 w-full md:w-8/12'>
-                            <Link href='/admin/educations'>
-                    <h1 className='text-2xl font-semibold mb-8 text-center sm:text-left text-primary mt-8 hover:text-muted'>
-                      Utbildningar
-                    </h1>
-                </Link>
-              </div>
-              <div className='bg-gray-300 shadow-md rounded-md p-4 h-32 md:h-64 w-full md:w-8/12'>
-                <Link href='/admin/courses'>
-                <h1 className='text-2xl font-semibold mb-8 text-center sm:text-left text-primary mt-8 hover:text-muted'>
-                      Kurser
-                    </h1>
-                </Link>
-              </div>
-              <div className='bg-gray-300 shadow-md rounded-md p-4 h-32 md:h-64 w-full md:w-8/12'>
-                <Link href='/admin/modules'>
-                <h1 className='text-2xl font-semibold mb-8 text-center sm:text-left text-primary mt-8 hover:text-muted'>
-                      Moduler
-                    </h1>
-                  
-                </Link>
-              </div>
-              <div className='bg-gray-300 shadow-md rounded-md p-4 h-32 md:h-64 w-full md:w-8/12'>
-                <Link href='/admin/exercises'>
-              
-                {/* <div className="w-full flex items-center justify-between max-w-md text-primary mt-8 hover:text-muted"> */}
-
-                <h1 className='text-2xl font-semibold mb-8 text-center sm:text-left text-primary mt-8 hover:text-muted'>
-                      Tester
-                    </h1>
-                    {/* </div> */}
-
-                </Link>
-              </div>
-            </div>
+    <div className="bg-purple-100 min-h-screen">
+      <div className="flex-flex sm:flex-row">
+        <UserLayout role={session?.user.role ?? ""}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full md:w-3/6 lg:w-4/6 mx-auto mt-4">
+            {adminCreate.map((create) => (
+              <AdminCreateCards key={create.id} create={create} />
+            ))}
+          </div>
+          <div className="mt-8">
+            {/* <CalendarDemo /> */}
           </div>
         </UserLayout>
       </div>
     </div>
   );
+  
 };
 
 export default Dashboard;

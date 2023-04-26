@@ -92,4 +92,3 @@ const students = (props: Props) => {
 };
 /* getServerSideProps */
 export default students;
-
