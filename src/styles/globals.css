@@ -44,6 +44,8 @@ hsla(216, 41%, 55%, 1)
     /*     --font-primary: "Montserrat";
     --font-secondary: "Poppins"; */
 
+    --exercise: 216, 41%, 55%, 1;
+
     /* Fonts end */
 
     --background: 269, 100%, 95%;
@@ -92,7 +94,7 @@ hsla(216, 41%, 55%, 1)
     --secondary: 261, 29%, 80%, 1; /* layout-bg*/
     --secondary-foreground: 0, 0%, 25%, 1; /* Font color */
 
-    --accent: 210 40% 96.1%; /* Not configured */
+    --accent: 216, 41%, 55%, 1; /* exercises-list-item-bg */
     --accent-foreground: 222.2 47.4% 11.2%; /* Not configured */
 
     --destructive: 0 100% 50%; /* Not configured */
