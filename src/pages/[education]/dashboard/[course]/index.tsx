@@ -7,6 +7,7 @@ import {
 } from "@/src/components/ui/accordion";
 import UserLayout from "@/src/components/ui/UserLayout";
 import { Button } from "@/src/components/ui/button";
+import { Check, ClipboardList, Plus, PlusCircle } from "lucide-react";
 
 type Props = {};
 interface IModule {
@@ -20,21 +21,21 @@ interface IModule {
 const CourseOverview = (props: Props) => {
   const data = [
     {
-      module: "React",
+      module: "useState",
       start: "14 April",
       end: "15 May",
       status: "Not completed",
       exercises_completed: "5/15",
     },
     {
-      module: "Angular",
+      module: "useEffect",
       start: "14 April",
       end: "15 May",
       status: "Not completed",
       exercises_completed: "5/15",
     },
     {
-      module: "Node.js",
+      module: "useRef",
       start: "14 April",
       end: "15 May",
       status: "Not completed",
@@ -47,23 +48,46 @@ const CourseOverview = (props: Props) => {
     setModules(data);
   }, []);
 
+  const [desktopVersion, setdesktopVersion] = useState<boolean>(false);
+  const [screenWidth, setScreenWidth] = useState<number>();
+
+  //Remove open state for sidenav when screen width > 768px
+  useEffect(() => {
+    function getScreenSize() {
+      if (typeof window !== "undefined") {
+        setScreenWidth(window.innerWidth);
+
+        if (window.innerWidth > 768) {
+          setdesktopVersion(true);
+        } else {
+          setdesktopVersion(false);
+        }
+      }
+    }
+    window.addEventListener("resize", getScreenSize);
+
+    return () => {
+      window.removeEventListener("resize", getScreenSize);
+    };
+  }, [screenWidth]);
+
   return (
     <>
       <UserLayout>
-        <div className="flex p-10">
+        <div className="flex p-1">
           <section className=" w-full h-full bg-cyan-50 font-mont">
-            <p className="font-popp mb-10">Courses -&gt; React (breadcrums)</p>
-            <h1 className="text-lg mb-10">
+            <p className=" ">Courses -&gt; React (breadcrums)</p>
+            <h1 className="text-lg font-semibold my-16">
               Frontend development in React (title of the course)
             </h1>
             <section className="">
               <div className="w-full">
                 <ul className="flex font-medium text-slate-400">
-                  <li className="w-32">Modules</li>
-                  <li className="w-32">Start</li>
-                  <li className="w-32">End</li>
-                  <li className="w-36">Status</li>
-                  <li className="w-32">Completed</li>
+                  <li className="md:w-48 ">Modules</li>
+                  {desktopVersion && <li className="w-32">Start</li>}
+                  {desktopVersion && <li className="w-32">End</li>}
+                  {desktopVersion && <li className="w-36">Status</li>}
+                  {desktopVersion && <li className="w-32">Completed</li>}
                 </ul>
               </div>
               {modules.map((module) => (
@@ -72,20 +96,37 @@ const CourseOverview = (props: Props) => {
                     <AccordionTrigger>
                       <div className="w-full">
                         <ul className="flex">
+                          <li className="w-16 text-left">
+                            <ClipboardList />
+                          </li>
                           <li className="w-32 text-left">{module.module}</li>
-                          <li className="w-32 text-left">{module.start}</li>
-                          <li className="w-32 text-left">{module.end}</li>
-                          <li className="w-36 text-left">{module.status}</li>
-                          <li className="w-32 text-left">
-                            {module.exercises_completed}
-                          </li>
-                          <li className="w-32">
-                            <Button>Exercises</Button>
-                          </li>
+                          {desktopVersion && (
+                            <li className="w-32 text-left">{module.start}</li>
+                          )}
+                          {desktopVersion && (
+                            <li className="w-32 text-left">{module.end}</li>
+                          )}
+                          {desktopVersion && (
+                            <li className="w-36 text-left">{module.status}</li>
+                          )}
+                          {desktopVersion && (
+                            <li className="w-32 text-left">
+                              {module.exercises_completed}
+                            </li>
+                          )}
+                          {desktopVersion && (
+                            <li className="w-32">
+                              <Button>
+                                <Plus />
+                                Exercises
+                              </Button>
+                            </li>
+                          )}
                         </ul>
                       </div>
                     </AccordionTrigger>
                     <AccordionContent>
+                      {/* TIPTAP CONTENT */}
                       <h2 className="text-xl font-semibold mb-7">
                         useState in React
                       </h2>
@@ -112,12 +153,44 @@ const CourseOverview = (props: Props) => {
                                 <li className="">
                                   See all the exercises in the module
                                 </li>
-                                <li className="">3/5</li>
+                                <li className="">3/5{/* COMPLETED/TOTAL */}</li>
                               </ul>
                             </div>
                           </AccordionTrigger>
                           <AccordionContent>
-                            <button>Create a React project </button>
+                            <button className="flex justify-between w-full bg-accent text-white text-left p-4 hover:bg-blue-400">
+                              <div className="flex">
+                                <span className=" mr-4">
+                                  <ClipboardList />
+                                </span>
+                                <span>Create a React project</span>
+                              </div>
+                              <span className="">
+                                <Check />
+                              </span>
+                            </button>
+                            <button className="flex justify-between w-full bg-accent text-white text-left p-4 hover:bg-blue-400">
+                              <div className="flex">
+                                <span className=" mr-4">
+                                  <ClipboardList />
+                                </span>
+                                <span>File structure in React</span>
+                              </div>
+                              <span className="">
+                                <Check />
+                              </span>
+                            </button>
+                            <button className="flex justify-between w-full bg-accent text-white text-left p-4 hover:bg-blue-400">
+                              <div className="flex">
+                                <span className=" mr-4">
+                                  <ClipboardList />
+                                </span>
+                                <span>Components in React</span>
+                              </div>
+                              <span className="">
+                                <Check />
+                              </span>
+                            </button>
                           </AccordionContent>
                         </AccordionItem>
                       </Accordion>
@@ -127,17 +200,28 @@ const CourseOverview = (props: Props) => {
               ))}
             </section>
           </section>
-          {/*   <section className="p-10">
-            <div>
-              <Button>Add</Button>
-            </div>
-            <div>
-              <Button>Add</Button>
-            </div>
-            <div>
-              <Button>Add</Button>
-            </div>
-          </section> */}
+          {desktopVersion && (
+            <section className="p-6">
+              <button className=" flex w-52 p-3 bg-indigo-50 hover:bg-indigo-200 font-semibold border border-b-0 rounded border-indigo-500">
+                <span className="mr-3">
+                  <PlusCircle />
+                </span>
+                <span> Add a module</span>
+              </button>
+              <button className=" flex w-52 p-3 bg-indigo-50 hover:bg-indigo-200 font-semibold border border-b-0 rounded border-indigo-500">
+                <span className="mr-3">
+                  <PlusCircle />
+                </span>
+                <span>Update a module</span>
+              </button>
+              <button className=" flex w-52 p-3 bg-indigo-50 hover:bg-indigo-200 font-semibold border rounded border-indigo-500">
+                <span className="mr-4">
+                  <PlusCircle />
+                </span>
+                <span> Add a student</span>
+              </button>
+            </section>
+          )}
         </div>
       </UserLayout>
     </>
