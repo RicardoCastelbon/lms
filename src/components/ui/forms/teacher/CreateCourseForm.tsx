@@ -1,5 +1,6 @@
 import React from "react";
 import ColorSelect from "../../dropdowns/ColorSelect";
+import Tiptap from "../../tiptap/TiptapEditor";
 
 type Props = {};
 
@@ -27,8 +28,9 @@ const CreateCourseForm = (props: Props) => {
         </div>
       </section>
       {/* Right side */}
-      <section className="flex-1 bg-primary text-white">
+      <section className="flex-1">
         Tiptap goes here
+        <Tiptap />
       </section>
     </form>
   );
