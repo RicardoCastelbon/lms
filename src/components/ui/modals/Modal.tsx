@@ -57,7 +57,7 @@ const Modal = ({ showModal, setShowModal, header, children }: Props) => {
       <div
         className={`${
           showModal ? "fixed" : "hidden"
-        } z-20 top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 w-5/6 h-5/6 max-w-[1000px] bg-white rounded-lg`}
+        } z-20 top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 w-5/6 h-5/6 max-w-[1000px] bg-white rounded-lg overflow-y-auto`}
         style={{ opacity: "1" }}
         ref={modalRef}
       >

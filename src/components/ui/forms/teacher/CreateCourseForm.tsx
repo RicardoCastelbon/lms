@@ -33,7 +33,7 @@ const CreateCourseForm = (props: Props) => {
         </div>
       </section>
       {/* Right side */}
-      <section className="flex-1">
+      <section className="h-full flex-1">
         Tiptap goes here
         <RichText />
       </section>

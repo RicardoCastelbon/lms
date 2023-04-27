@@ -117,6 +117,7 @@ const Dashboard: NextPage = () => {
             </div>
           </aside>
         </div>
+
         <Modal
           header={"Skapa en kurs"}
           showModal={showModal}
@@ -131,7 +132,6 @@ const Dashboard: NextPage = () => {
 
 /* getServerSideProps */
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  
   return {
     props: {
       session: await getServerSession(
