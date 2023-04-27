@@ -45,18 +45,21 @@ const CourseOverview = (props: Props) => {
 
   const [modules, setModules] = useState<IModule[]>([]);
   useEffect(() => {
+    if (window.innerWidth > 768) {
+      setdesktopVersion(true);
+    } else {
+      setdesktopVersion(false);
+    }
     setModules(data);
   }, []);
 
-  const [desktopVersion, setdesktopVersion] = useState<boolean>(false);
+  const [desktopVersion, setdesktopVersion] = useState<boolean>(true);
   const [screenWidth, setScreenWidth] = useState<number>();
 
   //Remove open state for sidenav when screen width > 768px
   useEffect(() => {
     function getScreenSize() {
       if (typeof window !== "undefined") {
-        setScreenWidth(window.innerWidth);
-
         if (window.innerWidth > 768) {
           setdesktopVersion(true);
         } else {
@@ -201,7 +204,7 @@ const CourseOverview = (props: Props) => {
             </section>
           </section>
           {desktopVersion && (
-            <section className="p-6">
+            <section className="pl-5">
               <button className=" flex w-52 p-3 bg-indigo-50 hover:bg-indigo-200 font-semibold border border-b-0 rounded border-indigo-500">
                 <span className="mr-3">
                   <PlusCircle />
