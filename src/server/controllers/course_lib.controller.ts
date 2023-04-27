@@ -44,11 +44,13 @@ export const findCourseLibController = async ({
   ctx: Context;
 }) => {
   try {
-    const courseLib: Course_lib | null = await ctx.prisma.course_lib.findFirst({
-      where: { id: Number(paramsInput.course_libId) },
-    });
+    const course_lib: Course_lib | null = await ctx.prisma.course_lib.findFirst(
+      {
+        where: { id: Number(paramsInput.course_libId) },
+      }
+    );
 
-    if (!courseLib) {
+    if (!course_lib) {
       throw new TRPCError({
         code: "NOT_FOUND",
         message: `Education with ID: ${paramsInput.course_libId} not found`,
@@ -57,7 +59,7 @@ export const findCourseLibController = async ({
 
     return {
       status: "success",
-      courseLib,
+      course_lib,
     };
   } catch (error) {
     console.log(error);
