@@ -30,17 +30,45 @@ type Props = {
 const EditorMenu = ({ editor }: Props) => {
   if (!editor) return null;
 
+  const btnClickHandler = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    type: string
+  ) => {
+    e.preventDefault();
+
+    switch (type) {
+      case "bold":
+        editor.chain().focus().toggleBold().run();
+
+        break;
+      case "italic":
+        editor.chain().focus().toggleItalic().run();
+
+        break;
+    }
+  };
+
   return (
     <div className="w-full flex flex-wrap gap-2 border-b p-2">
-      <button
+      {/*  <button
         onClick={(e) => {
           e.preventDefault();
           editor.chain().focus().toggleBold().run();
+          console.log(editor.getHTML());
         }}
         disabled={!editor.can().chain().focus().toggleBold().run()}
         className={`${
-          editor.isActive("bold") ? "bg-purple-100" : ""
-        } border rounded-sm py-1 px-2`}
+          editor.isActive("bold") ? "border" : ""
+        } rounded-sm py-1 px-2`}
+      >
+        <Bold />
+      </button> */}
+      <button
+        onClick={(e) => btnClickHandler(e, "bold")}
+        disabled={!editor.can().chain().focus().toggleBold().run()}
+        className={`${
+          editor.isActive("bold") ? "border" : ""
+        } rounded-sm py-1 px-2`}
       >
         <Bold />
       </button>
@@ -106,6 +134,7 @@ const EditorMenu = ({ editor }: Props) => {
           console.log("I am clicked");
 
           editor.chain().focus().toggleHeading({ level: 1 }).run();
+          console.log(editor.getHTML());
         }}
         className={editor.isActive("heading", { level: 1 }) ? "is-active" : ""}
       >

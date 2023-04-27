@@ -1,10 +1,15 @@
+"use client";
 import React from "react";
 import ColorSelect from "../../dropdowns/ColorSelect";
 import Tiptap from "../../tiptap/TiptapEditor";
+import RichText from "../../text-editor/RichText";
 
 type Props = {};
 
 const CreateCourseForm = (props: Props) => {
+  // const ReactQuill =
+  //   typeof window === "object" ? require("react-quill") : () => false;
+  // if (document === undefined) return null;
   return (
     <form className="flex gap-4">
       {/* left side */}
@@ -30,7 +35,7 @@ const CreateCourseForm = (props: Props) => {
       {/* Right side */}
       <section className="flex-1">
         Tiptap goes here
-        <Tiptap />
+        <RichText />
       </section>
     </form>
   );
