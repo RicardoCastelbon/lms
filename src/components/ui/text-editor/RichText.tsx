@@ -1,12 +1,21 @@
+"use client";
+import { log } from "console";
 import dynamic from "next/dynamic";
-import React from "react";
-// import ReactQuill from "react-quill";
+import React, { useEffect, useRef, useState } from "react";
+import { useQuill } from "react-quilljs";
 import "react-quill/dist/quill.snow.css";
-type Props = {};
+type Course = {
+  title: string;
+  color: string;
+  description: string;
+  content: string;
+};
+type Props = {
+  quillRef: React.RefObject<any>;
+};
 
-const RichText = (props: Props) => {
-  const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
-  const modules = {
+const RichText = ({ quillRef }: Props) => {
+  /*   const modules = {
     toolbar: [
       [{ font: [] }],
       [{ header: [1, 2, 3, 4, 5, 6, false] }],
@@ -19,8 +28,30 @@ const RichText = (props: Props) => {
       ["link", "image", "video"],
       ["clean"],
     ],
-  };
-  return <ReactQuill modules={modules} theme="snow" />;
+  }; */
+
+  return (
+    <>
+      <div className="w-full" ref={quillRef} />
+
+      {/*     <ReactQuill
+      forwardedRef={editorRef}
+
+      // value={}
+      onChange={(editor) => {
+        // setCourseContent(editor);
+        handleSubmit(editor);
+
+        // console.log(editor);
+      }}
+      placeholder={"Komponera kursinformationen här"}
+      modules={modules}
+      theme="snow"
+    >
+      <div ref={editorRef} className="my-editing-area" />
+    </ReactQuill> */}
+    </>
+  );
 };
 
 export default RichText;
