@@ -1,5 +1,27 @@
 import React from "react";
 import { Editor } from "@tiptap/react";
+import {
+  Bold,
+  Italic,
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+  AlignJustify,
+  Heading1,
+  Heading2,
+  Heading3,
+  Heading4,
+  Heading5,
+  Heading6,
+  Underline,
+  List,
+  ListOrdered,
+  Code,
+  Redo2,
+  Undo2,
+  Strikethrough,
+  Link2,
+} from "lucide-react";
 
 type Props = {
   editor: Editor | null;
@@ -9,16 +31,18 @@ const EditorMenu = ({ editor }: Props) => {
   if (!editor) return null;
 
   return (
-    <div className="border rounded-sm ">
+    <div className="w-full flex flex-wrap gap-2 border-b p-2">
       <button
         onClick={(e) => {
           e.preventDefault();
           editor.chain().focus().toggleBold().run();
         }}
         disabled={!editor.can().chain().focus().toggleBold().run()}
-        className={editor.isActive("bold") ? "is-active" : ""}
+        className={`${
+          editor.isActive("bold") ? "bg-purple-100" : ""
+        } border rounded-sm py-1 px-2`}
       >
-        bold
+        <Bold />
       </button>
       <button
         onClick={(e) => {
@@ -28,7 +52,7 @@ const EditorMenu = ({ editor }: Props) => {
         disabled={!editor.can().chain().focus().toggleItalic().run()}
         className={editor.isActive("italic") ? "is-active" : ""}
       >
-        italic
+        <Italic />
       </button>
       <button
         onClick={(e) => {
@@ -38,7 +62,7 @@ const EditorMenu = ({ editor }: Props) => {
         disabled={!editor.can().chain().focus().toggleStrike().run()}
         className={editor.isActive("strike") ? "is-active" : ""}
       >
-        strike
+        <Strikethrough />
       </button>
       <button
         onClick={(e) => {
@@ -48,7 +72,7 @@ const EditorMenu = ({ editor }: Props) => {
         disabled={!editor.can().chain().focus().toggleCode().run()}
         className={editor.isActive("code") ? "is-active" : ""}
       >
-        code
+        <Code />
       </button>
       <button
         onClick={(e) => {
@@ -75,9 +99,12 @@ const EditorMenu = ({ editor }: Props) => {
       >
         paragraph
       </button>
+      {/* Text select */}
       <button
         onClick={(e) => {
           e.preventDefault();
+          console.log("I am clicked");
+
           editor.chain().focus().toggleHeading({ level: 1 }).run();
         }}
         className={editor.isActive("heading", { level: 1 }) ? "is-active" : ""}
@@ -136,7 +163,7 @@ const EditorMenu = ({ editor }: Props) => {
         }}
         className={editor.isActive("bulletList") ? "is-active" : ""}
       >
-        bullet list
+        <List />
       </button>
       <button
         onClick={(e) => {
@@ -145,7 +172,7 @@ const EditorMenu = ({ editor }: Props) => {
         }}
         className={editor.isActive("orderedList") ? "is-active" : ""}
       >
-        ordered list
+        <ListOrdered />
       </button>
       <button
         onClick={(e) => {
@@ -188,7 +215,7 @@ const EditorMenu = ({ editor }: Props) => {
         }}
         disabled={!editor.can().chain().focus().undo().run()}
       >
-        undo
+        <Undo2 />
       </button>
       <button
         onClick={(e) => {
@@ -197,7 +224,7 @@ const EditorMenu = ({ editor }: Props) => {
         }}
         disabled={!editor.can().chain().focus().redo().run()}
       >
-        redo
+        <Redo2 />
       </button>
       {/*  <button
         onClick={() => editor.chain().focus().setColor('#958DF1').run()}

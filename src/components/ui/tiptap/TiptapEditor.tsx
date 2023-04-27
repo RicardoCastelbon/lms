@@ -10,8 +10,10 @@ const Tiptap = () => {
 
   return (
     <>
-      <EditorMenu editor={editor} />
-      <EditorContent editor={editor} />
+      <div className="border">
+        <EditorMenu editor={editor} />
+        <EditorContent editor={editor} />
+      </div>
     </>
   );
 };
