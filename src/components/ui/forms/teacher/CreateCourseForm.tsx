@@ -1,11 +1,5 @@
 "use client";
-import React, {
-  ReactNode,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useState } from "react";
 import {
   CourseEndUserSchema,
   courseEndUserSchema,
@@ -43,25 +37,8 @@ const CreateCourseForm = (props: Props) => {
     });
 
   const { data: session } = useSession();
-  // console.log(session);
 
-  /*   const [course, setCourse] = useState<Course>({
-    title: "",
-    color: "",
-    description: "",
-    content: "",
-  }); */
   const { quill, quillRef } = useQuill();
-
-  useEffect(() => {
-    console.log(iconName);
-  }, [iconName]);
-
-  /*   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setCourse({ ...course, content: String(quill?.root.innerHTML) });
-  }; */
-
   const { mutateAsync } = trpc.course.create.useMutation();
 
   const onSubmit = useCallback(
@@ -71,19 +48,31 @@ const CreateCourseForm = (props: Props) => {
         data.content = String(quill?.root.innerHTML);
         data.educationId = 1;
         data.icon = iconName;
-        console.log(iconName);
-
-        console.log(data);
-        // const result = await mutateAsync(data);
-        /*  if (result.status === "success") {
-          reset();
-          // router.push("/login");
-        } */
+        // console.log(iconName);
+        if (
+          !data.title ||
+          !data.color ||
+          !data.icon ||
+          !data.content ||
+          !data.educationId ||
+          !data.points
+        ) {
+          console.log("need to fill in all fields");
+          console.log(data);
+          return;
+        } else {
+          console.log(data);
+          const result = await mutateAsync(data);
+          if (result.status === "success") {
+            quill!.root.innerHTML = "";
+            reset();
+          }
+        }
       } catch (err) {
         console.error(err);
       }
     },
-    [mutateAsync, iconName, reset]
+    [mutateAsync, iconName, reset, quill]
   );
 
   return (
@@ -94,6 +83,7 @@ const CreateCourseForm = (props: Props) => {
         <Controller
           name="title"
           control={control}
+          rules={{ required: true }}
           render={({ field }) => (
             <div className="w-full max-w-md flex flex-col mb-4">
               <label htmlFor="title">Kursnamn</label>
@@ -110,6 +100,7 @@ const CreateCourseForm = (props: Props) => {
         <Controller
           name="points"
           control={control}
+          rules={{ required: true }}
           render={({ field }) => (
             <div className="w-full max-w-md flex flex-col mb-4">
               <label htmlFor="title">Kurspoäng</label>
