@@ -53,9 +53,9 @@ const CreateCourseForm = (props: Props) => {
   }); */
   const { quill, quillRef } = useQuill();
 
-  /*  useEffect(() => {
-    console.log(course);
-  }, [course]); */
+  useEffect(() => {
+    console.log(iconName);
+  }, [iconName]);
 
   /*   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -67,9 +67,12 @@ const CreateCourseForm = (props: Props) => {
   const onSubmit = useCallback(
     async (data: CourseEndUserSchema) => {
       try {
+        // let selectedIcon = iconName;
         data.content = String(quill?.root.innerHTML);
         data.educationId = 1;
         data.icon = iconName;
+        console.log(iconName);
+
         console.log(data);
         // const result = await mutateAsync(data);
         /*  if (result.status === "success") {
@@ -80,7 +83,7 @@ const CreateCourseForm = (props: Props) => {
         console.error(err);
       }
     },
-    [mutateAsync, reset]
+    [mutateAsync, iconName, reset]
   );
 
   return (
@@ -130,6 +133,17 @@ const CreateCourseForm = (props: Props) => {
             </div>
           )}
         />
+        <Controller
+          name="icon"
+          control={control}
+          render={({ field }) => (
+            <div className="w-full max-w-md flex flex-col mb-4">
+              <label htmlFor="icon">Välj en kursikon</label>
+              {/* <ColorSelect field={field} /> */}
+              <IconSelect field={field} setIconName={setIconName} />
+            </div>
+          )}
+        />
         {/* <div className="flex flex-col">
           <label htmlFor="title">Titel</label>
           <input
@@ -139,14 +153,12 @@ const CreateCourseForm = (props: Props) => {
             placeholder="Ge kursen ett namn"
           />
         </div> */}
-        <div className="w-full max-w-md flex flex-col mb-4">
-          {/*  <div className="flex flex-col">
-            <p>Välj kursikon</p>
-          </div> */}
+        {/*  <div className="w-full max-w-md flex flex-col mb-4">
+   
 
-          {/* <ColorSelect /> */}
+       
           <IconSelect setIconName={setIconName} />
-        </div>
+        </div> */}
       </section>
       {/* Right side */}
       <section className="h-full flex-1">
