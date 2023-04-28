@@ -8,6 +8,8 @@ import {
 import UserLayout from "@/src/components/ui/UserLayout";
 import { Button } from "@/src/components/ui/button";
 import { Check, ClipboardList, Plus, PlusCircle } from "lucide-react";
+import Modal from "@/src/components/ui/modals/Modal";
+import CreateModuleForm from "@/src/components/ui/forms/teacher/CreateModuleForm";
 
 type Props = {};
 interface IModule {
@@ -55,6 +57,11 @@ const CourseOverview = (props: Props) => {
 
   const [desktopVersion, setdesktopVersion] = useState<boolean>(true);
   const [screenWidth, setScreenWidth] = useState<number>();
+  const [showModal, setShowModal] = useState<boolean>(false);
+
+  const modalClickHandler = () => {
+    setShowModal((prev) => !prev);
+  };
 
   //Remove open state for sidenav when screen width > 768px
   useEffect(() => {
@@ -205,7 +212,10 @@ const CourseOverview = (props: Props) => {
           </section>
           {desktopVersion && (
             <section className="pl-5">
-              <button className=" flex w-56 p-3 bg-indigo-50 hover:bg-indigo-200 font-semibold border border-b-0 rounded border-indigo-500">
+              <button
+                onClick={modalClickHandler}
+                className=" flex w-56 p-3 bg-indigo-50 hover:bg-indigo-200 font-semibold border border-b-0 rounded border-indigo-500"
+              >
                 <span className="mr-3">
                   <PlusCircle />
                 </span>
@@ -226,6 +236,13 @@ const CourseOverview = (props: Props) => {
             </section>
           )}
         </div>
+        <Modal
+          header={"Skapa en modul"}
+          showModal={showModal}
+          setShowModal={setShowModal}
+        >
+          <CreateModuleForm />
+        </Modal>
       </UserLayout>
     </>
   );
