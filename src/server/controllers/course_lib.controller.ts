@@ -71,3 +71,34 @@ export const findCourseLibController = async ({
     });
   }
 };
+
+export const findAllCourseLibController = async ({
+  filterQuery,
+  ctx,
+}: {
+  filterQuery: FilterQueryInput;
+  ctx: Context;
+}) => {
+  try {
+    const page = filterQuery.page || 1;
+    const limit = filterQuery.limit || 10;
+    const skip = (page - 1) * limit;
+
+    const courses_lib = await ctx.prisma.course_lib.findMany({
+      skip,
+      take: limit,
+    });
+
+    return {
+      status: "success",
+      results: courses_lib.length,
+      courses_lib,
+    };
+  } catch (error) {
+    console.log(error);
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      console.log(error.code, error.message);
+      return error;
+    }
+  }
+};

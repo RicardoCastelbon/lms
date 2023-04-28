@@ -1,6 +1,7 @@
 import { t } from "../../trpc";
 import {
   createCourseLibController,
+  findAllCourseLibController,
   findCourseLibController,
 } from "../../controllers/course_lib.controller";
 
@@ -9,6 +10,7 @@ import {
   courseLibSchema,
   filterQuery,
   params,
+  coursesLibSchema,
 } from "../../../common/validation/course_lib";
 import { z } from "zod";
 
@@ -27,16 +29,30 @@ export const courseLibRouter = t.router({
     .mutation(({ input, ctx }) => createCourseLibController({ input, ctx })),
 
   //GET ONE Course
-  // getOne: t.procedure
+  getOne: t.procedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/course-lib/getOne/{course_libId}",
+      },
+    })
+    .input(params)
+    .output(courseLibSchema)
+    .query(({ input, ctx }) =>
+      findCourseLibController({ paramsInput: input, ctx })
+    ),
+
+  //GET MANY coursers_lib
+  // getMany: t.procedure
   //   .meta({
   //     openapi: {
   //       method: "GET",
-  //       path: "/admin/courses/getOne/{courseLibId}",
+  //       path: "/course-lib/getMany",
   //     },
   //   })
-  //   .input(params)
-  //   .output(courseLibSchema)
+  //   .output(coursesLibSchema)
+  //   .input(filterQuery)
   //   .query(({ input, ctx }) =>
-  //     findCourseLibController({ paramsInput: input, ctx })
+  //     findAllCourseLibController({ filterQuery: input, ctx })
   //   ),
 });
