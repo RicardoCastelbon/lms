@@ -16,6 +16,7 @@ export const createCourseLibController = async ({
   ctx: Context;
 }) => {
   try {
+    console.log("Creating course lib with input:", input);
     const course_lib: Course_lib = await ctx.prisma.course_lib.create({
       data: {
         title: input.title,
@@ -23,12 +24,13 @@ export const createCourseLibController = async ({
         content: input.content,
       },
     });
+    console.log("Created course lib:", course_lib);
     return {
       status: "success",
       course_lib,
     };
   } catch (error) {
-    console.log(error);
+    console.log("Error creating course lib:", error);
     throw new TRPCError({
       code: "INTERNAL_SERVER_ERROR",
       message: "Failed to create course library",

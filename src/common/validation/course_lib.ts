@@ -7,8 +7,8 @@ export const courseLibSchema = z.object({
     title: z.string(),
     description: z.string(),
     content: z.string(),
-    createdAt: z.date(),
-    updatedAt: z.date(),
+    // createdAt: z.date(), // to be added later
+    // updatedAt: z.date(),// to be added later
   }),
 });
 export const coursesLibSchema = z.object({
@@ -20,8 +20,8 @@ export const coursesLibSchema = z.object({
       title: z.string(),
       description: z.string(),
       content: z.string(),
-      createdAt: z.date(),
-      updatedAt: z.date(),
+      // createdAt: z.date(), // to be added later
+      // updatedAt: z.date(), // to be added later
     })
   ),
 });

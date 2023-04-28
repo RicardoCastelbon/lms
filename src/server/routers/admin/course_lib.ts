@@ -19,7 +19,7 @@ export const courseLibRouter = t.router({
     .meta({
       openapi: {
         method: "POST",
-        path: "/admin/create/course-lib",
+        path: "/course-lib/create",
       },
     })
     .output(courseLibSchema)
@@ -27,16 +27,16 @@ export const courseLibRouter = t.router({
     .mutation(({ input, ctx }) => createCourseLibController({ input, ctx })),
 
   //GET ONE Course
-  getOne: t.procedure
-    .meta({
-      openapi: {
-        method: "GET",
-        path: "/admin/courses/getOne/{courseLibId}",
-      },
-    })
-    .input(params)
-    .output(courseLibSchema)
-    .query(({ input, ctx }) =>
-      findCourseLibController({ paramsInput: input, ctx })
-    ),
+  // getOne: t.procedure
+  //   .meta({
+  //     openapi: {
+  //       method: "GET",
+  //       path: "/admin/courses/getOne/{courseLibId}",
+  //     },
+  //   })
+  //   .input(params)
+  //   .output(courseLibSchema)
+  //   .query(({ input, ctx }) =>
+  //     findCourseLibController({ paramsInput: input, ctx })
+  //   ),
 });
