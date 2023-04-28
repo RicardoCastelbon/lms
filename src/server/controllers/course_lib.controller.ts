@@ -130,3 +130,28 @@ export const updatedCourseLibController = async ({
     }
   }
 };
+
+export const deleteCourseLibController = async ({
+  paramsInput,
+  ctx,
+}: {
+  paramsInput: ParamsInput;
+  ctx: Context;
+}) => {
+  try {
+    const course_lib = await ctx.prisma.course_lib.delete({
+      where: { id: Number(paramsInput.course_libId) },
+    });
+
+    return {
+      status: "success",
+      course_lib,
+    };
+  } catch (error) {
+    console.log(error);
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      console.log(error.code, error.message);
+      return error;
+    }
+  }
+};

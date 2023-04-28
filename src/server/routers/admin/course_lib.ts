@@ -1,6 +1,7 @@
 import { t } from "../../trpc";
 import {
   createCourseLibController,
+  deleteCourseLibController,
   findAllCourseLibController,
   findCourseLibController,
   updatedCourseLibController,
@@ -74,5 +75,19 @@ export const courseLibRouter = t.router({
         input: input.body,
         ctx,
       })
+    ),
+
+  //DELETE EDUCATION
+  delete: t.procedure
+    .meta({
+      openapi: {
+        method: "DELETE",
+        path: "/coourse-lib/delete/{course_libId}",
+      },
+    })
+    .input(params)
+    .output(courseLibSchema)
+    .mutation(({ input, ctx }) =>
+      deleteCourseLibController({ paramsInput: input, ctx })
     ),
 });
