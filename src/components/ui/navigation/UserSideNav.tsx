@@ -11,7 +11,7 @@ type Props = {
 };
 
 const UserSideNav = ({ sideBarClass, role, education }: Props) => {
-  console.log(role);
+  // console.log(role);
 
   return (
     <nav
