@@ -23,22 +23,22 @@ const CourseOverview = (props: Props) => {
     {
       module: "useState",
       start: "14 April",
-      end: "15 May",
-      status: "Not completed",
+      end: "15 Maj",
+      status: "Ej klar",
       exercises_completed: "5/15",
     },
     {
       module: "useEffect",
       start: "14 April",
-      end: "15 May",
-      status: "Not completed",
+      end: "15 Maj",
+      status: "Ej klar",
       exercises_completed: "5/15",
     },
     {
       module: "useRef",
       start: "14 April",
-      end: "15 May",
-      status: "Not completed",
+      end: "15 Maj",
+      status: "Ej klar",
       exercises_completed: "5/15",
     },
   ];
@@ -79,18 +79,18 @@ const CourseOverview = (props: Props) => {
       <UserLayout>
         <div className="flex p-1">
           <section className=" w-full h-full bg-cyan-50 font-mont">
-            <p className=" ">Courses -&gt; React (breadcrums)</p>
-            <h1 className="text-lg font-semibold my-16">
-              Frontend development in React (title of the course)
+            <p className=" ">Kurser -&gt; React</p>
+            <h1 className="text-2xl font-bold my-16">
+              Frontend-utveckling i React
             </h1>
             <section className="">
               <div className="w-full">
                 <ul className="flex font-medium text-slate-400">
-                  <li className="md:w-48 ">Modules</li>
-                  {desktopVersion && <li className="w-32">Start</li>}
-                  {desktopVersion && <li className="w-32">End</li>}
+                  <li className="md:w-48 ">Moduler</li>
+                  {desktopVersion && <li className="w-32">Startdatum</li>}
+                  {desktopVersion && <li className="w-32">In.datum</li>}
                   {desktopVersion && <li className="w-36">Status</li>}
-                  {desktopVersion && <li className="w-32">Completed</li>}
+                  {desktopVersion && <li className="w-32">Uppgifter</li>}
                 </ul>
               </div>
               {modules.map((module) => (
@@ -121,7 +121,7 @@ const CourseOverview = (props: Props) => {
                             <li className="w-32">
                               <Button>
                                 <Plus />
-                                Exercises
+                                Uppgift
                               </Button>
                             </li>
                           )}
@@ -131,7 +131,7 @@ const CourseOverview = (props: Props) => {
                     <AccordionContent>
                       {/* TIPTAP CONTENT */}
                       <h2 className="text-xl font-semibold mb-7">
-                        useState in React
+                        useState i React
                       </h2>
                       <p className="mb-4 pr-20">
                         Lorem, ipsum dolor sit amet consectetur adipisicing
@@ -154,7 +154,7 @@ const CourseOverview = (props: Props) => {
                             <div className="w-full">
                               <ul className="flex justify-between pr-5 text-base">
                                 <li className="">
-                                  See all the exercises in the module
+                                  Se alla uppgifter för modulen
                                 </li>
                                 <li className="">3/5{/* COMPLETED/TOTAL */}</li>
                               </ul>
@@ -166,7 +166,7 @@ const CourseOverview = (props: Props) => {
                                 <span className=" mr-4">
                                   <ClipboardList />
                                 </span>
-                                <span>Create a React project</span>
+                                <span>Skapa ett React-projekt</span>
                               </div>
                               <span className="">
                                 <Check />
@@ -177,7 +177,7 @@ const CourseOverview = (props: Props) => {
                                 <span className=" mr-4">
                                   <ClipboardList />
                                 </span>
-                                <span>File structure in React</span>
+                                <span>Filstrukture i React</span>
                               </div>
                               <span className="">
                                 <Check />
@@ -188,7 +188,7 @@ const CourseOverview = (props: Props) => {
                                 <span className=" mr-4">
                                   <ClipboardList />
                                 </span>
-                                <span>Components in React</span>
+                                <span>Components i React</span>
                               </div>
                               <span className="">
                                 <Check />
@@ -205,23 +205,23 @@ const CourseOverview = (props: Props) => {
           </section>
           {desktopVersion && (
             <section className="pl-5">
-              <button className=" flex w-52 p-3 bg-indigo-50 hover:bg-indigo-200 font-semibold border border-b-0 rounded border-indigo-500">
+              <button className=" flex w-56 p-3 bg-indigo-50 hover:bg-indigo-200 font-semibold border border-b-0 rounded border-indigo-500">
                 <span className="mr-3">
                   <PlusCircle />
                 </span>
-                <span> Add a module</span>
+                <span>Lägg till modul</span>
               </button>
-              <button className=" flex w-52 p-3 bg-indigo-50 hover:bg-indigo-200 font-semibold border border-b-0 rounded border-indigo-500">
+              <button className=" flex w-56 p-3 bg-indigo-50 hover:bg-indigo-200 font-semibold border border-b-0 rounded border-indigo-500">
                 <span className="mr-3">
                   <PlusCircle />
                 </span>
-                <span>Update a module</span>
+                <span>Uppdatera modul</span>
               </button>
-              <button className=" flex w-52 p-3 bg-indigo-50 hover:bg-indigo-200 font-semibold border rounded border-indigo-500">
+              <button className=" flex w-56 p-3 bg-indigo-50 hover:bg-indigo-200 font-semibold border rounded border-indigo-500">
                 <span className="mr-4">
                   <PlusCircle />
                 </span>
-                <span> Add a student</span>
+                <span>Lägg till deltagare</span>
               </button>
             </section>
           )}
