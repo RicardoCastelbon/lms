@@ -3,7 +3,7 @@ import { TRPCError } from "@trpc/server";
 import { Context } from "vm";
 import {
   CreateCourseLibInput,
-  UpdateCourseLibInput,
+  UpdatedCourseLibInput,
   ParamsInput,
   FilterQueryInput,
 } from "../../common/validation/course_lib";
@@ -92,6 +92,34 @@ export const findAllCourseLibController = async ({
     return {
       status: "success",
       results: course_lib.length,
+      course_lib,
+    };
+  } catch (error) {
+    console.log(error);
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      console.log(error.code, error.message);
+      return error;
+    }
+  }
+};
+
+export const updatedCourseLibController = async ({
+  paramsInput,
+  input,
+  ctx,
+}: {
+  paramsInput: ParamsInput;
+  input: UpdatedCourseLibInput["body"];
+  ctx: Context;
+}) => {
+  try {
+    const course_lib = await ctx.prisma.course_lib.update({
+      where: { id: Number(paramsInput.course_libId) },
+      data: input,
+    });
+
+    return {
+      status: "success",
       course_lib,
     };
   } catch (error) {

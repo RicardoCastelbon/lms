@@ -36,7 +36,7 @@ export const params = z.object({
   course_libId: z.string(),
 });
 
-export const updateCourseLibSchema = z.object({
+export const updatedCourseLibSchema = z.object({
   course_libId: z.string(),
   body: z
     .object({
@@ -49,8 +49,7 @@ export const updateCourseLibSchema = z.object({
 
 export const updatedCourseLibResponse = z.object({
   status: z.string(),
-  updateCourseLibSchema,
-  //data: z.string(),
+  updatedCourseLibSchema: updatedCourseLibSchema,
 });
 
 export const filterQuery = z.object({
@@ -59,6 +58,6 @@ export const filterQuery = z.object({
 });
 
 export type CreateCourseLibInput = z.infer<typeof createCourseLibSchema>;
-export type UpdateCourseLibInput = z.infer<typeof updateCourseLibSchema>;
+export type UpdatedCourseLibInput = z.infer<typeof updatedCourseLibSchema>;
 export type ParamsInput = z.infer<typeof params>;
 export type FilterQueryInput = z.TypeOf<typeof filterQuery>;

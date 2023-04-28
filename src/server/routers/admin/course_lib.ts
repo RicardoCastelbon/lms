@@ -3,6 +3,7 @@ import {
   createCourseLibController,
   findAllCourseLibController,
   findCourseLibController,
+  updatedCourseLibController,
 } from "../../controllers/course_lib.controller";
 
 import {
@@ -11,6 +12,7 @@ import {
   filterQuery,
   params,
   coursesLibSchema,
+  updatedCourseLibSchema,
 } from "../../../common/validation/course_lib";
 import { z } from "zod";
 
@@ -54,5 +56,23 @@ export const courseLibRouter = t.router({
     .input(filterQuery)
     .query(({ input, ctx }) =>
       findAllCourseLibController({ filterQuery: input, ctx })
+    ),
+
+  // UPDATE COURSE_LIB
+  updateCourseLib: t.procedure
+    .meta({
+      openapi: {
+        method: "PUT",
+        path: "/course-lib/update/{course_libId}",
+      },
+    })
+    .output(courseLibSchema)
+    .input(updatedCourseLibSchema)
+    .mutation(({ input, ctx }) =>
+      updatedCourseLibController({
+        paramsInput: input,
+        input: input.body,
+        ctx,
+      })
     ),
 });
