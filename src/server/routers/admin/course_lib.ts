@@ -19,7 +19,7 @@ export const courseLibRouter = t.router({
     .meta({
       openapi: {
         method: "POST",
-        path: "/admin/courses/create",
+        path: "/admin/create/course-lib",
       },
     })
     .output(courseLibSchema)
