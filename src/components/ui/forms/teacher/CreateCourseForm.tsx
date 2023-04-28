@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import {
-  IcourseEndUserSchema,
+  CourseEndUserSchema,
   courseEndUserSchema,
 } from "@/src/common/validation/course-end-user";
 import { useQuill } from "react-quilljs";
@@ -21,7 +21,7 @@ type Props = {};
 
 const CreateCourseForm = (props: Props) => {
   const { handleSubmit, control, register, setValue, reset } =
-    useForm<IcourseEndUserSchema>({
+    useForm<CourseEndUserSchema>({
       defaultValues: {
         title: "",
         icon: "",
