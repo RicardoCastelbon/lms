@@ -91,7 +91,12 @@ const Dashboard: NextPage = () => {
   };
 
   return (
-    <IconContext.Provider value={{ className: "text-primary " }}>
+    <IconContext.Provider
+      value={{
+        className:
+          "text-primary hover:text-indigo-50 hover:bg-primary hover:cursor-pointer rounded-sm",
+      }}
+    >
       <UserLayout role={session?.user.role}>
         <div className="w-full flex flex-col md:flex-row gap-8">
           {/* Main content */}
@@ -117,6 +122,7 @@ const Dashboard: NextPage = () => {
             </div>
           </aside>
         </div>
+
         <Modal
           header={"Skapa en kurs"}
           showModal={showModal}
@@ -131,7 +137,6 @@ const Dashboard: NextPage = () => {
 
 /* getServerSideProps */
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  
   return {
     props: {
       session: await getServerSession(

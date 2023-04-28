@@ -8,7 +8,7 @@ type Props = {};
 const InnerMenu = (props: Props) => {
   const [hasCourse, setHasCourse] = useState<boolean>(true);
   const router = useRouter();
-  console.log(router.query.course);
+  // console.log(router.query.course);
   //change menuItems depending on which route the user is
   useEffect(() => {
     if (router.query.course === undefined) {

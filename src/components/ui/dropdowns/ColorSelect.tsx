@@ -53,11 +53,11 @@ const ColorSelect = () => {
         name="color"
         id=""
         className={`focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 rounded-md ${
-          selectedColor !== "" ? `${selectedColor}` : "bg-white"
+          selectedColor !== "" ? `${selectedColor}` : "bg-muted"
         }`}
         onChange={(e) => colorSelectHandle(e)}
       >
-        <option value="default"> Välj bakgrundsfärg</option>
+        <option value="default">Välj</option>
         {colors.map((col, index) => (
           <option key={index} value={col.value}>
             {" "}
