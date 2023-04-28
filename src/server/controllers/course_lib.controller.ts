@@ -84,15 +84,15 @@ export const findAllCourseLibController = async ({
     const limit = filterQuery.limit || 10;
     const skip = (page - 1) * limit;
 
-    const courses_lib = await ctx.prisma.course_lib.findMany({
+    const course_lib = await ctx.prisma.course_lib.findMany({
       skip,
       take: limit,
     });
 
     return {
       status: "success",
-      results: courses_lib.length,
-      courses_lib,
+      results: course_lib.length,
+      course_lib,
     };
   } catch (error) {
     console.log(error);

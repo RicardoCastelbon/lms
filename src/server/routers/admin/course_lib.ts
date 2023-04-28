@@ -43,16 +43,16 @@ export const courseLibRouter = t.router({
     ),
 
   //GET MANY coursers_lib
-  // getMany: t.procedure
-  //   .meta({
-  //     openapi: {
-  //       method: "GET",
-  //       path: "/course-lib/getMany",
-  //     },
-  //   })
-  //   .output(coursesLibSchema)
-  //   .input(filterQuery)
-  //   .query(({ input, ctx }) =>
-  //     findAllCourseLibController({ filterQuery: input, ctx })
-  //   ),
+  getMany: t.procedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/course-lib/getMany",
+      },
+    })
+    .output(coursesLibSchema)
+    .input(filterQuery)
+    .query(({ input, ctx }) =>
+      findAllCourseLibController({ filterQuery: input, ctx })
+    ),
 });
