@@ -6,9 +6,11 @@ type Icon = {
   name: string;
   icon: ReactNode;
 };
-type Props = {};
+type Props = {
+  setIconName: React.Dispatch<React.SetStateAction<string>>;
+};
 
-const IconSelect = (props: Props) => {
+const IconSelect = ({ setIconName }: Props) => {
   const [icon, setIcon] = useState<ReactNode>(null);
   const { selectIcon, icons } = useIcon();
 
@@ -22,9 +24,10 @@ const IconSelect = (props: Props) => {
     console.log(iconName);
     if (!iconName) return;
     setIcon(selectIcon(iconName));
+    setIconName(iconName);
   };
   return (
-    <div className="mt-20">
+    <div className="">
       <div className="flex justify-between items-center">
         <p>Välj ikon för kursen</p>
         {icon !== null && <>{icon}</>}
