@@ -29,7 +29,7 @@ const CourseCard = ({ course }: Props) => {
         <p>{course.exercises}</p>
         <Link
           href={`${course.slug}`}
-          className="pointer-cursor bg-primary rounded-sm py-2 text-white hover:bg-background hover:text-foreground"
+          className="pointer-cursor bg-indigo-50 rounded-sm py-2 text-foregound hover:bg-indigo-500 hover:text-white"
         >
           Till kurs
         </Link>
