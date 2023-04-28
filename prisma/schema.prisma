@@ -20,7 +20,7 @@ model Education {
   id        Int      @id @default(autoincrement())
   name      String   @default("NULL")
   users     User[]
-  //courses
+  courses   Course[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -76,10 +76,14 @@ model Exercise_lib {
 }
 
 model Course {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
+  education   Education @relation(fields: [educationId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  educationId Int
   modules     Module[]
   title       String
-  description String
+  points      String
+  icon        String
+  color       String
   content     String
 }
 

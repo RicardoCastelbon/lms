@@ -47,6 +47,25 @@ const CreateCourseForm = (props: Props) => {
     setCourse({ ...course, content: String(quill?.root.innerHTML) });
   }; */
 
+  // const { mutateAsync } = trpc.users.signup.useMutation();
+
+  /*   const onSubmit = useCallback(
+    async (data: ISignUp) => {
+      try {
+        //data.userRole = "student";
+        console.log(data);
+        const result = await mutateAsync(data);
+        if (result.status === 201) {
+          reset();
+          router.push("/login");
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    },
+    [mutateAsync, router, reset]
+  ); */
+
   return (
     <form
       className="flex gap-4"
