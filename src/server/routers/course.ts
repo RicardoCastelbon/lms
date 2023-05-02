@@ -10,11 +10,13 @@ import {
   getOneParams,
   noInput,
   noResourceFound,
+  updatedCourseSchema,
 } from "../../common/validation/course-end-user";
 import {
   addCourse,
   getAllCourses,
   getOneCourse,
+  updateCourse,
 } from "../controllers/course.controller";
 import { Course } from "@prisma/client";
 import { IContext } from "../context";
@@ -52,4 +54,20 @@ export const courseRouter = t.router({
     .input(getOneParams) //Only used to satisfy Swagger, not needed within the controller function.
     .output(courseFindOneOutputSchema)
     .query(({ input, ctx }) => getOneCourse({ input, ctx })),
+  // UPDATE COURSE_LIB
+  updateCourse: t.procedure
+    .meta({
+      openapi: {
+        method: "PUT",
+        path: "/course/update/{courseId}",
+      },
+    })
+    .output(courseFindOneOutputSchema)
+    .input(updatedCourseSchema)
+    .mutation(({ input, ctx }) =>
+      updateCourse({
+        input,
+        ctx,
+      })
+    ),
 });

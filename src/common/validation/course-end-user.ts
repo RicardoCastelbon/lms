@@ -44,9 +44,11 @@ export const courseFindAllOutputSchema = z.object({
     })
     .array(),
 });
+
+//Find one course output
 export const courseFindOneOutputSchema = z.object({
-  success: z.boolean(),
-  code: z.number(),
+  success: z.boolean().optional(),
+  code: z.number().optional(),
   message: z.string().optional(),
   course: z
     .object({
@@ -59,7 +61,33 @@ export const courseFindOneOutputSchema = z.object({
       points: z.string(),
       published: z.boolean(),
     })
-    .nullable(),
+    .nullish(),
+  error: z
+    .object({
+      code: z.string(),
+      message: z.string(),
+      meta: z
+        .object({
+          cause: z.string().optional(),
+        })
+        .optional(),
+    })
+    .optional(),
+});
+
+export const updatedCourseSchema = z.object({
+  courseId: z.string(),
+  body: z
+    .object({
+      title: z.string().optional(),
+      icon: z.string().optional(),
+      color: z.string().optional(),
+      content: z.string().optional(),
+      educationId: z.number().optional(),
+      points: z.string().optional(),
+      published: z.boolean().optional(),
+    })
+    .partial(),
 });
 export const getOneParams = z.object({
   courseId: z.string(),
@@ -77,6 +105,8 @@ export const noInput = z.void();
 
 export type getOneSchema = z.infer<typeof getOneParams>;
 export type getOneOutputSchema = z.infer<typeof courseFindOneOutputSchema>;
+
+export type updateCourseSchema = z.infer<typeof updatedCourseSchema>;
 
 export type CourseFindAllOutputSchema = z.infer<
   typeof courseFindAllOutputSchema

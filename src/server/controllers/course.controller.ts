@@ -6,6 +6,7 @@ import {
   FilterQuerySchema,
   courseEndUserSchema,
   getOneSchema,
+  updateCourseSchema,
 } from "../../common/validation/course-end-user";
 import { IContext } from "../context";
 import { log } from "console";
@@ -129,6 +130,76 @@ export const getOneCourse = async ({
       // optional: pass the original error to retain stack trace
       cause: error,
     });
+  }
+};
+
+export const updateCourse = async ({
+  input,
+  ctx,
+}: {
+  input: updateCourseSchema;
+  ctx: IContext;
+}) => {
+  console.log(input);
+  // NOTE!!! The input params passed to the update function will update, if a certain param isn't passed the old value will remain. Be careful what params are sent from the frontend. Might have to write a util for this to remove all unused parameters.
+  try {
+    const course = await ctx.prisma.course.update({
+      where: { id: Number(input.courseId) },
+      data: input.body,
+    });
+
+    console.log(course);
+
+    if (!course) {
+      return {
+        success: false,
+        code: 404,
+        message: "No course found, please try again",
+        course,
+      };
+    } else {
+      return {
+        success: true,
+        code: 200,
+        message: "Resource found",
+        course,
+      };
+    }
+  } catch (error) {
+    console.log(error);
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      // The .code property can be accessed in a type-safe manner
+      if (error.code === "P2025") {
+        console.log(
+          `An operation failed because it depends on one or more records that were required but not found. ${error.cause}`
+        );
+        console.log(error.meta);
+
+        return {
+          error: {
+            code: error.code,
+            message: error.message,
+            // cause: error.cause,
+            meta: { ...error.meta },
+          },
+        };
+      }
+    }
+
+    return {
+      error: new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "An unexpected error occurred, please try again later.",
+        // optional: pass the original error to retain stack trace
+        cause: error,
+      }),
+    };
+    /* throw new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+      message: "An unexpected error occurred, please try again later.",
+      // optional: pass the original error to retain stack trace
+      cause: error,
+    }); */
   }
 };
 
