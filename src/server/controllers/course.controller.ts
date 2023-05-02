@@ -3,6 +3,7 @@ import { TRPCError } from "@trpc/server";
 // import { Context } from "vm";
 import {
   CourseEndUserSchema,
+  FilterQuerySchema,
   courseEndUserSchema,
 } from "../../common/validation/course-end-user";
 import { IContext } from "../context";
@@ -23,6 +24,7 @@ export const addCourse = async ({
         content: input.content,
         educationId: input.educationId,
         points: input.points,
+        published: input.published,
       },
     });
 
@@ -45,6 +47,37 @@ export const addCourse = async ({
       console.log(error.code, error.message);
       return error;
     } */
+    throw new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+      message: "An unexpected error occurred, please try again later.",
+      // optional: pass the original error to retain stack trace
+      cause: error,
+    });
+  }
+};
+
+export const getAllCourses = async ({ ctx }: { ctx: IContext }) => {
+  try {
+    const courses: Course[] = await ctx.prisma.course.findMany();
+
+    if (courses.length <= 0) {
+      return {
+        status: "error",
+        message: "No courses found, please try again",
+        courses,
+      };
+    } else {
+      return {
+        status: "success",
+        courses,
+      };
+    }
+    /* return {
+      status: "success",
+      result: courses.length,
+      courses,
+    }; */
+  } catch (error) {
     throw new TRPCError({
       code: "INTERNAL_SERVER_ERROR",
       message: "An unexpected error occurred, please try again later.",

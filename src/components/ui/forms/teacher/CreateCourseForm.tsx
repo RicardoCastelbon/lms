@@ -32,6 +32,7 @@ const CreateCourseForm = (props: Props) => {
         content: "",
         educationId: 0,
         points: "",
+        published: false,
       },
       resolver: zodResolver(courseEndUserSchema),
     });
@@ -48,6 +49,7 @@ const CreateCourseForm = (props: Props) => {
         data.content = String(quill?.root.innerHTML);
         data.educationId = 1;
         data.icon = iconName;
+        data.published = false; // needed?
         // console.log(iconName);
         if (
           !data.title ||

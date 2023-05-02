@@ -42,9 +42,11 @@ const SignUp: NextPage = () => {
         //data.userRole = "student";
         console.log(data);
         const result = await mutateAsync(data);
-        if (result.status === 201) {
+        if (result.status) {
           reset();
           router.push("/login");
+        } else {
+          console.log(result.message);
         }
       } catch (err) {
         console.error(err);

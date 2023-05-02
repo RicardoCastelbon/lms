@@ -85,6 +85,7 @@ model Course {
   icon        String
   color       String
   content     String
+  published   Boolean   @default(false)
 }
 
 model Module {
