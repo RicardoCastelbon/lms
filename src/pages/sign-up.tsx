@@ -40,7 +40,7 @@ const SignUp: NextPage = () => {
     async (data: ISignUp) => {
       try {
         //data.userRole = "student";
-        console.log(data);
+        // console.log(data);
         const result = await mutateAsync(data);
         if (result.status) {
           reset();

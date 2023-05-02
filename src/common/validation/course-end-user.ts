@@ -1,5 +1,29 @@
 import * as z from "zod";
-
+const course = z
+  .object({
+    id: z.number(),
+    title: z.string(),
+    icon: z.string(),
+    color: z.string(),
+    content: z.string(),
+    educationId: z.number(),
+    points: z.string(),
+    published: z.boolean(),
+  })
+  .or(
+    z
+      .object({
+        id: z.number(),
+        title: z.string(),
+        icon: z.string(),
+        color: z.string(),
+        content: z.string(),
+        educationId: z.number(),
+        points: z.string(),
+        published: z.boolean(),
+      })
+      .array()
+  );
 //Input
 export const courseEndUserSchema = z.object({
   title: z.string(),
@@ -14,7 +38,8 @@ export const courseEndUserSchema = z.object({
 //CreateCourse output
 export const courseCreateOutputSchema = z.object({
   status: z.string(),
-  course: z.object({
+  course: course,
+  /* course: z.object({
     id: z.number(),
     title: z.string(),
     icon: z.string(),
@@ -23,7 +48,7 @@ export const courseCreateOutputSchema = z.object({
     educationId: z.number(),
     points: z.string(),
     published: z.boolean(),
-  }),
+  }), */
 });
 
 //FindAll courses output
@@ -31,18 +56,7 @@ export const courseFindAllOutputSchema = z.object({
   success: z.boolean(),
   code: z.number(),
   message: z.string().optional(),
-  courses: z
-    .object({
-      id: z.number(),
-      title: z.string(),
-      icon: z.string(),
-      color: z.string(),
-      content: z.string(),
-      educationId: z.number(),
-      points: z.string(),
-      published: z.boolean(),
-    })
-    .array(),
+  courses: course,
 });
 
 //Find one course output
@@ -50,18 +64,7 @@ export const courseFindOneOutputSchema = z.object({
   success: z.boolean().optional(),
   code: z.number().optional(),
   message: z.string().optional(),
-  course: z
-    .object({
-      id: z.number(),
-      title: z.string(),
-      icon: z.string(),
-      color: z.string(),
-      content: z.string(),
-      educationId: z.number(),
-      points: z.string(),
-      published: z.boolean(),
-    })
-    .nullish(),
+  course: course.nullish(),
   error: z
     .object({
       code: z.string(),

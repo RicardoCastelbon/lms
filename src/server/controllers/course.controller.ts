@@ -153,9 +153,13 @@ export const updateCourse = async ({
     if (!course) {
       return {
         success: false,
-        code: 404,
-        message: "No course found, please try again",
         course,
+        error: new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "An unexpected error occurred, please try again later.",
+          // optional: pass the original error to retain stack trace
+          // cause: error,
+        }),
       };
     } else {
       return {
