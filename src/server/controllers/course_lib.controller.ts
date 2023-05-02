@@ -80,18 +80,39 @@ export const findAllCourseLibController = async ({
   ctx: Context;
 }) => {
   try {
+    // Get the current page from the filterQuery, or default to the first page (1)
     const page = filterQuery.page || 1;
-    const limit = filterQuery.limit || 10;
+
+    // Get the limit from the filterQuery, or default to 8 records per page
+    const limit = filterQuery.limit || 8;
+
+    // Calculate the number of records to skip based on the current page and limit
     const skip = (page - 1) * limit;
 
-    const course_lib = await ctx.prisma.course_lib.findMany({
-      skip,
-      take: limit,
-    });
+    // Retrieve the records for the current page, limited to the specified number of records per page
+    const [course_lib, totalCount] = await Promise.all([
+      ctx.prisma.course_lib.findMany({
+        skip,
+        take: limit,
+      }),
 
+      // Retrieve the total number of records in the database
+      ctx.prisma.course_lib.count(),
+    ]);
+
+    // Calculate the total number of pages based on the total number of records and the limit per page
+    const totalPages = Math.ceil(totalCount / limit);
+
+    console.log("Retrieved courses:", course_lib);
+    console.log("Total number of courses:", totalCount);
+    console.log("Total number of pages:", totalPages);
+
+    // Return the retrieved courses, along with some metadata about the current page and the total number of pages
     return {
       status: "success",
       results: course_lib.length,
+      totalPages,
+      currentPage: page,
       course_lib,
     };
   } catch (error) {
