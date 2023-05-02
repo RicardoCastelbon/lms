@@ -28,8 +28,9 @@ export const courseCreateOutputSchema = z.object({
 
 //FindAll courses output
 export const courseFindAllOutputSchema = z.object({
-  status: z.string(),
-  // result: z.number(),
+  success: z.boolean(),
+  code: z.number(),
+  message: z.string().optional(),
   courses: z
     .object({
       id: z.number(),
@@ -43,6 +44,26 @@ export const courseFindAllOutputSchema = z.object({
     })
     .array(),
 });
+export const courseFindOneOutputSchema = z.object({
+  success: z.boolean(),
+  code: z.number(),
+  message: z.string().optional(),
+  course: z
+    .object({
+      id: z.number(),
+      title: z.string(),
+      icon: z.string(),
+      color: z.string(),
+      content: z.string(),
+      educationId: z.number(),
+      points: z.string(),
+      published: z.boolean(),
+    })
+    .nullable(),
+});
+export const getOneParams = z.object({
+  courseId: z.string(),
+});
 
 export const noResourceFound = z.object({
   status: z.string(),
@@ -54,11 +75,16 @@ export const filterQuery = z.object({
 });
 export const noInput = z.void();
 
-export type FilterQuerySchema = z.infer<typeof filterQuery>;
-export type NoResourceFoundSchema = z.infer<typeof noResourceFound>;
-export type NoInputSchema = z.infer<typeof noInput>;
-export type CourseEndUserSchema = z.infer<typeof courseEndUserSchema>;
-export type CourseCreateOutputSchema = z.infer<typeof courseCreateOutputSchema>;
+export type getOneSchema = z.infer<typeof getOneParams>;
+export type getOneOutputSchema = z.infer<typeof courseFindOneOutputSchema>;
+
 export type CourseFindAllOutputSchema = z.infer<
   typeof courseFindAllOutputSchema
 >;
+
+export type FilterQuerySchema = z.infer<typeof filterQuery>;
+export type NoResourceFoundSchema = z.infer<typeof noResourceFound>;
+export type NoInputSchema = z.infer<typeof noInput>;
+
+export type CourseEndUserSchema = z.infer<typeof courseEndUserSchema>;
+export type CourseCreateOutputSchema = z.infer<typeof courseCreateOutputSchema>;

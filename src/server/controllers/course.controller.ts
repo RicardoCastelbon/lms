@@ -5,8 +5,10 @@ import {
   CourseEndUserSchema,
   FilterQuerySchema,
   courseEndUserSchema,
+  getOneSchema,
 } from "../../common/validation/course-end-user";
 import { IContext } from "../context";
+import { log } from "console";
 
 export const addCourse = async ({
   input,
@@ -62,13 +64,16 @@ export const getAllCourses = async ({ ctx }: { ctx: IContext }) => {
 
     if (courses.length <= 0) {
       return {
-        status: "error",
+        success: false,
+        code: 404,
         message: "No courses found, please try again",
         courses,
       };
     } else {
       return {
-        status: "success",
+        success: true,
+        code: 200,
+        message: "Resource found",
         courses,
       };
     }
@@ -77,6 +82,46 @@ export const getAllCourses = async ({ ctx }: { ctx: IContext }) => {
       result: courses.length,
       courses,
     }; */
+  } catch (error) {
+    throw new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+      message: "An unexpected error occurred, please try again later.",
+      // optional: pass the original error to retain stack trace
+      cause: error,
+    });
+  }
+};
+export const getOneCourse = async ({
+  input,
+  ctx,
+}: {
+  input: getOneSchema;
+  ctx: IContext;
+}) => {
+  try {
+    // console.log(input);
+
+    // const courses: Course[] = await ctx.prisma.course.findMany();
+    const course: Course | null = await ctx.prisma.course.findFirst({
+      where: { id: Number(input.courseId) },
+    });
+    console.log(course);
+
+    if (course === null) {
+      return {
+        success: false,
+        code: 404,
+        message: "No course found, please try again",
+        course,
+      };
+    } else {
+      return {
+        success: true,
+        code: 200,
+        message: "Resource found",
+        course,
+      };
+    }
   } catch (error) {
     throw new TRPCError({
       code: "INTERNAL_SERVER_ERROR",

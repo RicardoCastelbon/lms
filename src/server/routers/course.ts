@@ -5,11 +5,17 @@ import {
   courseCreateOutputSchema,
   courseEndUserSchema,
   courseFindAllOutputSchema,
+  courseFindOneOutputSchema,
   filterQuery,
+  getOneParams,
   noInput,
   noResourceFound,
 } from "../../common/validation/course-end-user";
-import { addCourse, getAllCourses } from "../controllers/course.controller";
+import {
+  addCourse,
+  getAllCourses,
+  getOneCourse,
+} from "../controllers/course.controller";
 import { Course } from "@prisma/client";
 import { IContext } from "../context";
 import { TRPCError } from "@trpc/server";
@@ -36,15 +42,14 @@ export const courseRouter = t.router({
     .output(courseFindAllOutputSchema)
     .query(({ ctx }) => getAllCourses({ ctx })),
 
-  /*   getOne: t.procedure
+  getOne: t.procedure
     .meta({
       openapi: {
         method: "GET",
         path: "/course/getOne/{courseId}",
       },
     })
-    .input(noInput) //Only used to satisfy Swagger, not needed within the controller function.
-    .output(courseFindAllOutputSchema)
-    .query(({ ctx }) => getAllCourses({ ctx })),
-    */
+    .input(getOneParams) //Only used to satisfy Swagger, not needed within the controller function.
+    .output(courseFindOneOutputSchema)
+    .query(({ input, ctx }) => getOneCourse({ input, ctx })),
 });
