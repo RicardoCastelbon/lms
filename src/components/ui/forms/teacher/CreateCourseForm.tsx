@@ -1,8 +1,8 @@
 "use client";
 import React, { useCallback, useState } from "react";
 import {
-  CourseEndUserSchema,
-  courseEndUserSchema,
+  CourseInputSchema,
+  courseInputSchema,
 } from "@/src/common/validation/course-end-user";
 import { useQuill } from "react-quilljs";
 import { Controller, useForm } from "react-hook-form";
@@ -24,7 +24,7 @@ type Props = {};
 const CreateCourseForm = (props: Props) => {
   const [iconName, setIconName] = useState<string>("");
   const { handleSubmit, control, register, setValue, reset } =
-    useForm<CourseEndUserSchema>({
+    useForm<CourseInputSchema>({
       defaultValues: {
         title: "",
         icon: "",
@@ -34,7 +34,7 @@ const CreateCourseForm = (props: Props) => {
         points: "",
         published: false,
       },
-      resolver: zodResolver(courseEndUserSchema),
+      resolver: zodResolver(courseInputSchema),
     });
 
   const { data: session } = useSession();
@@ -43,7 +43,7 @@ const CreateCourseForm = (props: Props) => {
   const { mutateAsync } = trpc.course.create.useMutation();
 
   const onSubmit = useCallback(
-    async (data: CourseEndUserSchema) => {
+    async (data: CourseInputSchema) => {
       try {
         // let selectedIcon = iconName;
         data.content = String(quill?.root.innerHTML);

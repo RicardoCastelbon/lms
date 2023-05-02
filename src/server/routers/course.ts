@@ -2,16 +2,12 @@
 import { t } from "../trpc";
 
 import {
-  courseCreateOutputSchema,
-  courseEndUserSchema,
-  courseFindAllOutputSchema,
-  courseFindOneOutputSchema,
-  filterQuery,
-  getOneParams,
-  noInput,
-  noResourceFound,
-  updatedCourseSchema,
+  courseOutputSchema,
+  courseInputSchema,
+  updateCourseInputSchema,
+  courseId,
 } from "../../common/validation/course-end-user";
+import { FilterQuerySchema, noInput } from "@/src/common/validation/global";
 import {
   addCourse,
   getAllCourses,
@@ -30,8 +26,8 @@ export const courseRouter = t.router({
         path: "/course/create",
       },
     })
-    .input(courseEndUserSchema)
-    .output(courseCreateOutputSchema)
+    .input(courseInputSchema)
+    .output(courseOutputSchema)
     .mutation(({ input, ctx }) => addCourse({ input, ctx })),
   getMany: t.procedure
     .meta({
@@ -41,7 +37,7 @@ export const courseRouter = t.router({
       },
     })
     .input(noInput) //Only used to satisfy Swagger, not needed within the controller function.
-    .output(courseFindAllOutputSchema)
+    .output(courseOutputSchema)
     .query(({ ctx }) => getAllCourses({ ctx })),
 
   getOne: t.procedure
@@ -51,8 +47,8 @@ export const courseRouter = t.router({
         path: "/course/getOne/{courseId}",
       },
     })
-    .input(getOneParams) //Only used to satisfy Swagger, not needed within the controller function.
-    .output(courseFindOneOutputSchema)
+    .input(courseId) //Only used to satisfy Swagger, not needed within the controller function.
+    .output(courseOutputSchema)
     .query(({ input, ctx }) => getOneCourse({ input, ctx })),
   // UPDATE COURSE_LIB
   updateCourse: t.procedure
@@ -62,8 +58,8 @@ export const courseRouter = t.router({
         path: "/course/update/{courseId}",
       },
     })
-    .output(courseFindOneOutputSchema)
-    .input(updatedCourseSchema)
+    .input(updateCourseInputSchema)
+    .output(courseOutputSchema)
     .mutation(({ input, ctx }) =>
       updateCourse({
         input,

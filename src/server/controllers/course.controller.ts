@@ -2,20 +2,22 @@ import { Course, Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 // import { Context } from "vm";
 import {
-  CourseEndUserSchema,
-  FilterQuerySchema,
-  courseEndUserSchema,
-  getOneSchema,
-  updateCourseSchema,
+  // CourseEndUserSchema,
+
+  // courseEndUserSchema,
+  CourseInputSchema,
+  courseInputSchema,
+  updateCourseInputSchema,
+  UpdateCourseInputSchema,
+  CourseIdSchema,
 } from "../../common/validation/course-end-user";
 import { IContext } from "../context";
-import { log } from "console";
 
 export const addCourse = async ({
   input,
   ctx,
 }: {
-  input: CourseEndUserSchema;
+  input: CourseInputSchema;
   ctx: IContext;
 }) => {
   try {
@@ -32,24 +34,24 @@ export const addCourse = async ({
     });
 
     return {
-      status: "success",
+      success: true,
+      code: 201,
+      message: "Resource created",
       course,
     };
   } catch (error) {
-    /*  console.log(error);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      
-      EXAMPLE OF ERROR CATCH. 
-      LINK TO ERROR CODES REFERENCE -> https://www.prisma.io/docs/reference/api-reference/error-reference
-      if (error.code === "P2002") {
-        throw new TRPCError({
-          code: "CONFLICT",
-          message: "Note with that title already exists",
-        });
-      } 
-      console.log(error.code, error.message);
-      return error;
-    } */
+      // related records could not be found.
+      if (error.code === "P2015") {
+        return {
+          error: {
+            code: error.code,
+            message: error.message,
+            meta: { ...error.meta },
+          },
+        };
+      }
+    }
     throw new TRPCError({
       code: "INTERNAL_SERVER_ERROR",
       message: "An unexpected error occurred, please try again later.",
@@ -75,14 +77,9 @@ export const getAllCourses = async ({ ctx }: { ctx: IContext }) => {
         success: true,
         code: 200,
         message: "Resource found",
-        courses,
+        course: courses,
       };
     }
-    /* return {
-      status: "success",
-      result: courses.length,
-      courses,
-    }; */
   } catch (error) {
     throw new TRPCError({
       code: "INTERNAL_SERVER_ERROR",
@@ -96,23 +93,19 @@ export const getOneCourse = async ({
   input,
   ctx,
 }: {
-  input: getOneSchema;
+  input: CourseIdSchema;
   ctx: IContext;
 }) => {
   try {
-    // console.log(input);
-
-    // const courses: Course[] = await ctx.prisma.course.findMany();
     const course: Course | null = await ctx.prisma.course.findFirst({
       where: { id: Number(input.courseId) },
     });
-    console.log(course);
 
     if (course === null) {
       return {
         success: false,
         code: 404,
-        message: "No course found, please try again",
+        message: "Course not found, please try again.",
         course,
       };
     } else {
@@ -137,10 +130,9 @@ export const updateCourse = async ({
   input,
   ctx,
 }: {
-  input: updateCourseSchema;
+  input: UpdateCourseInputSchema;
   ctx: IContext;
 }) => {
-  console.log(input);
   // NOTE!!! The input params passed to the update function will update, if a certain param isn't passed the old value will remain. Be careful what params are sent from the frontend. Might have to write a util for this to remove all unused parameters.
   try {
     const course = await ctx.prisma.course.update({
@@ -148,17 +140,14 @@ export const updateCourse = async ({
       data: input.body,
     });
 
-    console.log(course);
-
     if (!course) {
+      //REWRITE THIS IF CLAUSE!!
       return {
         success: false,
         course,
         error: new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: "An unexpected error occurred, please try again later.",
-          // optional: pass the original error to retain stack trace
-          // cause: error,
         }),
       };
     } else {
@@ -170,20 +159,16 @@ export const updateCourse = async ({
       };
     }
   } catch (error) {
-    console.log(error);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      // The .code property can be accessed in a type-safe manner
       if (error.code === "P2025") {
         console.log(
           `An operation failed because it depends on one or more records that were required but not found. ${error.cause}`
         );
-        console.log(error.meta);
 
         return {
           error: {
             code: error.code,
             message: error.message,
-            // cause: error.cause,
             meta: { ...error.meta },
           },
         };
@@ -198,36 +183,5 @@ export const updateCourse = async ({
         cause: error,
       }),
     };
-    /* throw new TRPCError({
-      code: "INTERNAL_SERVER_ERROR",
-      message: "An unexpected error occurred, please try again later.",
-      // optional: pass the original error to retain stack trace
-      cause: error,
-    }); */
   }
 };
-
-/*  
-   USEFUL INFO ABOUT PRISMA
-   const result = await ctx.prisma.user.create({
-      //yarn prisma generate -> it generates the atributes to work in prisma client
-      data: {
-        email: "rick@mail.com",
-        //education is not a atribute from user, it is a reference to the education table
-        //with this syntax we can define the value for in which education is the user
-        education: {
-          connect: {
-            id: 4,
-          },
-        },
-        userRole: "TEACHER",
-      },
-      //if we want education to be returned we need to add include
-      include: {
-        education: true,
-      },
-      //with select we can return just the attributes that we want
-      /*  select: {
-          email: true,
-        }, 
-    }); */
