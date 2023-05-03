@@ -10,6 +10,8 @@ const course = z
     educationId: z.number(),
     points: z.string(),
     published: z.boolean(),
+    createdAt: z.date(),
+    updatedAt: z.date(),
   })
   .or(
     z
@@ -22,11 +24,13 @@ const course = z
         educationId: z.number(),
         points: z.string(),
         published: z.boolean(),
+        createdAt: z.date(),
+        updatedAt: z.date(),
       })
       .array()
   );
 
-//Error, should be attatched to all outputs
+//Error, should be attatched to all outputSchemas
 const error = z
   .object({
     code: z.string(),
@@ -50,7 +54,7 @@ export const courseInputSchema = z.object({
   published: z.boolean(),
 });
 
-//Default resource output schema, used in all outputs.
+//Default resource output schema, used in all output methods in router.
 export const courseOutputSchema = z.object({
   success: z.boolean().optional(),
   code: z.number().optional(),
@@ -64,13 +68,13 @@ export const updateCourseInputSchema = z.object({
   courseId: z.string(),
   body: z
     .object({
-      title: z.string().optional(),
-      icon: z.string().optional(),
-      color: z.string().optional(),
-      content: z.string().optional(),
-      educationId: z.number().optional(),
-      points: z.string().optional(),
-      published: z.boolean().optional(),
+      title: z.string(),
+      icon: z.string(),
+      color: z.string(),
+      content: z.string(),
+      educationId: z.number(),
+      points: z.string(),
+      published: z.boolean(),
     })
     .partial(),
 });

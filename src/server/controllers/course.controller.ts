@@ -54,12 +54,15 @@ export const addCourse = async ({
         };
       }
     }
-    throw new TRPCError({
-      code: "INTERNAL_SERVER_ERROR",
-      message: "An unexpected error occurred, please try again later.",
-      // optional: pass the original error to retain stack trace
-      cause: error,
-    });
+    return {
+      success: false,
+      error: new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "An unexpected error occurred, please try again later.",
+        // optional: pass the original error to retain stack trace
+        cause: error,
+      }),
+    };
   }
 };
 
@@ -83,12 +86,15 @@ export const getAllCourses = async ({ ctx }: { ctx: IContext }) => {
       };
     }
   } catch (error) {
-    throw new TRPCError({
-      code: "INTERNAL_SERVER_ERROR",
-      message: "An unexpected error occurred, please try again later.",
-      // optional: pass the original error to retain stack trace
-      cause: error,
-    });
+    return {
+      success: false,
+      error: new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "An unexpected error occurred, please try again later.",
+        // optional: pass the original error to retain stack trace
+        cause: error,
+      }),
+    };
   }
 };
 export const getCoursesByEducationId = async ({
@@ -119,12 +125,15 @@ export const getCoursesByEducationId = async ({
       };
     }
   } catch (error) {
-    throw new TRPCError({
-      code: "INTERNAL_SERVER_ERROR",
-      message: "An unexpected error occurred, please try again later.",
-      // optional: pass the original error to retain stack trace
-      cause: error,
-    });
+    return {
+      success: false,
+      error: new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "An unexpected error occurred, please try again later.",
+        // optional: pass the original error to retain stack trace
+        cause: error,
+      }),
+    };
   }
 };
 
@@ -156,12 +165,15 @@ export const getOneCourse = async ({
       };
     }
   } catch (error) {
-    throw new TRPCError({
-      code: "INTERNAL_SERVER_ERROR",
-      message: "An unexpected error occurred, please try again later.",
-      // optional: pass the original error to retain stack trace
-      cause: error,
-    });
+    return {
+      success: false,
+      error: new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "An unexpected error occurred, please try again later.",
+        // optional: pass the original error to retain stack trace
+        cause: error,
+      }),
+    };
   }
 };
 
@@ -204,6 +216,7 @@ export const updateCourse = async ({
     }
 
     return {
+      success: false,
       error: new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "An unexpected error occurred, please try again later.",
@@ -225,25 +238,12 @@ export const deleteCourse = async ({
     const course = await ctx.prisma.course.delete({
       where: { id: Number(input.courseId) },
     });
-
-    /*   if (!course) {
-      //REWRITE THIS IF CLAUSE!!
-      return {
-        success: false,
-        course,
-        error: new TRPCError({
-          code: "NOT_FOUND",
-          message: "An unexpected error occurred, please try again later.",
-        }),
-      };
-    } else { */
     return {
       success: true,
       code: 200,
       message: "Resource found",
       course,
     };
-    // }
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === "P2025") {
@@ -263,6 +263,7 @@ export const deleteCourse = async ({
     }
 
     return {
+      success: false,
       error: new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "An unexpected error occurred, please try again later.",
