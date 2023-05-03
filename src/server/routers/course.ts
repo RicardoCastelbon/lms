@@ -7,10 +7,16 @@ import {
   updateCourseInputSchema,
   courseId,
 } from "../../common/validation/course-end-user";
-import { FilterQuerySchema, noInput } from "@/src/common/validation/global";
+import {
+  FilterQuerySchema,
+  educationId,
+  noInput,
+} from "@/src/common/validation/global";
 import {
   addCourse,
+  deleteCourse,
   getAllCourses,
+  getCoursesByEducationId,
   getOneCourse,
   updateCourse,
 } from "../controllers/course.controller";
@@ -39,6 +45,16 @@ export const courseRouter = t.router({
     .input(noInput) //Only used to satisfy Swagger, not needed within the controller function.
     .output(courseOutputSchema)
     .query(({ ctx }) => getAllCourses({ ctx })),
+  getManyByEducationId: t.procedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/course/getManyByEducationId/{educationId}",
+      },
+    })
+    .input(educationId) //Only used to satisfy Swagger, not needed within the controller function.
+    .output(courseOutputSchema)
+    .query(({ input, ctx }) => getCoursesByEducationId({ input, ctx })),
 
   getOne: t.procedure
     .meta({
@@ -62,6 +78,21 @@ export const courseRouter = t.router({
     .output(courseOutputSchema)
     .mutation(({ input, ctx }) =>
       updateCourse({
+        input,
+        ctx,
+      })
+    ),
+  deleteCourse: t.procedure
+    .meta({
+      openapi: {
+        method: "DELETE",
+        path: "/course/delete/{courseId}",
+      },
+    })
+    .input(courseId)
+    .output(courseOutputSchema)
+    .mutation(({ input, ctx }) =>
+      deleteCourse({
         input,
         ctx,
       })

@@ -65,7 +65,7 @@ const CreateCourseForm = (props: Props) => {
         } else {
           console.log(data);
           const result = await mutateAsync(data);
-          if (result.status === "success") {
+          if (result.success) {
             quill!.root.innerHTML = "";
             reset();
           }
