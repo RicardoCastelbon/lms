@@ -12,6 +12,13 @@ const course = z
     published: z.boolean(),
     createdAt: z.date(),
     updatedAt: z.date(),
+    /*  education: z
+      .object({
+        connect: z.object({
+          id: z.number(),
+        }),
+      })
+      .optional(), */
   })
   .or(
     z
@@ -52,6 +59,13 @@ export const courseInputSchema = z.object({
   educationId: z.number(),
   points: z.string(),
   published: z.boolean(),
+  /*  education: z
+    .object({
+      connect: z.object({
+        id: z.number(),
+      }),
+    })
+    .optional(), */
 });
 
 //Default resource output schema, used in all output methods in router.

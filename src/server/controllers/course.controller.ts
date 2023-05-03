@@ -1,10 +1,6 @@
 import { Course, Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
-// import { Context } from "vm";
 import {
-  // CourseEndUserSchema,
-
-  // courseEndUserSchema,
   CourseInputSchema,
   courseInputSchema,
   updateCourseInputSchema,
@@ -12,7 +8,7 @@ import {
   CourseIdSchema,
 } from "../../common/validation/course-end-user";
 import { IContext } from "../context";
-import { EducationIdSchema } from "@/src/common/validation/global";
+import { EducationIdSchema, educationId } from "@/src/common/validation/global";
 
 export const addCourse = async ({
   input,
@@ -28,9 +24,12 @@ export const addCourse = async ({
         icon: input.icon,
         color: input.color,
         content: input.content,
-        educationId: input.educationId,
+        // educationId: input.educationId,
         points: input.points,
         published: input.published,
+        education: {
+          connect: { id: input.educationId },
+        },
       },
     });
 
@@ -41,9 +40,21 @@ export const addCourse = async ({
       course,
     };
   } catch (error) {
+    console.log(error);
+
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       // related records could not be found.
       if (error.code === "P2015") {
+        return {
+          success: false,
+          error: {
+            code: error.code,
+            message: error.message,
+            meta: { ...error.meta },
+          },
+        };
+      }
+      if (error.code === "P2025") {
         return {
           success: false,
           error: {

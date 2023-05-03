@@ -22,7 +22,7 @@ const IconSelect = ({ field, setIconName }: Props) => {
   //   console.log(icon);
 
   const handleIconSelect = (iconName: string) => {
-    // console.log(iconName);
+    console.log(iconName);
     if (!iconName) return;
     setIcon(selectIcon(iconName));
     setIconName(iconName);
