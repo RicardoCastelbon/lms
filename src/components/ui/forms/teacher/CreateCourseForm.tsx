@@ -23,6 +23,8 @@ type Props = {};
 
 const CreateCourseForm = (props: Props) => {
   const [iconName, setIconName] = useState<string>("");
+  const [color, setColor] = useState<string>("");
+  const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
   const { handleSubmit, control, register, setValue, reset } =
     useForm<CourseInputSchema>({
       defaultValues: {
@@ -48,9 +50,12 @@ const CreateCourseForm = (props: Props) => {
         // let selectedIcon = iconName;
         data.content = String(quill?.root.innerHTML);
         data.educationId = 1;
+
+        //Both color and iconName comes from outside the scope of the form.
         data.icon = iconName;
+        data.color = color;
         data.published = false; // needed?
-        // console.log(iconName);
+        // console.log(data.color);
         if (
           !data.title ||
           !data.color ||
@@ -67,6 +72,7 @@ const CreateCourseForm = (props: Props) => {
           const result = await mutateAsync(data);
           if (result.success) {
             quill!.root.innerHTML = "";
+            setHasSubmitted(true);
             reset();
           }
         }
@@ -74,11 +80,13 @@ const CreateCourseForm = (props: Props) => {
         console.error(err);
       }
     },
-    [mutateAsync, iconName, reset, quill]
+    [iconName, color, mutateAsync, quill, reset]
   );
-
   return (
-    <form className="flex gap-4" onSubmit={handleSubmit(onSubmit)}>
+    <form
+      className="flex flex-col gap-4 md:flex-row"
+      onSubmit={handleSubmit(onSubmit)}
+    >
       {/* left side */}
       <section className="flex-1 flex flex-col gap-4">
         {/* form group */}
@@ -122,7 +130,12 @@ const CreateCourseForm = (props: Props) => {
           render={({ field }) => (
             <div className="w-full max-w-md flex flex-col mb-4">
               <label htmlFor="color">Välj bakgrundsfärg</label>
-              <ColorSelect field={field} />
+              <ColorSelect
+                hasSubmitted={hasSubmitted}
+                field={field}
+                setColor={setColor}
+                {...register("color")}
+              />
             </div>
           )}
         />
@@ -132,26 +145,14 @@ const CreateCourseForm = (props: Props) => {
           render={({ field }) => (
             <div className="w-full max-w-md flex flex-col mb-4">
               <label htmlFor="icon">Välj en kursikon</label>
-              {/* <ColorSelect field={field} /> */}
-              <IconSelect field={field} setIconName={setIconName} />
+              <IconSelect
+                hasSubmitted={hasSubmitted}
+                field={field}
+                setIconName={setIconName}
+              />
             </div>
           )}
         />
-        {/* <div className="flex flex-col">
-          <label htmlFor="title">Titel</label>
-          <input
-            id="title"
-            className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2 text-sm"
-            type="text"
-            placeholder="Ge kursen ett namn"
-          />
-        </div> */}
-        {/*  <div className="w-full max-w-md flex flex-col mb-4">
-   
-
-       
-          <IconSelect setIconName={setIconName} />
-        </div> */}
       </section>
       {/* Right side */}
       <section className="h-full flex-1">
