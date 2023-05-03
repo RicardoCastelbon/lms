@@ -6,13 +6,20 @@ import {
   exerciseLibId,
 } from "../../../common/validation/exercise_lib";
 
-import { createExerciseLibController } from "../../controllers/exercise_lib.controller";
-// ../../controllers/exercise_lib.controller
+import {
+  createExerciseLibController,
+  getAllExercisesLib,
+  getOneExerciseLib,
+  updateExerciseLib,
+} from "../../controllers/exercise_lib.controller";
 import { z } from "zod";
-
+import {
+  FilterQuerySchema,
+  educationId,
+  noInput,
+} from "@/src/common/validation/global";
 export const exerciseLibRouter = t.router({
-  // Create Course_Lib
-
+  // Create Exercise_Lib
   create: t.procedure
     .meta({
       openapi: {
@@ -20,9 +27,47 @@ export const exerciseLibRouter = t.router({
         path: "/exercise-lib/create",
       },
     })
-    .output(exerciseLibInputSchema)
     .input(exerciseLibInputSchema)
+    .output(exerciseLibOutputSchema)
     .mutation(({ input, ctx }) => createExerciseLibController({ input, ctx })),
+  getMany: t.procedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/exercise-lib/getMany",
+      },
+    })
+    .input(noInput) //Only used to satisfy Swagger, not needed within the controller function.
+    .output(exerciseLibOutputSchema)
+    .query(({ ctx }) => getAllExercisesLib({ ctx })),
+
+  getOne: t.procedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/exercise-lib/getOne/{exerciseLibId}",
+      },
+    })
+    .input(exerciseLibId)
+    .output(exerciseLibOutputSchema)
+    .query(({ input, ctx }) => getOneExerciseLib({ input, ctx })),
+
+  // UPDATE EXERCISE_LIB
+  updateExerciseLib: t.procedure
+    .meta({
+      openapi: {
+        method: "PUT",
+        path: "/exercise-lib/update/{exerciseLibId}",
+      },
+    })
+    .input(updateExerciseInputSchema)
+    .output(exerciseLibOutputSchema)
+    .mutation(({ input, ctx }) =>
+      updateExerciseLib({
+        input,
+        ctx,
+      })
+    ),
 });
 
 //GET ONE Course

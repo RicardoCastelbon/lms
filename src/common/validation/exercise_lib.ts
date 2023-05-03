@@ -64,14 +64,14 @@ export const exerciseLibOutputSchema = z.object({
 
 //Special schema for updating a resource, resourseId is attached. Body is all optional.
 export const updateExerciseInputSchema = z.object({
-  courseId: z.string(),
+  exerciseLibId: z.string(),
   body: z
     .object({
       id: z.number(),
       title: z.string(),
       description: z.string(),
       content: z.string(),
-      published: z.boolean(),
+      // published: z.boolean(),
       // createdAt: z.date(), // to be added later
       // updatedAt: z.date(), // to be added later
     })
@@ -85,13 +85,14 @@ export const filterQuery = z.object({
 });
 export const exerciseLibId = z.object({
   exerciseLibId: z.string(),
-  success: z.boolean(),
-  code: z.number(),
-  message: z.string(),
-  exerciseLib: exerciseLib,
-  error: error.nullable(),
+  // success: z.boolean(),
+  // code: z.number(),
+  // message: z.string(),
+  // exerciseLib: exerciseLib,
+  // error: error.nullable(),
 });
 export type ExerciseLibIdSchema = z.infer<typeof exerciseLibId>;
+
 export type ExerciseLibInputSchema = z.infer<typeof exerciseLibInputSchema>;
 export type ExerciseLibOutputSchema = z.infer<typeof exerciseLibOutputSchema>;
 export type UpdateExerciseLibInputSchema = z.TypeOf<
