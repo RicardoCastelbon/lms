@@ -1,34 +1,39 @@
-import { Exercise_lib, Prisma } from "@prisma/client";
+import { ExerciseLib, Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { Context } from "vm";
 import {
-  CreateExerciseLibInput,
-  //   UpdatedExerciseLibInput,
-  ParamsInput,
-  FilterQueryInput,
+  ExerciseLibIdSchema,
+  ExerciseLibInputSchema,
+  ExerciseLibOutputSchema,
 } from "../../common/validation/exercise_lib";
 
 export const createExerciseLibController = async ({
   input,
   ctx,
 }: {
-  input: CreateExerciseLibInput;
+  input: ExerciseLibInputSchema;
   ctx: Context;
 }) => {
   try {
     console.log("Creating course lib with input:", input);
-    const exercise_lib: Exercise_lib = await ctx.prisma.exercise_lib.create({
+    const exerciseLib: ExerciseLib = await ctx.prisma.exerciseLib.create({
       // Fix the typo here
       data: {
-        title: input.title,
-        description: input.description,
-        content: input.content,
+        title: input.exerciseLib.title, // Access the properties from the first element of exercise_lib array
+        description: input.exerciseLib.description,
+        content: input.exerciseLib.content,
+      },
+      include: {
+        _all: true,
       },
     });
-    console.log("Created Exercise lib:", exercise_lib);
+
     return {
-      status: "success",
-      exercise_lib,
+      success: true,
+      code: 201,
+      message: "Exercise library created successfully.",
+      exerciseLib,
+      error: null,
     };
   } catch (error) {
     console.log("Error creating exercise lib:", error);
@@ -39,38 +44,38 @@ export const createExerciseLibController = async ({
   }
 };
 
-export const findExerciseLibController = async ({
-  paramsInput,
-  ctx,
-}: {
-  paramsInput: ParamsInput;
-  ctx: Context;
-}) => {
-  try {
-    const course_lib: Exercise_lib | null =
-      await ctx.prisma.exercise_lib.findFirst({
-        where: { id: Number(paramsInput.exercise_libId) },
-      });
+// export const findExerciseLibController = async ({
+//   //   paramsInput,
+//   ctx,
+// }: {
+//   //   paramsInput: ParamsInput;
+//   ctx: Context;
+// }) => {
+//   try {
+//     const course_lib: Exercise_lib | null =
+//       await ctx.prisma.exercise_lib.findFirst({
+//         // where: { id: Number(paramsInput.exercise_libId) },
+//       });
 
-    if (!course_lib) {
-      throw new TRPCError({
-        code: "NOT_FOUND",
-        message: `Education with ID: ${paramsInput.exercise_libId} not found`,
-      });
-    }
+//     if (!course_lib) {
+//       throw new TRPCError({
+//         code: "NOT_FOUND",
+//         // message: `Education with ID: ${paramsInput.exercise_libId} not found`,
+//       });
+//     }
 
-    return {
-      status: "success",
-      course_lib,
-    };
-  } catch (error) {
-    console.log(error);
-    throw new TRPCError({
-      code: "INTERNAL_SERVER_ERROR",
-      message: "Failed to find course library",
-    });
-  }
-};
+//     return {
+//       status: "success",
+//       course_lib,
+//     };
+//   } catch (error) {
+//     console.log(error);
+//     throw new TRPCError({
+//       code: "INTERNAL_SERVER_ERROR",
+//       message: "Failed to find course library",
+//     });
+//   }
+// };
 
 // export const updatedCourseLibController = async ({
 //   paramsInput,
