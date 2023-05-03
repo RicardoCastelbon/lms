@@ -84,15 +84,9 @@ export const filterQuery = z.object({
   // name: z.string(),
 });
 export const exerciseLibId = z.object({
-  exerciseLibId: z.string(),
-  // success: z.boolean(),
-  // code: z.number(),
-  // message: z.string(),
-  // exerciseLib: exerciseLib,
-  // error: error.nullable(),
+  exerciseLibId: z.number(),
 });
 export type ExerciseLibIdSchema = z.infer<typeof exerciseLibId>;
-
 export type ExerciseLibInputSchema = z.infer<typeof exerciseLibInputSchema>;
 export type ExerciseLibOutputSchema = z.infer<typeof exerciseLibOutputSchema>;
 export type UpdateExerciseLibInputSchema = z.TypeOf<

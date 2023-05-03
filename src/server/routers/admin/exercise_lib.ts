@@ -8,6 +8,7 @@ import {
 
 import {
   createExerciseLibController,
+  deleteExerciseLib,
   getAllExercisesLib,
   getOneExerciseLib,
   updateExerciseLib,
@@ -64,6 +65,21 @@ export const exerciseLibRouter = t.router({
     .output(exerciseLibOutputSchema)
     .mutation(({ input, ctx }) =>
       updateExerciseLib({
+        input,
+        ctx,
+      })
+    ),
+  deleteExerciseLib: t.procedure
+    .meta({
+      openapi: {
+        method: "DELETE",
+        path: "/exercise-lib/delete/{exerciseLibId}",
+      },
+    })
+    .input(exerciseLibId)
+    .output(exerciseLibOutputSchema)
+    .mutation(({ input, ctx }) =>
+      deleteExerciseLib({
         input,
         ctx,
       })
