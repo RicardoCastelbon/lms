@@ -39,6 +39,8 @@ const ColorSelect = ({ field }: any) => {
   const [selectedColor, setSelectedColor] = useState<string>("");
 
   const colorSelectHandle = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    console.log(e);
+
     const col = e.target.value;
     setSelectedColor(col);
   };
@@ -55,7 +57,9 @@ const ColorSelect = ({ field }: any) => {
         className={`focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 rounded-md ${
           selectedColor !== "" ? `${selectedColor}` : "bg-muted"
         }`}
-        onChange={(e) => colorSelectHandle(e)}
+        onChange={(e) => {
+          console.log(e);
+        }}
         {...field}
       >
         <option value="default">Välj</option>

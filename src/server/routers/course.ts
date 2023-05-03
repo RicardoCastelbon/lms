@@ -2,10 +2,24 @@
 import { t } from "../trpc";
 
 import {
-  courseCreateOutputSchema,
-  courseEndUserSchema,
+  courseOutputSchema,
+  courseInputSchema,
+  updateCourseInputSchema,
+  courseId,
 } from "../../common/validation/course-end-user";
-import { addCourse } from "../controllers/course.controller";
+import {
+  FilterQuerySchema,
+  educationId,
+  noInput,
+} from "@/src/common/validation/global";
+import {
+  addCourse,
+  deleteCourse,
+  getAllCourses,
+  getCoursesByEducationId,
+  getOneCourse,
+  updateCourse,
+} from "../controllers/course.controller";
 import { Course } from "@prisma/client";
 import { IContext } from "../context";
 import { TRPCError } from "@trpc/server";
@@ -18,29 +32,69 @@ export const courseRouter = t.router({
         path: "/course/create",
       },
     })
-    .input(courseEndUserSchema)
-    .output(courseCreateOutputSchema)
+    .input(courseInputSchema)
+    .output(courseOutputSchema)
     .mutation(({ input, ctx }) => addCourse({ input, ctx })),
-  /*   .mutation(async ({ input, ctx }) => {
-      try {
-        const course: Course = await ctx.prisma.course.create({
-          data: {
-            title: input.title,
-            icon: input.icon,
-            color: input.color,
-            content: input.content,
-            educationId: input.educationId,
-            points: input.points,
-          },
-        });
-        return course;
-      } catch (error) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "An unexpected error occurred, please try again later.",
-          // optional: pass the original error to retain stack trace
-          cause: error,
-        });
-      }
-    }), */
+  getMany: t.procedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/course/getMany",
+      },
+    })
+    .input(noInput) //Only used to satisfy Swagger, not needed within the controller function.
+    .output(courseOutputSchema)
+    .query(({ ctx }) => getAllCourses({ ctx })),
+  getManyByEducationId: t.procedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/course/getManyByEducationId/{educationId}",
+      },
+    })
+    .input(educationId) //Only used to satisfy Swagger, not needed within the controller function.
+    .output(courseOutputSchema)
+    .query(({ input, ctx }) => getCoursesByEducationId({ input, ctx })),
+
+  getOne: t.procedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/course/getOne/{courseId}",
+      },
+    })
+    .input(courseId) //Only used to satisfy Swagger, not needed within the controller function.
+    .output(courseOutputSchema)
+    .query(({ input, ctx }) => getOneCourse({ input, ctx })),
+  // UPDATE COURSE_LIB
+  updateCourse: t.procedure
+    .meta({
+      openapi: {
+        method: "PUT",
+        path: "/course/update/{courseId}",
+      },
+    })
+    .input(updateCourseInputSchema)
+    .output(courseOutputSchema)
+    .mutation(({ input, ctx }) =>
+      updateCourse({
+        input,
+        ctx,
+      })
+    ),
+  deleteCourse: t.procedure
+    .meta({
+      openapi: {
+        method: "DELETE",
+        path: "/course/delete/{courseId}",
+      },
+    })
+    .input(courseId)
+    .output(courseOutputSchema)
+    .mutation(({ input, ctx }) =>
+      deleteCourse({
+        input,
+        ctx,
+      })
+    ),
 });

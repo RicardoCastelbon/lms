@@ -22,7 +22,7 @@ model Education {
   users     User[]
   courses   Course[]
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now()) @updatedAt
 }
 
 model User {
@@ -36,7 +36,7 @@ model User {
   firstName   String    @default("NULL")
   lastName    String    @default("NULL")
   createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  updatedAt   DateTime  @default(now()) @updatedAt
 }
 
 model Admin {
@@ -45,7 +45,7 @@ model Admin {
   email     String   @unique
   password  String   @default("NULL")
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now()) @updatedAt
 }
 
 model Course_lib {
@@ -54,6 +54,8 @@ model Course_lib {
   title       String
   description String
   content     String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @default(now()) @updatedAt
 }
 
 model Module_lib {
@@ -64,6 +66,8 @@ model Module_lib {
   title       String
   description String
   content     String
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @default(now()) @updatedAt
 }
 
 model Exercise_lib {
@@ -73,11 +77,13 @@ model Exercise_lib {
   title       String
   description String
   content     String
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @default(now()) @updatedAt
 }
 
 model Course {
-  id          Int       @id @default(autoincrement())
-  education   Education @relation(fields: [educationId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  id          Int        @id @default(autoincrement())
+  education   Education? @relation(fields: [educationId], references: [id], onDelete: Restrict, onUpdate: Cascade)
   educationId Int
   modules     Module[]
   title       String
@@ -85,6 +91,9 @@ model Course {
   icon        String
   color       String
   content     String
+  published   Boolean    @default(false)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @default(now()) @updatedAt
 }
 
 model Module {
@@ -95,13 +104,17 @@ model Module {
   title       String
   description String
   content     String
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @default(now()) @updatedAt
 }
 
 model Exercise {
-  id          Int     @id @default(autoincrement())
-  module      Module? @relation(fields: [moduleId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  id          Int      @id @default(autoincrement())
+  module      Module?  @relation(fields: [moduleId], references: [id], onDelete: Restrict, onUpdate: Cascade)
   moduleId    Int?
   title       String
   description String
   content     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
 }
