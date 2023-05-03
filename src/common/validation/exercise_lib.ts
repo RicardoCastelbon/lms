@@ -42,7 +42,7 @@ export const exerciseLibInputSchema = z.object({
   // status: z.string(),
   // result: z.number(),
   exerciseLib: z.object({
-    id: z.number(),
+    // id: z.number(),
     title: z.string(),
     description: z.string(),
     content: z.string(),

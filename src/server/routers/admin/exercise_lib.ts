@@ -1,12 +1,13 @@
 import { t } from "../../trpc";
-import { createExerciseLibController } from "../../controllers/exercise_lib.controller";
-// ../../controllers/exercise_lib.controller
 import {
   exerciseLibOutputSchema,
-  exerciseLibId,
-  ExerciseLibInputSchema,
   exerciseLibInputSchema,
+  updateExerciseInputSchema,
+  exerciseLibId,
 } from "../../../common/validation/exercise_lib";
+
+import { createExerciseLibController } from "../../controllers/exercise_lib.controller";
+// ../../controllers/exercise_lib.controller
 import { z } from "zod";
 
 export const exerciseLibRouter = t.router({
@@ -19,7 +20,7 @@ export const exerciseLibRouter = t.router({
         path: "/exercise-lib/create",
       },
     })
-    .output(exerciseLibId)
+    .output(exerciseLibInputSchema)
     .input(exerciseLibInputSchema)
     .mutation(({ input, ctx }) => createExerciseLibController({ input, ctx })),
 });

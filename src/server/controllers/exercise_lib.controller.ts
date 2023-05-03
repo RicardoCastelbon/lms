@@ -1,4 +1,4 @@
-import { ExerciseLib, Prisma } from "@prisma/client";
+import { Exercise_lib, Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { Context } from "vm";
 import {
@@ -16,16 +16,16 @@ export const createExerciseLibController = async ({
 }) => {
   try {
     console.log("Creating course lib with input:", input);
-    const exerciseLib: ExerciseLib = await ctx.prisma.exerciseLib.create({
+    const exerciseLib: Exercise_lib = await ctx.prisma.exercise_lib.create({
       // Fix the typo here
       data: {
         title: input.exerciseLib.title, // Access the properties from the first element of exercise_lib array
         description: input.exerciseLib.description,
         content: input.exerciseLib.content,
       },
-      include: {
-        _all: true,
-      },
+      // include: {
+      //   _all: true,
+      // },
     });
 
     return {
