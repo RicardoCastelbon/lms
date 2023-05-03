@@ -15,7 +15,7 @@ const exerciseLib = z
       .object({
         id: z.number(),
         title: z.string(),
-        published: z.boolean(), // exercise_lib: z.object({
+        // published: z.boolean(), // exercise_lib: z.object({
         description: z.string(),
         content: z.string(),
         createdAt: z.date(), // to be added later

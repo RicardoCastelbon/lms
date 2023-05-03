@@ -47,6 +47,8 @@ export const getAllExercisesLib = async ({ ctx }: { ctx: IContext }) => {
     const exercisesLib: Exercise_lib[] =
       await ctx.prisma.exercise_lib.findMany();
 
+    console.log("Exercises fetched from database:", exercisesLib);
+
     if (exercisesLib.length <= 0) {
       return {
         success: false,
@@ -59,7 +61,7 @@ export const getAllExercisesLib = async ({ ctx }: { ctx: IContext }) => {
         success: true,
         code: 200,
         message: "Resource found",
-        exercisesLib: exercisesLib,
+        exerciseLib: exercisesLib,
       };
     }
   } catch (error) {
