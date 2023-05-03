@@ -7,19 +7,18 @@ const exerciseLib = z
 
     description: z.string(),
     content: z.string(),
-    createdAt: z.date(), // to be added later
-    updatedAt: z.date(), // to be added later
+    createdAt: z.date(),
+    updatedAt: z.date(),
   })
   .or(
     z
       .object({
         id: z.number(),
         title: z.string(),
-        // published: z.boolean(), // exercise_lib: z.object({
         description: z.string(),
         content: z.string(),
-        createdAt: z.date(), // to be added later
-        updatedAt: z.date(), // to be added later
+        createdAt: z.date(),
+        updatedAt: z.date(),
       })
       .array()
   );
@@ -39,17 +38,11 @@ const error = z
 
 //Default resourse input schema, used for creating a resource
 export const exerciseLibInputSchema = z.object({
-  // status: z.string(),
-  // result: z.number(),
   exerciseLib: z.object({
     // id: z.number(),
     title: z.string(),
     description: z.string(),
     content: z.string(),
-    // published: z.boolean(),
-
-    // createdAt: z.date(), // to be added later
-    // updatedAt: z.date(), // to be added later
   }),
 });
 
@@ -71,18 +64,15 @@ export const updateExerciseInputSchema = z.object({
       title: z.string(),
       description: z.string(),
       content: z.string(),
-      // published: z.boolean(),
-      // createdAt: z.date(), // to be added later
-      // updatedAt: z.date(), // to be added later
     })
     .partial(),
 });
 
-export const filterQuery = z.object({
-  limit: z.number().default(1),
-  page: z.number().default(10),
-  // name: z.string(),
-});
+// export const filterQuery = z.object({
+//   limit: z.number().default(1),
+//   page: z.number().default(10),
+//   // name: z.string(),
+// });
 export const exerciseLibId = z.object({
   exerciseLibId: z.number(),
 });
