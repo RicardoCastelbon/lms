@@ -18,10 +18,16 @@ export const userRouter = t.router({
       });
 
       if (exists) {
-        throw new TRPCError({
-          code: "CONFLICT",
-          message: "User already exists.",
-        });
+        //Need to find a solution for the different errors.
+        return {
+          status: false,
+          code: 409,
+          message: "Conflict, An account with this email already exists",
+          error: new TRPCError({
+            code: "CONFLICT",
+            message: "User already exists.",
+          }),
+        };
       }
 
       const hashedPassword = await hash(password);
@@ -49,7 +55,8 @@ export const userRouter = t.router({
       });
 
       return {
-        status: 201,
+        status: true,
+        code: 201,
         message: "Account created successfully",
         result: result.email,
       };
