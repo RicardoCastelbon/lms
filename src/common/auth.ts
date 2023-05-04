@@ -46,7 +46,7 @@ export const nextAuthOptions: NextAuthOptions = {
             id: result.id,
             email,
             role: result.userRole,
-            nextPage: `/${result.education.name}/dashboard`,
+            nextPage: `/dashboard`,
             educationName: result.education.name,
             name: result.firstName,
             image: null,

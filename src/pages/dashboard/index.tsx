@@ -46,7 +46,7 @@ const Dashboard: NextPage = () => {
     if (!session) {
       router.push("/401");
     }
-  }, [session]);
+  }, [router, session]);
 
   useEffect(() => {
     function getScreenSize() {

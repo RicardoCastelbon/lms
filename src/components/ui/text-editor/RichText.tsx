@@ -1,7 +1,7 @@
 "use client";
 import { log } from "console";
 import dynamic from "next/dynamic";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, forwardRef } from "react";
 import { useQuill } from "react-quilljs";
 import "react-quill/dist/quill.snow.css";
 type Course = {
@@ -11,10 +11,11 @@ type Course = {
   content: string;
 };
 type Props = {
-  quillRef: React.RefObject<any>;
+  // quillRef: React.RefObject<any>;
 };
 
-const RichText = ({ quillRef }: Props) => {
+const RichText = forwardRef<HTMLDivElement>(function Editor(props, ref) {
+  // const { ...restProps } = props;
   /*   const modules = {
     toolbar: [
       [{ font: [] }],
@@ -32,7 +33,7 @@ const RichText = ({ quillRef }: Props) => {
 
   return (
     <>
-      <div className="w-full" ref={quillRef} />
+      <div className="w-full" ref={ref} />
 
       {/*     <ReactQuill
       forwardedRef={editorRef}
@@ -52,6 +53,6 @@ const RichText = ({ quillRef }: Props) => {
     </ReactQuill> */}
     </>
   );
-};
+});
 
 export default RichText;

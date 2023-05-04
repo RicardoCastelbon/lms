@@ -134,7 +134,7 @@ const CreateCourseForm = (props: Props) => {
                 hasSubmitted={hasSubmitted}
                 field={field}
                 setColor={setColor}
-                {...register("color")}
+                // {...register("color")}
               />
             </div>
           )}
@@ -165,7 +165,7 @@ const CreateCourseForm = (props: Props) => {
             Spara
           </button>
         </div>
-        <RichText quillRef={quillRef} />
+        <RichText ref={quillRef} />
       </section>
     </form>
   );

@@ -20,9 +20,7 @@ const Login: NextPage = () => {
   useEffect(() => {
     if (status === "authenticated" && loginAttempt) {
       if (data.user.role === Role.STUDENT || Role.TEACHER) {
-        router.replace(
-          `/${data.user.educationName?.toLocaleLowerCase()}/dashboard`
-        );
+        router.replace(`/dashboard`);
       }
     }
   }, [status, data, router, loginAttempt]);
