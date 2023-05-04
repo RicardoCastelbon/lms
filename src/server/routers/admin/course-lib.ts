@@ -1,12 +1,10 @@
 import { t } from "../../trpc";
 import {
-  createCourseLibController,
-  getAllCoursesLibController,
-  updatedCourseLibController,
-  // deleteCourseLibController,
-  // findAllCourseLibController,
+  createCourseLib,
+  getAllCoursesLib,
+  updatedCourseLib,
+  deleteCourseLib,
   // getOneCourseLib,
-  // updatedCourseLibController,
 } from "../../controllers/course-lib.controller";
 
 import {
@@ -31,7 +29,7 @@ export const courseLibRouter = t.router({
     })
     .output(courseLibOutputSchema)
     .input(courseLibInputSchema)
-    .mutation(({ input, ctx }) => createCourseLibController({ input, ctx })),
+    .mutation(({ input, ctx }) => createCourseLib({ input, ctx })),
   // GET MANY coursers_lib
   getMany: t.procedure
     .meta({
@@ -42,7 +40,7 @@ export const courseLibRouter = t.router({
     })
     .input(noInput)
     .output(courseOutputSchema)
-    .query(({ input, ctx }) => getAllCoursesLibController({ ctx })),
+    .query(({ input, ctx }) => getAllCoursesLib({ ctx })),
   //   //GET ONE Course
   //   getOne: t.procedure
   //     .meta({
@@ -66,23 +64,21 @@ export const courseLibRouter = t.router({
     .input(updateCourseLibInputSchema)
     .output(courseLibOutputSchema)
     .mutation(({ input, ctx }) =>
-      updatedCourseLibController({
+      updatedCourseLib({
         input,
         ctx,
       })
     ),
 
   //   //DELETE EDUCATION
-  //   delete: t.procedure
-  //     .meta({
-  //       openapi: {
-  //         method: "DELETE",
-  //         path: "/coourse-lib/delete/{courseLibId}",
-  //       },
-  //     })
-  //     .input(params)
-  //     .output(courseLibSchema)
-  //     .mutation(({ input, ctx }) =>
-  //       deleteCourseLibController({ paramsInput: input, ctx })
-  //     ),
+  delete: t.procedure
+    .meta({
+      openapi: {
+        method: "DELETE",
+        path: "/course-lib/delete/{courseLibId}",
+      },
+    })
+    .input(courseLibId)
+    .output(courseLibOutputSchema)
+    .mutation(({ input, ctx }) => deleteCourseLib({ input, ctx })),
 });

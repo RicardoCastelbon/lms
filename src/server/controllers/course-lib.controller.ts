@@ -7,7 +7,7 @@ import {
   CourseLibIdSchema,
 } from "../../common/validation/course-lib";
 
-export const createCourseLibController = async ({
+export const createCourseLib = async ({
   input,
   ctx,
 }: {
@@ -101,11 +101,7 @@ export const getOneCourseLib = async ({
   }
 };
 
-export const getAllCoursesLibController = async ({
-  ctx,
-}: {
-  ctx: IContext;
-}) => {
+export const getAllCoursesLib = async ({ ctx }: { ctx: IContext }) => {
   try {
     const coursesLib: Course_lib[] = await ctx.prisma.course_lib.findMany();
 
@@ -137,7 +133,7 @@ export const getAllCoursesLibController = async ({
   }
 };
 
-export const updatedCourseLibController = async ({
+export const updatedCourseLib = async ({
   input,
   ctx,
 }: {
@@ -171,6 +167,53 @@ export const updatedCourseLibController = async ({
         };
       }
     }
+    return {
+      success: false,
+      error: new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "An unexpected error occurred, please try again later.",
+        // optional: pass the original error to retain stack trace
+        cause: error,
+      }),
+    };
+  }
+};
+
+export const deleteCourseLib = async ({
+  input,
+  ctx,
+}: {
+  input: CourseLibIdSchema;
+  ctx: IContext;
+}) => {
+  try {
+    const courseLib: Course_lib = await ctx.prisma.course_lib.delete({
+      where: { id: Number(input.courseLibId) },
+    });
+    return {
+      success: true,
+      code: 200,
+      message: "Resource found",
+      courseLib,
+    };
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === "P2025") {
+        console.log(
+          `An operation failed because it depends on one or more records that were required but not found. ${error.cause}`
+        );
+
+        return {
+          success: false,
+          error: {
+            code: error.code,
+            message: error.message,
+            meta: { ...error.meta },
+          },
+        };
+      }
+    }
+
     return {
       success: false,
       error: new TRPCError({
