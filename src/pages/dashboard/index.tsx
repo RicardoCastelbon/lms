@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import type { GetServerSideProps, NextPage } from "next";
 import { useSession } from "next-auth/react";
+import { trpc } from "@/src/common/trpc";
 import { getServerSession } from "next-auth";
 import { useRouter } from "next/router";
-
+import { createServerSideHelpers } from "@trpc/react-query/server";
 import UserLayout from "@/src/components/ui/UserLayout";
 import { IconContext } from "react-icons";
 import { nextAuthOptions } from "@/src/common/auth";
@@ -12,8 +13,12 @@ import { Plus, X } from "lucide-react";
 import ColorSelect from "@/src/components/ui/dropdowns/ColorSelect";
 import CreateCourseForm from "@/src/components/ui/forms/teacher/CreateCourseForm";
 import Modal from "@/src/components/ui/modals/Modal";
+import { getQueryKey } from "@trpc/react-query";
+import { serverRouter } from "@/src/server/routers";
+import { createContext } from "@/src/server/context";
+import { Course } from "@prisma/client";
 
-const courses = [
+/* const courses = [
   {
     id: 1,
     name: "Frontend-utveckling",
@@ -32,8 +37,12 @@ const courses = [
     exercises: 14,
     slug: "ux-design",
   },
-];
-const Dashboard: NextPage = () => {
+]; */
+
+type Props = {
+  courses: Course[];
+};
+const Dashboard = ({ courses }: Props) => {
   const [sideBarClass, setSideBarClass] = useState<boolean>(false);
   const [screenWidth, setScreenWidth] = useState<number>();
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -44,11 +53,12 @@ const Dashboard: NextPage = () => {
 
   useEffect(() => {
     console.log(session);
+    console.log(courses);
 
     if (!session) {
       router.push("/401");
     }
-  }, [router, session]);
+  }, [router, session, courses]);
 
   useEffect(() => {
     function getScreenSize() {
@@ -103,9 +113,10 @@ const Dashboard: NextPage = () => {
         <div className="w-full flex flex-col md:flex-row gap-8">
           {/* Main content */}
           <div className="w-full h-full flex flex-wrap justify-center gap-4 md:justify-start md:w-3/6 lg:w-4/6">
-            {courses.map((course) => (
-              <CourseCard key={course.id} course={course} />
-            ))}
+            {courses &&
+              courses?.map((course: Course) => (
+                <CourseCard key={course.id} course={course} />
+              ))}
           </div>
           {/* Aside right */}
           <aside className="flex-1 bg-green">
@@ -138,15 +149,42 @@ const Dashboard: NextPage = () => {
 };
 
 /* getServerSideProps */
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps: GetServerSideProps = async (context: any) => {
+  const currentSession = await getServerSession(
+    context.req,
+    context.res,
+    nextAuthOptions
+  );
+  console.log("Current session", currentSession);
+  const educationId = String(currentSession?.user.educationId);
+
+  const helpers = createServerSideHelpers({
+    router: serverRouter,
+    ctx: await createContext(context),
+  });
+  const res = await helpers.course.getManyByEducationId.fetch({
+    educationId,
+  });
+  const courses = JSON.parse(JSON.stringify(res));
+  console.log(courses);
+
+  // console.log(typeof eduId);
+
+  // const { data } = trpc.course.getManyByEducationId.useQuery({ educationId });
+  //  const caller = serverRouter.createCaller({...context})
+
   return {
     props: {
-      session: await getServerSession(
-        context.req,
-        context.res,
-        nextAuthOptions
-      ),
+      session: currentSession,
+      courses: courses.course,
     },
   };
 };
 export default Dashboard;
+/* function createServerSideHelpers(arg0: {
+  router: any;
+  ctx: any;
+  transformer: any;
+}) {
+  throw new Error("Function not implemented.");
+} */

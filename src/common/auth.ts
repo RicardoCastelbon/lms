@@ -34,7 +34,7 @@ export const nextAuthOptions: NextAuthOptions = {
             },
           });
 
-          console.log(result);
+          // console.log(result);
 
           if (!result) return null;
 

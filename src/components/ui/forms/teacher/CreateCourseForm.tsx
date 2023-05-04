@@ -39,7 +39,7 @@ const CreateCourseForm = (props: Props) => {
       resolver: zodResolver(courseInputSchema),
     });
 
-  const { data: session } = useSession();
+  // const { data: session } = useSession();
 
   const { quill, quillRef } = useQuill();
   const { mutateAsync } = trpc.course.create.useMutation();

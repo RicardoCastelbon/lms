@@ -12,5 +12,6 @@ export const serverRouter = t.router({
   course_lib: courseLibRouter,
   course: courseRouter,
 });
+
 //Should this have "I" prefixed in the name? Since it's a type, not an interface.
 export type IServerRouter = typeof serverRouter;

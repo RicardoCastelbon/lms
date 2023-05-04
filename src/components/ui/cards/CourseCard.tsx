@@ -1,3 +1,4 @@
+import { Course } from "@prisma/client";
 import { log } from "console";
 import Link from "next/link";
 import React from "react";
@@ -10,7 +11,7 @@ interface ICourse {
 }
 
 type Props = {
-  course: ICourse;
+  course: Course;
 };
 
 const CourseCard = ({ course }: Props) => {
@@ -24,11 +25,11 @@ const CourseCard = ({ course }: Props) => {
       </div>
       {/* card body */}
       <div className="flex flex-col gap-2 p-2 text-center">
-        <h2 className="font-semibold text-lg mb-2">{course.name}</h2>
+        <h2 className="font-semibold text-lg mb-2">{course.title}</h2>
         <p>Uppgifter</p>
-        <p>{course.exercises}</p>
+        {/* <p>{course.exercises}</p> */}
         <Link
-          href={`${course.slug}`}
+          href={`/dashboard`}
           className="pointer-cursor bg-indigo-50 rounded-sm py-2 text-foregound hover:bg-indigo-500 hover:text-white"
         >
           Till kurs
