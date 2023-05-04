@@ -8,17 +8,20 @@ type Icon = {
 };
 type Props = {
   field: any;
+  hasSubmitted: boolean;
   setIconName: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const IconSelect = ({ field, setIconName }: Props) => {
+const IconSelect = ({ field, setIconName, hasSubmitted }: Props) => {
   const [icon, setIcon] = useState<ReactNode>(null);
   const { selectIcon, icons } = useIcon();
 
-  /*   useEffect(() => {
-    // setIcon(selectIcon("javascript"));
-    // console.log(icons);
-  }, []); */
+  useEffect(() => {
+    if (hasSubmitted) {
+      setIcon(null);
+    }
+  }, [hasSubmitted]);
+
   //   console.log(icon);
 
   const handleIconSelect = (iconName: string) => {
@@ -30,7 +33,7 @@ const IconSelect = ({ field, setIconName }: Props) => {
   return (
     <div className="">
       <div {...field} className="flex justify-between items-center">
-        <p>Välj ikon för kursen</p>
+        <div></div>
         {icon !== null && <>{icon}</>}
       </div>
       {/* Icon select wrapper */}
