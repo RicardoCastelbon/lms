@@ -43,6 +43,8 @@ const Dashboard: NextPage = () => {
   const modalRef = useRef(null);
 
   useEffect(() => {
+    console.log(session);
+
     if (!session) {
       router.push("/401");
     }

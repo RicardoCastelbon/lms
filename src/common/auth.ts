@@ -34,7 +34,7 @@ export const nextAuthOptions: NextAuthOptions = {
             },
           });
 
-          // console.log(result);
+          console.log(result);
 
           if (!result) return null;
 
@@ -47,7 +47,7 @@ export const nextAuthOptions: NextAuthOptions = {
             email,
             role: result.userRole,
             nextPage: `/dashboard`,
-            educationName: result.education.name,
+            educationId: result.education.id,
             name: result.firstName,
             image: null,
           };
@@ -123,7 +123,7 @@ export const nextAuthOptions: NextAuthOptions = {
         token.userId = user.id;
         token.email = user.email;
         token.role = user.role;
-        token.educationName = user.educationName;
+        token.educationId = user.educationId;
         token.name = user.name || null;
         token.image = user.image || null;
 
@@ -137,7 +137,7 @@ export const nextAuthOptions: NextAuthOptions = {
         session.user.userId = token.userId;
         session.user.email = token.email;
         session.user.role = token.role || null;
-        session.user.educationName = token.educationName || null;
+        session.user.educationId = token.educationId || null;
         session.user.name = token.name;
         session.user.image = token.image;
         session.user.name = token.name || null;
