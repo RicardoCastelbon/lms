@@ -70,7 +70,7 @@ export const courseLibRouter = t.router({
       })
     ),
 
-  //   //DELETE EDUCATION
+  //DELETE EDUCATION
   delete: t.procedure
     .meta({
       openapi: {
