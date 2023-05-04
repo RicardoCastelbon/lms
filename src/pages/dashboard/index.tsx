@@ -1,39 +1,26 @@
 import { useEffect, useRef, useState } from "react";
 import type { GetServerSideProps, NextPage } from "next";
 import { useSession } from "next-auth/react";
+// import { trpc } from "@/src/common/trpc";
 import { getServerSession } from "next-auth";
 import { useRouter } from "next/router";
-
+import { createServerSideHelpers } from "@trpc/react-query/server";
 import UserLayout from "@/src/components/ui/UserLayout";
 import { IconContext } from "react-icons";
 import { nextAuthOptions } from "@/src/common/auth";
 import CourseCard from "@/src/components/ui/cards/CourseCard";
 import { Plus, X } from "lucide-react";
-import ColorSelect from "@/src/components/ui/dropdowns/ColorSelect";
+// import ColorSelect from "@/src/components/ui/dropdowns/ColorSelect";
 import CreateCourseForm from "@/src/components/ui/forms/teacher/CreateCourseForm";
 import Modal from "@/src/components/ui/modals/Modal";
+import { serverRouter } from "@/src/server/routers";
+import { createContext } from "@/src/server/context";
+import { Course } from "@prisma/client";
 
-const courses = [
-  {
-    id: 1,
-    name: "Frontend-utveckling",
-    exercises: 14,
-    slug: "frontend-utveckling",
-  },
-  {
-    id: 2,
-    name: "Backend-utveckling",
-    exercises: 12,
-    slug: "backend-utveckling",
-  },
-  {
-    id: 3,
-    name: "UX-Design",
-    exercises: 14,
-    slug: "ux-design",
-  },
-];
-const Dashboard: NextPage = () => {
+type Props = {
+  courses: Course[];
+};
+const Dashboard = ({ courses }: Props) => {
   const [sideBarClass, setSideBarClass] = useState<boolean>(false);
   const [screenWidth, setScreenWidth] = useState<number>();
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -43,10 +30,13 @@ const Dashboard: NextPage = () => {
   const modalRef = useRef(null);
 
   useEffect(() => {
+    console.log(session);
+    console.log(courses);
+
     if (!session) {
       router.push("/401");
     }
-  }, [session]);
+  }, [router, session, courses]);
 
   useEffect(() => {
     function getScreenSize() {
@@ -101,9 +91,10 @@ const Dashboard: NextPage = () => {
         <div className="w-full flex flex-col md:flex-row gap-8">
           {/* Main content */}
           <div className="w-full h-full flex flex-wrap justify-center gap-4 md:justify-start md:w-3/6 lg:w-4/6">
-            {courses.map((course) => (
-              <CourseCard key={course.id} course={course} />
-            ))}
+            {courses &&
+              courses?.map((course: Course) => (
+                <CourseCard key={course.id} course={course} />
+              ))}
           </div>
           {/* Aside right */}
           <aside className="flex-1 bg-green">
@@ -136,14 +127,32 @@ const Dashboard: NextPage = () => {
 };
 
 /* getServerSideProps */
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps: GetServerSideProps = async (context: any) => {
+  const currentSession = await getServerSession(
+    context.req,
+    context.res,
+    nextAuthOptions
+  );
+  const educationId = String(currentSession?.user.educationId);
+
+  //Set up a trpc helper, needed for serverSide fetching
+  const helpers = createServerSideHelpers({
+    router: serverRouter,
+    ctx: await createContext(context),
+  });
+
+  //The actual fetching
+  const res = await helpers.course.getManyByEducationId.fetch({
+    educationId,
+  });
+
+  //Needed to serialize Date objects for createdAt + updatedAt otherwise error is thrown
+  const courses = JSON.parse(JSON.stringify(res));
+
   return {
     props: {
-      session: await getServerSession(
-        context.req,
-        context.res,
-        nextAuthOptions
-      ),
+      session: currentSession,
+      courses: courses.course,
     },
   };
 };

@@ -1,6 +1,6 @@
 import { httpBatchLink } from "@trpc/client";
 import { createTRPCNext } from "@trpc/next";
-
+import superjson from "superjson";
 import type { IServerRouter } from "../server/routers";
 
 const getBaseUrl = () => {
@@ -18,8 +18,9 @@ const getBaseUrl = () => {
 };
 
 export const trpc = createTRPCNext<IServerRouter>({
-  config({ ctx }) {
+  config(opts) {
     return {
+      // transformer: superjson,
       links: [
         httpBatchLink({
           url: `${getBaseUrl()}/api/trpc`,

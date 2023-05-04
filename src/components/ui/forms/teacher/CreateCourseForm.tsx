@@ -30,6 +30,7 @@ const CreateCourseForm = (props: Props) => {
       defaultValues: {
         title: "",
         icon: "",
+        // slug: "",
         color: "",
         content: "",
         educationId: 0,
@@ -39,7 +40,7 @@ const CreateCourseForm = (props: Props) => {
       resolver: zodResolver(courseInputSchema),
     });
 
-  const { data: session } = useSession();
+  // const { data: session } = useSession();
 
   const { quill, quillRef } = useQuill();
   const { mutateAsync } = trpc.course.create.useMutation();
@@ -134,7 +135,7 @@ const CreateCourseForm = (props: Props) => {
                 hasSubmitted={hasSubmitted}
                 field={field}
                 setColor={setColor}
-                {...register("color")}
+                // {...register("color")}
               />
             </div>
           )}
@@ -165,7 +166,7 @@ const CreateCourseForm = (props: Props) => {
             Spara
           </button>
         </div>
-        <RichText quillRef={quillRef} />
+        <RichText ref={quillRef} />
       </section>
     </form>
   );
