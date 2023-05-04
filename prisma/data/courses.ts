@@ -1,0 +1,135 @@
+export const courses = [
+  {
+    educationId: 1,
+    title: "Course 1",
+    slug: "course-1",
+    points: "5",
+    icon: "some-icon",
+    color: "red",
+    content:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed auctor, nibh eget varius laoreet, eget pharetra orci sapien vitae massa. Aliquam erat volutpat. ",
+    published: true,
+  },
+  {
+    educationId: 1,
+    title: "Course 1",
+    slug: "course-1",
+    points: "5",
+    icon: "some-icon",
+    color: "red",
+    content:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed auctor, nibh eget varius laoreet, eget pharetra orci sapien vitae massa. Aliquam erat volutpat. ",
+    published: true,
+  },
+  {
+    educationId: 1,
+    title: "Course 1",
+    slug: "course-1",
+    points: "5",
+    icon: "some-icon",
+    color: "red",
+    content:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed auctor, nibh eget varius laoreet, eget pharetra orci sapien vitae massa. Aliquam erat volutpat. ",
+    published: true,
+  },
+  {
+    educationId: 1,
+    title: "Course 1",
+    slug: "course-1",
+    points: "5",
+    icon: "some-icon",
+    color: "red",
+    content:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed auctor, nibh eget varius laoreet, eget pharetra orci sapien vitae massa. Aliquam erat volutpat. ",
+    published: true,
+    // courseId: 1,
+  },
+  {
+    educationId: 1,
+    title: "Course 1",
+    slug: "course-1",
+    points: "5",
+    icon: "some-icon",
+    color: "red",
+    content:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed auctor, nibh eget varius laoreet, eget pharetra orci sapien vitae massa. Aliquam erat volutpat. ",
+    published: true,
+  },
+  {
+    educationId: 1,
+    title: "Course 1",
+    slug: "course-1",
+    points: "5",
+    icon: "some-icon",
+    color: "red",
+    content:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed auctor, nibh eget varius laoreet, eget pharetra orci sapien vitae massa. Aliquam erat volutpat. ",
+    published: true,
+  },
+  {
+    educationId: 1,
+    title: "Course 1",
+    slug: "course-1",
+    points: "5",
+    icon: "some-icon",
+    color: "red",
+    content:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed auctor, nibh eget varius laoreet, eget pharetra orci sapien vitae massa. Aliquam erat volutpat. ",
+    published: true,
+  },
+  {
+    educationId: 1,
+    title: "Course 1",
+    slug: "course-1",
+    points: "5",
+    icon: "some-icon",
+    color: "red",
+    content:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed auctor, nibh eget varius laoreet, eget pharetra orci sapien vitae massa. Aliquam erat volutpat. ",
+    published: true,
+  },
+  {
+    educationId: 1,
+    title: "Course 1",
+    slug: "course-1",
+    points: "5",
+    icon: "some-icon",
+    color: "red",
+    content:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed auctor, nibh eget varius laoreet, eget pharetra orci sapien vitae massa. Aliquam erat volutpat. ",
+    published: true,
+  },
+  {
+    educationId: 1,
+    title: "Course 1",
+    slug: "course-1",
+    points: "5",
+    icon: "some-icon",
+    color: "red",
+    content:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed auctor, nibh eget varius laoreet, eget pharetra orci sapien vitae massa. Aliquam erat volutpat. ",
+    published: true,
+  },
+  {
+    educationId: 1,
+    title: "Course 1",
+    slug: "course-1",
+    points: "5",
+    icon: "some-icon",
+    color: "red",
+    content:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed auctor, nibh eget varius laoreet, eget pharetra orci sapien vitae massa. Aliquam erat volutpat. ",
+    published: true,
+  },
+  {
+    educationId: 1,
+    title: "Course 1",
+    slug: "course-1",
+    points: "5",
+    icon: "some-icon",
+    color: "red",
+    content:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed auctor, nibh eget varius laoreet, eget pharetra orci sapien vitae massa. Aliquam erat volutpat. ",
+    published: true,
+  },
+];

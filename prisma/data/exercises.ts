@@ -14,30 +14,35 @@ export const exercises = [
   {
     title: "Exercise 3",
     description: "Very easy",
-    content: " fnejgnvfkbfnjbn",
+    content:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed auctor, nibh eget varius laoreet, eget pharetra orci sapien vitae massa. Aliquam erat volutpat. ",
   },
   {
     title: "Exercise 4",
     description: "Very super hard",
-    content: " fnejgnvfkbfnjbn",
+    content:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed auctor, nibh eget varius laoreet, eget pharetra orci sapien vitae massa. Aliquam erat volutpat. ",
     // courseId: 1,
   },
   {
     title: "Exercise 5",
     description: "Very hard",
-    content: " fnejgnvfkbfnjbn",
+    content:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed auctor, nibh eget varius laoreet, eget pharetra orci sapien vitae massa. Aliquam erat volutpat. ",
     // courseId: 1,
   },
   {
     title: "Exercise 6",
     description: "Very fun",
-    content: " fnejgnvfkbfnjbn",
+    content:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed auctor, nibh eget varius laoreet, eget pharetra orci sapien vitae massa. Aliquam erat volutpat. ",
     // courseId: 1,
   },
   {
     title: "Exercise 7",
     description: "Very easy",
-    content: " fnejgnvfkbfnjbn",
+    content:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed auctor, nibh eget varius laoreet, eget pharetra orci sapien vitae massa. Aliquam erat volutpat. ",
   },
   {
     title: "Exercise 8",
@@ -48,7 +53,8 @@ export const exercises = [
   {
     title: "Exercise 9",
     description: "Very hard",
-    content: " fnejgnvfkbfnjbn",
+    content:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed auctor, nibh eget varius laoreet, eget pharetra orci sapien vitae massa. Aliquam erat volutpat. ",
     // courseId: 1,
   },
   {
@@ -60,12 +66,14 @@ export const exercises = [
   {
     title: "Exercise 11",
     description: "Very easy",
-    content: " fnejgnvfkbfnjbn",
+    content:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed auctor, nibh eget varius laoreet, eget pharetra orci sapien vitae massa. Aliquam erat volutpat. ",
   },
   {
     title: "Exercise 12",
     description: "Very super hard",
-    content: " fnejgnvfkbfnjbn",
+    content:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed auctor, nibh eget varius laoreet, eget pharetra orci sapien vitae massa. Aliquam erat volutpat. ",
     // courseId: 1,
   },
 ];

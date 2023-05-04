@@ -1,4 +1,5 @@
 import { exercises } from "./data/exercises";
+import { courses } from "./data/courses";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -9,8 +10,13 @@ async function main() {
       data: exercise,
     });
   }
-}
 
+  for (let course of courses) {
+    await prisma.course.create({
+      data: course,
+    });
+  }
+}
 main()
   .catch((e) => {
     console.log(e);
