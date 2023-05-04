@@ -152,7 +152,7 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
   return {
     props: {
       session: currentSession,
-      courses: courses.course,
+      // courses: courses.course,
     },
   };
 };
