@@ -64,7 +64,7 @@ export const courseLibOutputSchema = z.object({
   success: z.boolean().optional(),
   code: z.number().optional(),
   message: z.string().optional(),
-  course_lib: courseLib.nullish(),
+  courseLib: courseLib.nullish(),
   error: error,
 });
 

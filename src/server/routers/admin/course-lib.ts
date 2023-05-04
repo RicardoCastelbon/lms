@@ -4,7 +4,7 @@ import {
   getAllCoursesLib,
   updatedCourseLib,
   deleteCourseLib,
-  // getOneCourseLib,
+  getOneCourseLib,
 } from "../../controllers/course-lib.controller";
 
 import {
@@ -39,19 +39,19 @@ export const courseLibRouter = t.router({
       },
     })
     .input(noInput)
-    .output(courseOutputSchema)
-    .query(({ input, ctx }) => getAllCoursesLib({ ctx })),
+    .output(courseLibOutputSchema)
+    .query(({ ctx }) => getAllCoursesLib({ ctx })),
   //   //GET ONE Course
-  //   getOne: t.procedure
-  //     .meta({
-  //       openapi: {
-  //         method: "GET",
-  //         path: "/course-lib/getOne/{courseLibId}",
-  //       },
-  //     })
-  //     .input(courseLibId)
-  //     .output(courseOutputSchema)
-  //     .query(({ input, ctx }) => getOneCourseLib({ paramsInput: input, ctx })),
+  getOne: t.procedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/course-lib/getOne/{courseLibId}",
+      },
+    })
+    .input(courseLibId) //Only used to satisfy Swagger, not needed within the controller function.
+    .output(courseOutputSchema)
+    .query(({ input, ctx }) => getOneCourseLib({ input, ctx })),
 
   //   // UPDATE COURSE_LIB
   updateCourseLib: t.procedure

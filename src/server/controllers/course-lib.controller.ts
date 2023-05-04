@@ -81,23 +81,31 @@ export const getOneCourseLib = async ({
       }
     );
 
-    if (!course_lib) {
-      throw new TRPCError({
-        code: "NOT_FOUND",
-        message: `Education with ID: ${input.courseLibId} not found`,
-      });
+    if (course_lib === null) {
+      return {
+        success: false,
+        code: 404,
+        message: "Course not found, please try again.",
+        course_lib,
+      };
+    } else {
+      return {
+        success: true,
+        code: 200,
+        message: "Resource found",
+        course_lib,
+      };
     }
-
-    return {
-      status: "success",
-      course_lib,
-    };
   } catch (error) {
-    console.log(error);
-    throw new TRPCError({
-      code: "INTERNAL_SERVER_ERROR",
-      message: "Failed to find course library",
-    });
+    return {
+      success: false,
+      error: new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "An unexpected error occurred, please try again later.",
+        // optional: pass the original error to retain stack trace
+        cause: error,
+      }),
+    };
   }
 };
 
