@@ -12,7 +12,6 @@ import {
   educationsSchema,
   filterQuery,
   params,
-  updatedEducationResponse,
   updateEducationSchema,
 } from "../../common/validation/education";
 import { z } from "zod";

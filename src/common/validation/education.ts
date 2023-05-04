@@ -46,8 +46,8 @@ export const updatedEducationResponse = z.object({
 });
 
 export const filterQuery = z.object({
-  limit: z.number().default(1),
-  page: z.number().default(10),
+  limit: z.number().default(10),
+  page: z.number().default(1),
 });
 
 export type CreateEducationInput = z.infer<typeof createEducationSchema>;

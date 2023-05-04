@@ -100,8 +100,8 @@ const CourseOverview = (props: Props) => {
                   {desktopVersion && <li className="w-32">Uppgifter</li>}
                 </ul>
               </div>
-              {modules.map((module) => (
-                <Accordion type="single" collapsible>
+              {modules.map((module, index) => (
+                <Accordion key={index} type="single" collapsible>
                   <AccordionItem value="item-1">
                     <AccordionTrigger>
                       <div className="w-full">
@@ -126,10 +126,12 @@ const CourseOverview = (props: Props) => {
                           )}
                           {desktopVersion && (
                             <li className="w-32">
+                              {/*
+                              CHANGE THIS TO A DIV TO AVOID BUTTON NESTING
                               <Button>
                                 <Plus />
                                 Uppgift
-                              </Button>
+                              </Button> */}
                             </li>
                           )}
                         </ul>
@@ -214,23 +216,23 @@ const CourseOverview = (props: Props) => {
             <section className="pl-5">
               <button
                 onClick={modalClickHandler}
-                className=" flex w-56 p-3 bg-indigo-50 hover:bg-indigo-200 font-semibold border border-b-0 rounded border-indigo-500"
+                className=" flex  items-center gap-3 w-56 p-3 bg-indigo-50 hover:bg-indigo-200 font-semibold border border-b-0 rounded border-indigo-500"
               >
-                <span className="mr-3">
-                  <PlusCircle />
-                </span>
+                <div className="rounded-full bg-primary text-white p-2">
+                  <Plus />
+                </div>
                 <span>Lägg till modul</span>
               </button>
-              <button className=" flex w-56 p-3 bg-indigo-50 hover:bg-indigo-200 font-semibold border border-b-0 rounded border-indigo-500">
-                <span className="mr-3">
-                  <PlusCircle />
-                </span>
+              <button className=" flex items-center gap-3 w-56 p-3 bg-indigo-50 hover:bg-indigo-200 font-semibold border border-b-0 rounded border-indigo-500">
+                <div className="rounded-full bg-primary text-white p-2">
+                  <Plus />
+                </div>
                 <span>Uppdatera modul</span>
               </button>
-              <button className=" flex w-56 p-3 bg-indigo-50 hover:bg-indigo-200 font-semibold border rounded border-indigo-500">
-                <span className="mr-4">
-                  <PlusCircle />
-                </span>
+              <button className=" flex  items-center gap-1 w-56 p-3 bg-indigo-50 hover:bg-indigo-200 font-semibold border rounded border-indigo-500">
+                <div className="rounded-full bg-primary text-white p-2">
+                  <Plus />
+                </div>
                 <span>Lägg till deltagare</span>
               </button>
             </section>

@@ -88,13 +88,14 @@ model Course {
 }
 
 model Module {
-  id          Int        @id @default(autoincrement())
-  course      Course?    @relation(fields: [courseId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-  courseId    Int?
-  exercises   Exercise[]
-  title       String
-  description String
-  content     String
+  id        Int        @id @default(autoincrement())
+  course    Course?    @relation(fields: [courseId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  courseId  Int?
+  exercises Exercise[]
+  title     String
+  startDate String
+  endDate   String
+  content   String
 }
 
 model Exercise {

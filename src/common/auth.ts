@@ -126,9 +126,8 @@ export const nextAuthOptions: NextAuthOptions = {
         token.educationName = user.educationName;
         token.name = user.name || null;
         token.image = user.image || null;
-      
-    
-      console.log("JWT callback:", token);
+
+        console.log("JWT callback:", token);
       }
 
       return token;
@@ -144,8 +143,8 @@ export const nextAuthOptions: NextAuthOptions = {
         session.user.name = token.name || null;
         session.user.image = token.image || null;
       }
-    
-      console.log("Session callback:", session);
+
+      //console.log("Session callback:", session);
       return session;
     },
   },
