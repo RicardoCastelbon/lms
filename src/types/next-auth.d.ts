@@ -5,7 +5,7 @@ declare module "next-auth" {
     user: {
       userId: number;
       role: string | null;
-      educationName?: string | null;
+      educationId: number | null;
       name?: string | null;
       email?: string | null;
       image?: null;
@@ -15,7 +15,6 @@ declare module "next-auth" {
       provider: any | null;
       role: string | null;
       name?: string | null;
-
     };
   }
   //& DefaultSession["user"];
@@ -25,7 +24,7 @@ declare module "next-auth" {
     email?: string | null;
     // image?: string | null; // Default property
     role: string | null;
-    educationName?: string | null;
+    educationId?: number | null;
     image?: null;
     //username: string;
   }
@@ -49,10 +48,9 @@ declare module "next-auth/jwt" {
     userId: number;
     username: string;
     role: string | any;
-    educationName?: string | null;
+    educationId?: number | null;
     email?: string | null;
     image?: null;
     name?: string | null;
-
   }
 }
