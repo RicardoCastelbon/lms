@@ -4,6 +4,7 @@ const course = z
   .object({
     id: z.number(),
     title: z.string(),
+    slug: z.string(),
     icon: z.string(),
     color: z.string(),
     content: z.string(),
@@ -25,6 +26,7 @@ const course = z
       .object({
         id: z.number(),
         title: z.string(),
+        slug: z.string(),
         icon: z.string(),
         color: z.string(),
         content: z.string(),
@@ -53,6 +55,7 @@ const error = z
 //Default resourse input schema, used for creating a resource
 export const courseInputSchema = z.object({
   title: z.string(),
+  // slug: z.string().optional(),
   icon: z.string(),
   color: z.string(),
   content: z.string(),

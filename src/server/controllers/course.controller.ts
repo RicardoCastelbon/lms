@@ -17,10 +17,14 @@ export const addCourse = async ({
   input: CourseInputSchema;
   ctx: IContext;
 }) => {
+  console.log(input);
+
   try {
+    const slug = input.title.replace(/\s+/g, "-").toLowerCase();
     const course: Course = await ctx.prisma.course.create({
       data: {
         title: input.title,
+        slug: slug,
         icon: input.icon,
         color: input.color,
         content: input.content,

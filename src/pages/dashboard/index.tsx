@@ -135,14 +135,18 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
   );
   const educationId = String(currentSession?.user.educationId);
 
+  //Set up a trpc helper, needed for serverSide fetching
   const helpers = createServerSideHelpers({
     router: serverRouter,
     ctx: await createContext(context),
   });
+
+  //The actual fetching
   const res = await helpers.course.getManyByEducationId.fetch({
     educationId,
   });
-  //Needed to serialize Date objects for createdAt + updatedAt
+
+  //Needed to serialize Date objects for createdAt + updatedAt otherwise error is thrown
   const courses = JSON.parse(JSON.stringify(res));
 
   return {

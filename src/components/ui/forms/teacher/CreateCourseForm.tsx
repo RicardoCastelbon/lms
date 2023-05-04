@@ -30,6 +30,7 @@ const CreateCourseForm = (props: Props) => {
       defaultValues: {
         title: "",
         icon: "",
+        // slug: "",
         color: "",
         content: "",
         educationId: 0,
