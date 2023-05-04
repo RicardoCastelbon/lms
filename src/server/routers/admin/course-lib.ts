@@ -1,6 +1,8 @@
 import { t } from "../../trpc";
 import {
   createCourseLibController,
+  getAllCoursesLibController,
+  updatedCourseLibController,
   // deleteCourseLibController,
   // findAllCourseLibController,
   // getOneCourseLib,
@@ -30,19 +32,17 @@ export const courseLibRouter = t.router({
     .output(courseLibOutputSchema)
     .input(courseLibInputSchema)
     .mutation(({ input, ctx }) => createCourseLibController({ input, ctx })),
-  //GET MANY coursers_lib
-  //   getMany: t.procedure
-  //     .meta({
-  //       openapi: {
-  //         method: "GET",
-  //         path: "/course-lib/getMany",
-  //       },
-  //     })
-  //     .input(noInput)
-  //     .output(courseOutputSchema)
-  //     .query(({ input, ctx }) =>
-  //       findAllCourseLibController({ filterQuery: input, ctx })
-  //     ),
+  // GET MANY coursers_lib
+  getMany: t.procedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/course-lib/getMany",
+      },
+    })
+    .input(noInput)
+    .output(courseOutputSchema)
+    .query(({ input, ctx }) => getAllCoursesLibController({ ctx })),
   //   //GET ONE Course
   //   getOne: t.procedure
   //     .meta({
@@ -56,22 +56,21 @@ export const courseLibRouter = t.router({
   //     .query(({ input, ctx }) => getOneCourseLib({ paramsInput: input, ctx })),
 
   //   // UPDATE COURSE_LIB
-  //   updateCourseLib: t.procedure
-  //     .meta({
-  //       openapi: {
-  //         method: "PUT",
-  //         path: "/course-lib/update/{courseLibId}",
-  //       },
-  //     })
-  //     .output(courseLibSchema)
-  //     .input(updatedCourseLibSchema)
-  //     .mutation(({ input, ctx }) =>
-  //       updatedCourseLibController({
-  //         paramsInput: input,
-  //         input: input.body,
-  //         ctx,
-  //       })
-  //     ),
+  updateCourseLib: t.procedure
+    .meta({
+      openapi: {
+        method: "PUT",
+        path: "/course-lib/update/{courseLibId}",
+      },
+    })
+    .input(updateCourseLibInputSchema)
+    .output(courseLibOutputSchema)
+    .mutation(({ input, ctx }) =>
+      updatedCourseLibController({
+        input,
+        ctx,
+      })
+    ),
 
   //   //DELETE EDUCATION
   //   delete: t.procedure

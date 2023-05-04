@@ -1,6 +1,6 @@
 import { Course_lib, Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
-import { Context } from "vm";
+import { IContext } from "../context";
 import {
   CourseLibInputSchema,
   UpdateCourseLibInputSchema,
@@ -12,7 +12,7 @@ export const createCourseLibController = async ({
   ctx,
 }: {
   input: CourseLibInputSchema;
-  ctx: Context;
+  ctx: IContext;
 }) => {
   try {
     const course_lib: Course_lib = await ctx.prisma.course_lib.create({
@@ -72,7 +72,7 @@ export const getOneCourseLib = async ({
   ctx,
 }: {
   input: CourseLibIdSchema;
-  ctx: Context;
+  ctx: IContext;
 }) => {
   try {
     const course_lib: Course_lib | null = await ctx.prisma.course_lib.findFirst(
@@ -101,107 +101,84 @@ export const getOneCourseLib = async ({
   }
 };
 
-// export const findAllCourseLibController = async ({
-//   filterQuery,
-//   ctx,
-// }: {
-//   filterQuery: FilterQueryInput;
-//   ctx: Context;
-// }) => {
-//   try {
-//     // Get the current page from the filterQuery, or default to the first page (1)
-//     const page = filterQuery.page || 1;
+export const getAllCoursesLibController = async ({
+  ctx,
+}: {
+  ctx: IContext;
+}) => {
+  try {
+    const coursesLib: Course_lib[] = await ctx.prisma.course_lib.findMany();
 
-//     // Get the limit from the filterQuery, or default to 8 records per page
-//     const limit = filterQuery.limit || 8;
+    if (coursesLib.length <= 0) {
+      return {
+        success: false,
+        code: 404,
+        message: "No courses found, please try again",
+        coursesLib,
+      };
+    } else {
+      return {
+        success: true,
+        code: 200,
+        message: "Resource found",
+        courseLib: coursesLib,
+      };
+    }
+  } catch (error) {
+    return {
+      success: false,
+      error: new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "An unexpected error occurred, please try again later.",
+        // optional: pass the original error to retain stack trace
+        cause: error,
+      }),
+    };
+  }
+};
 
-//     // Calculate the number of records to skip based on the current page and limit
-//     const skip = (page - 1) * limit;
-
-//     // Retrieve the records for the current page, limited to the specified number of records per page
-//     const [course_lib, totalCount] = await Promise.all([
-//       ctx.prisma.course_lib.findMany({
-//         skip,
-//         take: limit,
-//       }),
-
-//       // Retrieve the total number of records in the database
-//       ctx.prisma.course_lib.count(),
-//     ]);
-
-//     // Calculate the total number of pages based on the total number of records and the limit per page
-//     const totalPages = Math.ceil(totalCount / limit);
-
-//     console.log("Retrieved courses:", course_lib);
-//     console.log("Total number of courses:", totalCount);
-//     console.log("Total number of pages:", totalPages);
-
-//     // Return the retrieved courses, along with some metadata about the current page and the total number of pages
-//     return {
-//       status: "success",
-//       results: course_lib.length,
-//       totalPages,
-//       currentPage: page,
-//       course_lib,
-//     };
-//   } catch (error) {
-//     console.log(error);
-//     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-//       console.log(error.code, error.message);
-//       return error;
-//     }
-//   }
-// };
-
-// export const updatedCourseLibController = async ({
-//   paramsInput,
-//   input,
-//   ctx,
-// }: {
-//   paramsInput: ParamsInput;
-//   input: UpdatedCourseLibInput["body"];
-//   ctx: Context;
-// }) => {
-//   try {
-//     const course_lib = await ctx.prisma.course_lib.update({
-//       where: { id: Number(paramsInput.course_libId) },
-//       data: input,
-//     });
-
-//     return {
-//       status: "success",
-//       course_lib,
-//     };
-//   } catch (error) {
-//     console.log(error);
-//     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-//       console.log(error.code, error.message);
-//       return error;
-//     }
-//   }
-// };
-
-// export const deleteCourseLibController = async ({
-//   paramsInput,
-//   ctx,
-// }: {
-//   paramsInput: ParamsInput;
-//   ctx: Context;
-// }) => {
-//   try {
-//     const course_lib = await ctx.prisma.course_lib.delete({
-//       where: { id: Number(paramsInput.courseLibId) },
-//     });
-
-//     return {
-//       status: "success",
-//       course_lib,
-//     };
-//   } catch (error) {
-//     console.log(error);
-//     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-//       console.log(error.code, error.message);
-//       return error;
-//     }
-//   }
-// };
+export const updatedCourseLibController = async ({
+  input,
+  ctx,
+}: {
+  input: UpdateCourseLibInputSchema;
+  ctx: IContext;
+}) => {
+  try {
+    const courseLib: Course_lib = await ctx.prisma.course_lib.update({
+      where: { id: Number(input.courseLibId) },
+      data: input.body,
+    });
+    return {
+      success: true,
+      code: 200,
+      message: "Resource found",
+      courseLib,
+    };
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === "P2025") {
+        console.log(
+          `An operation failed because it depends on one or more records that were required but not found. ${error.cause}`
+        );
+        return {
+          success: false,
+          error: {
+            code: error.code,
+            message: error.message,
+            meta: { ...error.meta },
+          },
+        };
+      }
+    }
+    return {
+      success: false,
+      error: new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "An unexpected error occurred, please try again later.",
+        // optional: pass the original error to retain stack trace
+        cause: error,
+      }),
+    };
+  }
+};

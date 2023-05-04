@@ -201,7 +201,6 @@ export const updateCourse = async ({
       where: { id: Number(input.courseId) },
       data: input.body,
     });
-
     return {
       success: true,
       code: 200,

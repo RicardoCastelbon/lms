@@ -64,7 +64,7 @@ export const courseLibOutputSchema = z.object({
   success: z.boolean().optional(),
   code: z.number().optional(),
   message: z.string().optional(),
-  courseLib: courseLib.nullish(),
+  course_lib: courseLib.nullish(),
   error: error,
 });
 
@@ -77,13 +77,13 @@ export const updateCourseLibInputSchema = z.object({
       title: z.string(),
       description: z.string(),
       content: z.string(),
-      createdAt: z.date(),
-      updatedAt: z.date(),
+      // createdAt: z.date(),
+      // updatedAt: z.date(),
     })
     .partial(),
 });
 export const courseLibId = z.object({
-  courseLibId: z.string(),
+  courseLibId: z.number(),
 });
 
 export type CourseLibIdSchema = z.infer<typeof courseLibId>;
