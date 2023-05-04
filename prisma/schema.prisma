@@ -87,6 +87,7 @@ model Course {
   educationId Int
   modules     Module[]
   title       String
+  slug        String
   points      String
   icon        String
   color       String

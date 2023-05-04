@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { GetServerSideProps, NextPage } from "next";
 import { useSession } from "next-auth/react";
-import { trpc } from "@/src/common/trpc";
+// import { trpc } from "@/src/common/trpc";
 import { getServerSession } from "next-auth";
 import { useRouter } from "next/router";
 import { createServerSideHelpers } from "@trpc/react-query/server";
@@ -10,34 +10,12 @@ import { IconContext } from "react-icons";
 import { nextAuthOptions } from "@/src/common/auth";
 import CourseCard from "@/src/components/ui/cards/CourseCard";
 import { Plus, X } from "lucide-react";
-import ColorSelect from "@/src/components/ui/dropdowns/ColorSelect";
+// import ColorSelect from "@/src/components/ui/dropdowns/ColorSelect";
 import CreateCourseForm from "@/src/components/ui/forms/teacher/CreateCourseForm";
 import Modal from "@/src/components/ui/modals/Modal";
-import { getQueryKey } from "@trpc/react-query";
 import { serverRouter } from "@/src/server/routers";
 import { createContext } from "@/src/server/context";
 import { Course } from "@prisma/client";
-
-/* const courses = [
-  {
-    id: 1,
-    name: "Frontend-utveckling",
-    exercises: 14,
-    slug: "frontend-utveckling",
-  },
-  {
-    id: 2,
-    name: "Backend-utveckling",
-    exercises: 12,
-    slug: "backend-utveckling",
-  },
-  {
-    id: 3,
-    name: "UX-Design",
-    exercises: 14,
-    slug: "ux-design",
-  },
-]; */
 
 type Props = {
   courses: Course[];
@@ -155,7 +133,6 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
     context.res,
     nextAuthOptions
   );
-  console.log("Current session", currentSession);
   const educationId = String(currentSession?.user.educationId);
 
   const helpers = createServerSideHelpers({
@@ -165,13 +142,8 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
   const res = await helpers.course.getManyByEducationId.fetch({
     educationId,
   });
+  //Needed to serialize Date objects for createdAt + updatedAt
   const courses = JSON.parse(JSON.stringify(res));
-  console.log(courses);
-
-  // console.log(typeof eduId);
-
-  // const { data } = trpc.course.getManyByEducationId.useQuery({ educationId });
-  //  const caller = serverRouter.createCaller({...context})
 
   return {
     props: {
@@ -181,10 +153,3 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
   };
 };
 export default Dashboard;
-/* function createServerSideHelpers(arg0: {
-  router: any;
-  ctx: any;
-  transformer: any;
-}) {
-  throw new Error("Function not implemented.");
-} */
