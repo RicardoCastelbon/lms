@@ -1,8 +1,16 @@
 import React, { ReactNode, useEffect, useState } from "react";
-import TopNavbar from "./navigation/TopNavbar";
 import { useSession } from "next-auth/react";
+// import { GetServerSideProps } from "next";
+// import { getServerSession } from "next-auth";
+// import { nextAuthOptions } from "@/src/common/auth";
+// import { createContext } from "@/src/server/context";
+// import { createServerSideHelpers } from "@trpc/react-query/server";
 import UserSideNav from "./navigation/UserSideNav";
 import InnerMenu from "./navigation/InnerMenu";
+import TopNavbar from "./navigation/TopNavbar";
+import { serverRouter } from "@/src/server/routers";
+import { trpc } from "@/src/common/trpc";
+import { getEducationById } from "@/src/lib/services/education";
 
 type Props = {
   children: ReactNode;
@@ -12,8 +20,34 @@ type Props = {
 const UserLayout = ({ children, role }: Props) => {
   const [sideBarClass, setSideBarClass] = useState<boolean>(false);
   const [screenWidth, setScreenWidth] = useState<number>();
+  const [eduName, setEduName] = useState<string>("");
   const { data: session } = useSession();
 
+  //Fetch education info
+  const educationId = String(session?.user.educationId);
+  const { data, error, isLoading } = trpc.education.getOne.useQuery({
+    educationId,
+  });
+
+  useEffect(() => {
+    //Do something if loading is true
+    if (isLoading) {
+      console.log("query is loading");
+    } else {
+      //check if an error has occured
+      if (error) {
+        console.log(error);
+      }
+      //else check if data is present, if so do something with it.
+      if (data) {
+        setEduName(data.education.name);
+      }
+    }
+  }, [data, error, isLoading]);
+
+  useEffect(() => {
+    console.log(eduName);
+  }, [eduName]);
   //Remove open state for sidenav when screen width > 768px
   useEffect(() => {
     function getScreenSize() {
@@ -40,7 +74,7 @@ const UserLayout = ({ children, role }: Props) => {
         <UserSideNav
           sideBarClass={sideBarClass}
           role={role}
-          education={session?.user.educationName}
+          education={eduName}
         />
       </div>
       <main className="md:flex-1 absolute top-[70px] md:top-0 md:relative bg-white rounded-lg w-full p-4">
@@ -50,5 +84,4 @@ const UserLayout = ({ children, role }: Props) => {
     </div>
   );
 };
-
 export default UserLayout;
