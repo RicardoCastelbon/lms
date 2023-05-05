@@ -9,6 +9,7 @@ import {
 } from "../../common/validation/course-end-user";
 import { IContext } from "../context";
 import { EducationIdSchema, educationId } from "@/src/common/validation/global";
+import { slugilizer } from "../utils/controller-utils";
 
 export const addCourse = async ({
   input,
@@ -20,7 +21,7 @@ export const addCourse = async ({
   console.log(input);
 
   try {
-    const slug = input.title.replace(/\s+/g, "-").toLowerCase();
+    const slug = slugilizer(input.title);
     const course: Course = await ctx.prisma.course.create({
       data: {
         title: input.title,

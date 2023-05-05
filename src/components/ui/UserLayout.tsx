@@ -1,10 +1,5 @@
 import React, { ReactNode, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-// import { GetServerSideProps } from "next";
-// import { getServerSession } from "next-auth";
-// import { nextAuthOptions } from "@/src/common/auth";
-// import { createContext } from "@/src/server/context";
-// import { createServerSideHelpers } from "@trpc/react-query/server";
 import UserSideNav from "./navigation/UserSideNav";
 import InnerMenu from "./navigation/InnerMenu";
 import TopNavbar from "./navigation/TopNavbar";
