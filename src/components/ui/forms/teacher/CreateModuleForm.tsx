@@ -44,10 +44,10 @@ const CreateModuleForm = (props: Props) => {
         } else {
           console.log(data);
           const result = await mutateAsync(data);
-          /*  if (result.status === "success") {
+          if (result.success) {
             quill!.root.innerHTML = "";
             reset();
-          } */
+          }
         }
       } catch (err) {
         console.error(err);
@@ -55,6 +55,8 @@ const CreateModuleForm = (props: Props) => {
     },
     [mutateAsync, reset, quill]
   );
+
+  useEffect(() => {}, []);
 
   return (
     <form className="md:flex gap-4 block" onSubmit={handleSubmit(onSubmit)}>
@@ -124,7 +126,7 @@ const CreateModuleForm = (props: Props) => {
         <div className="flex justify-between p-2 items-center">
           <p>Modulinformation</p>
         </div>
-        <RichText quillRef={quillRef} />
+        <RichText ref={quillRef} />
       </section>
     </form>
   );

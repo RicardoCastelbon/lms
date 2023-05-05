@@ -1,4 +1,9 @@
+import {
+  courseId,
+  CourseIdSchema,
+} from "@/src/common/validation/course-end-user";
 import { FilterQueryInput } from "@/src/common/validation/education";
+import CoursesPage from "@/src/pages/admin/courses";
 import { Education, Module, Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { Context } from "vm";
@@ -7,13 +12,14 @@ import {
   ModuleInputSchema,
   UpdateModuleInputSchema,
 } from "../../common/validation/module-end-user";
+import { IContext } from "../context";
 
 export const createModuleController = async ({
   input,
   ctx,
 }: {
   input: ModuleInputSchema;
-  ctx: Context;
+  ctx: IContext;
 }) => {
   try {
     const module: Module = await ctx.prisma.module.create({
@@ -78,7 +84,7 @@ export const updateModuleController = async ({
 }: {
   moduleId: ModuleIdSchema;
   input: UpdateModuleInputSchema["body"];
-  ctx: Context;
+  ctx: IContext;
 }) => {
   try {
     const module: Module = await ctx.prisma.module.update({
@@ -125,10 +131,10 @@ export const findModuleController = async ({
   ctx,
 }: {
   input: ModuleIdSchema;
-  ctx: Context;
+  ctx: IContext;
 }) => {
   try {
-    const module: Module = await ctx.prisma.module.findFirst({
+    const module: Module | null = await ctx.prisma.module.findFirst({
       where: { id: Number(input.moduleId) },
     });
 
@@ -165,7 +171,7 @@ export const findAllModulesController = async ({
   ctx,
 }: {
   filterQuery: FilterQueryInput;
-  ctx: Context;
+  ctx: IContext;
 }) => {
   try {
     const page = filterQuery.page || 1;
@@ -176,6 +182,47 @@ export const findAllModulesController = async ({
       skip,
       take: limit,
     });
+    if (modules.length <= 0) {
+      return {
+        success: false,
+        code: 404,
+        message: "No modules found, please try again",
+        modules,
+      };
+    } else {
+      return {
+        success: true,
+        code: 200,
+        message: "Resource found",
+        module: modules,
+      };
+    }
+  } catch (error) {
+    return {
+      success: false,
+      error: new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "An unexpected error occurred, please try again later.",
+        // optional: pass the original error to retain stack trace
+        cause: error,
+      }),
+    };
+  }
+};
+
+export const findAllModulesByCourseSlugController = async ({
+  input,
+  ctx,
+}: {
+  input: CourseIdSchema;
+  ctx: IContext;
+}) => {
+  try {
+    //THE INPUT IS THE COURSE SLUG BUT IT DOESNT EXIST IN MODULE TABLE
+    const modules: Module[] = await ctx.prisma.module.findMany({
+      where: { courseId: Number(input.courseId) },
+    });
+
     if (modules.length <= 0) {
       return {
         success: false,

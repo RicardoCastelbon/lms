@@ -2,6 +2,7 @@ import { t } from "../trpc";
 import {
   createModuleController,
   deleteModuleController,
+  findAllModulesByCourseSlugController,
   findAllModulesController,
   findModuleController,
   updateModuleController,
@@ -13,6 +14,7 @@ import {
   updateModuleInputSchema,
   filterQuery,
 } from "../../common/validation/module-end-user";
+import { courseId } from "@/src/common/validation/course-end-user";
 
 export const moduleRouter = t.router({
   create: t.procedure
@@ -48,6 +50,19 @@ export const moduleRouter = t.router({
     .output(moduleOutputSchema)
     .query(({ input, ctx }) =>
       findAllModulesController({ filterQuery: input, ctx })
+    ),
+
+  getManyByCourseSlug: t.procedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/modules/getManyByCourseSlug",
+      },
+    })
+    .input(courseId) //Only used to satisfy Swagger, not needed within the controller function.
+    .output(moduleOutputSchema)
+    .query(({ input, ctx }) =>
+      findAllModulesByCourseSlugController({ input, ctx })
     ),
 
   update: t.procedure
