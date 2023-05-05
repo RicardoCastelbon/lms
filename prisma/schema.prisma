@@ -52,8 +52,8 @@ model Course_lib {
   id          Int          @id @default(autoincrement())
   modules     Module_lib[]
   title       String
-  description String
-  content     String
+  description String       @db.LongText
+  content     String       @db.LongText
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @default(now()) @updatedAt
 }
@@ -64,8 +64,8 @@ model Module_lib {
   courseId    Int
   exercises   Exercise_lib[]
   title       String
-  description String
-  content     String
+  description String         @db.LongText
+  content     String         @db.LongText
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @default(now()) @updatedAt
 }
@@ -75,8 +75,8 @@ model Exercise_lib {
   module      Module_lib? @relation(fields: [moduleId], references: [id], onDelete: Restrict, onUpdate: Cascade)
   moduleId    Int?
   title       String
-  description String
-  content     String
+  description String      @db.LongText
+  content     String      @db.LongText
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @default(now()) @updatedAt
 }
@@ -91,7 +91,7 @@ model Course {
   points      String
   icon        String
   color       String
-  content     String
+  content     String     @db.LongText
   published   Boolean    @default(false)
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @default(now()) @updatedAt
@@ -105,7 +105,7 @@ model Module {
   title     String
   startDate String
   endDate   String
-  content   String
+  content   String     @db.LongText
   createdAt DateTime   @default(now())
   updatedAt DateTime   @default(now()) @updatedAt
 }
@@ -115,8 +115,8 @@ model Exercise {
   module      Module?  @relation(fields: [moduleId], references: [id], onDelete: Restrict, onUpdate: Cascade)
   moduleId    Int?
   title       String
-  description String
-  content     String
+  description String   @db.LongText
+  content     String   @db.LongText
   createdAt   DateTime @default(now())
   updatedAt   DateTime @default(now()) @updatedAt
 }

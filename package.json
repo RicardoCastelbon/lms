@@ -48,6 +48,7 @@
     "tailwind-merge": "^1.12.0",
     "tailwindcss-animate": "^1.0.5",
     "trpc-openapi": "^1.1.2",
+    "uuidv4": "^6.2.13",
     "zod": "^3.19.1"
   },
   "devDependencies": {
