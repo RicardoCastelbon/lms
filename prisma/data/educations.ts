@@ -1,14 +1,14 @@
 export const educations = [
   {
-    name: "Education 1",
+    name: "Frontend utveckling 2023",
   },
   {
-    name: "Education 2",
+    name: "Backend utveckling 2023",
   },
   {
-    name: "Education 3",
+    name: "Fullstack utveckling 2023",
   },
-  {
+  /* {
     name: "Education 4",
   },
   {
@@ -29,4 +29,5 @@ export const educations = [
   {
     name: "Education 10",
   },
+ */
 ];
