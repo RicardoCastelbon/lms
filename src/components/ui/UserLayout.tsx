@@ -78,7 +78,9 @@ const UserLayout = ({ children, role }: Props) => {
         />
       </div>
       <main className="md:flex-1 absolute top-[70px] md:top-0 md:relative bg-white rounded-lg w-full p-4">
-        {session?.user.role !== "ADMIN" && <InnerMenu />}
+        {session?.user.role !== "ADMIN" && (
+          <InnerMenu educationName={eduName} />
+        )}
         {children}
       </main>
     </div>
