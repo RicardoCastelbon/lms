@@ -1,32 +1,11 @@
 export const educations = [
   {
-    name: "Education 1",
+    name: "Frontend utveckling 2023",
   },
   {
-    name: "Education 2",
+    name: "Backend utveckling 2023",
   },
   {
-    name: "Education 3",
-  },
-  {
-    name: "Education 4",
-  },
-  {
-    name: "Education 5",
-  },
-  {
-    name: "Education 6",
-  },
-  {
-    name: "Education 7",
-  },
-  {
-    name: "Education 8",
-  },
-  {
-    name: "Education 9",
-  },
-  {
-    name: "Education 10",
+    name: "Fullstack utveckling 2023",
   },
 ];
