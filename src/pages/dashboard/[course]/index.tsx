@@ -1,60 +1,51 @@
 import React, { useEffect, useState } from "react";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/src/components/ui/accordion";
 import UserLayout from "@/src/components/ui/UserLayout";
-import { Button } from "@/src/components/ui/button";
-import { Check, ClipboardList, Plus, PlusCircle } from "lucide-react";
+import { Plus } from "lucide-react";
+import Modal from "@/src/components/ui/modals/Modal";
+import CreateModuleForm from "@/src/components/ui/forms/teacher/CreateModuleForm";
+import { GetServerSideProps } from "next";
+import { getServerSession } from "next-auth";
+import { nextAuthOptions } from "@/src/common/auth";
+import { createServerSideHelpers } from "@trpc/react-query/server";
+import { serverRouter } from "@/src/server/routers";
+import { createContext } from "@/src/server/context";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import { Course, Module } from "@prisma/client";
+import ModuleAccordion from "@/src/components/ui/cards/ModuleAccordion";
 
-type Props = {};
-interface IModule {
-  module: string;
-  start: string;
-  end: string;
-  status: string;
-  exercises_completed: string;
-}
+type Props = {
+  modules: Module[];
+  course: Course;
+};
 
-const CourseOverview = (props: Props) => {
-  const data = [
-    {
-      module: "useState",
-      start: "14 April",
-      end: "15 Maj",
-      status: "Ej klar",
-      exercises_completed: "5/15",
-    },
-    {
-      module: "useEffect",
-      start: "14 April",
-      end: "15 Maj",
-      status: "Ej klar",
-      exercises_completed: "5/15",
-    },
-    {
-      module: "useRef",
-      start: "14 April",
-      end: "15 Maj",
-      status: "Ej klar",
-      exercises_completed: "5/15",
-    },
-  ];
+const CourseOverview = ({ modules, course }: Props) => {
+  const [desktopVersion, setdesktopVersion] = useState<boolean>(true);
+  const [screenWidth, setScreenWidth] = useState<number>();
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const { data: session } = useSession();
+  const router = useRouter();
 
-  const [modules, setModules] = useState<IModule[]>([]);
+  useEffect(() => {
+    console.log(session);
+    console.log(modules);
+
+    if (!session) {
+      router.push("/401");
+    }
+  }, [router, session, modules]);
+
+  const modalClickHandler = () => {
+    setShowModal((prev) => !prev);
+  };
+
   useEffect(() => {
     if (window.innerWidth > 768) {
       setdesktopVersion(true);
     } else {
       setdesktopVersion(false);
     }
-    setModules(data);
   }, []);
-
-  const [desktopVersion, setdesktopVersion] = useState<boolean>(true);
-  const [screenWidth, setScreenWidth] = useState<number>();
 
   //Remove open state for sidenav when screen width > 768px
   useEffect(() => {
@@ -76,13 +67,11 @@ const CourseOverview = (props: Props) => {
 
   return (
     <>
-      <UserLayout>
+      <UserLayout role={session?.user.role}>
         <div className="flex p-1">
           <section className=" w-full h-full bg-cyan-50 font-mont">
-            <p className=" ">Kurser -&gt; React</p>
-            <h1 className="text-2xl font-bold my-16">
-              Frontend-utveckling i React
-            </h1>
+            <p className=" ">Kurser -&gt; {course?.title}</p>
+            <h1 className="text-2xl font-bold my-16">{course?.title}</h1>
             <section className="">
               <div className="w-full">
                 <ul className="flex font-medium text-slate-400">
@@ -93,142 +82,117 @@ const CourseOverview = (props: Props) => {
                   {desktopVersion && <li className="w-32">Uppgifter</li>}
                 </ul>
               </div>
-              {modules.map((module) => (
-                <Accordion type="single" collapsible>
-                  <AccordionItem value="item-1">
-                    <AccordionTrigger>
-                      <div className="w-full">
-                        <ul className="flex">
-                          <li className="w-16 text-left">
-                            <ClipboardList />
-                          </li>
-                          <li className="w-32 text-left">{module.module}</li>
-                          {desktopVersion && (
-                            <li className="w-32 text-left">{module.start}</li>
-                          )}
-                          {desktopVersion && (
-                            <li className="w-32 text-left">{module.end}</li>
-                          )}
-                          {desktopVersion && (
-                            <li className="w-36 text-left">{module.status}</li>
-                          )}
-                          {desktopVersion && (
-                            <li className="w-32 text-left">
-                              {module.exercises_completed}
-                            </li>
-                          )}
-                          {desktopVersion && (
-                            <li className="w-32">
-                              <Button>
-                                <Plus />
-                                Uppgift
-                              </Button>
-                            </li>
-                          )}
-                        </ul>
-                      </div>
-                    </AccordionTrigger>
-                    <AccordionContent>
-                      {/* TIPTAP CONTENT */}
-                      <h2 className="text-xl font-semibold mb-7">
-                        useState i React
-                      </h2>
-                      <p className="mb-4 pr-20">
-                        Lorem, ipsum dolor sit amet consectetur adipisicing
-                        elit. Sint neque recusandae consequatur dolore
-                        repellendus pariatur vitae adipisci veritatis dolorum
-                        perspiciatis excepturi officia illo dolor, ab eveniet
-                        aperiam autem. Porro sapiente facere nisi. Culpa nulla
-                        earum laboriosam vel porro reprehenderit voluptate!
-                      </p>
-                      <h3 className="text-lg font-semibold mb-2">Resources</h3>
-                      <a href="www.google.com" className="block mb-3">
-                        www.google.com
-                      </a>
-                      <a href="www.google.com" className="block">
-                        www.google.com
-                      </a>
-                      <Accordion type="single" collapsible>
-                        <AccordionItem value="item-1">
-                          <AccordionTrigger>
-                            <div className="w-full">
-                              <ul className="flex justify-between pr-5 text-base">
-                                <li className="">
-                                  Se alla uppgifter för modulen
-                                </li>
-                                <li className="">3/5{/* COMPLETED/TOTAL */}</li>
-                              </ul>
-                            </div>
-                          </AccordionTrigger>
-                          <AccordionContent>
-                            <button className="flex justify-between w-full bg-accent text-white text-left p-4 hover:bg-blue-400">
-                              <div className="flex">
-                                <span className=" mr-4">
-                                  <ClipboardList />
-                                </span>
-                                <span>Skapa ett React-projekt</span>
-                              </div>
-                              <span className="">
-                                <Check />
-                              </span>
-                            </button>
-                            <button className="flex justify-between w-full bg-accent text-white text-left p-4 hover:bg-blue-400">
-                              <div className="flex">
-                                <span className=" mr-4">
-                                  <ClipboardList />
-                                </span>
-                                <span>Filstrukture i React</span>
-                              </div>
-                              <span className="">
-                                <Check />
-                              </span>
-                            </button>
-                            <button className="flex justify-between w-full bg-accent text-white text-left p-4 hover:bg-blue-400">
-                              <div className="flex">
-                                <span className=" mr-4">
-                                  <ClipboardList />
-                                </span>
-                                <span>Components i React</span>
-                              </div>
-                              <span className="">
-                                <Check />
-                              </span>
-                            </button>
-                          </AccordionContent>
-                        </AccordionItem>
-                      </Accordion>
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
-              ))}
+              {modules &&
+                modules?.map((module: Module) => (
+                  <ModuleAccordion key={module.id} module={module} />
+                ))}
             </section>
           </section>
           {desktopVersion && (
             <section className="pl-5">
-              <button className=" flex w-56 p-3 bg-indigo-50 hover:bg-indigo-200 font-semibold border border-b-0 rounded border-indigo-500">
-                <span className="mr-3">
-                  <PlusCircle />
-                </span>
-                <span>Lägg till modul</span>
-              </button>
-              <button className=" flex w-56 p-3 bg-indigo-50 hover:bg-indigo-200 font-semibold border border-b-0 rounded border-indigo-500">
-                <span className="mr-3">
-                  <PlusCircle />
-                </span>
-                <span>Uppdatera modul</span>
-              </button>
-              <button className=" flex w-56 p-3 bg-indigo-50 hover:bg-indigo-200 font-semibold border rounded border-indigo-500">
-                <span className="mr-4">
-                  <PlusCircle />
-                </span>
-                <span>Lägg till deltagare</span>
-              </button>
+              {/* Aside right */}
+              <aside className="flex-1 bg-green">
+                {/* quick-menu */}
+                <div className="w-full p-2">
+                  {/* quick menu items */}
+                  <div
+                    className="flex items-center gap-2 bg-card p-4 rounded-lg hover:cursor-pointer hover:bg-background"
+                    onClick={modalClickHandler}
+                  >
+                    <div className="rounded-full bg-primary text-white p-2">
+                      <Plus />
+                    </div>
+                    <p>Lägg till modul</p>
+                  </div>
+                </div>
+              </aside>
+              {/* Aside right */}
+              <aside className="flex-1 bg-green">
+                {/* quick-menu */}
+                <div className="w-full p-2">
+                  {/* quick menu items */}
+                  <div
+                    className="flex items-center gap-2 bg-card p-4 rounded-lg hover:cursor-pointer hover:bg-background"
+                    onClick={modalClickHandler}
+                  >
+                    <div className="rounded-full bg-primary text-white p-2">
+                      <Plus />
+                    </div>
+                    <p>Uppdatera modul</p>
+                  </div>
+                </div>
+              </aside>
+              {/* Aside right */}
+              <aside className="flex-1 bg-green">
+                {/* quick-menu */}
+                <div className="w-full p-2">
+                  {/* quick menu items */}
+                  <div
+                    className="flex items-center gap-2 bg-card p-4 rounded-lg hover:cursor-pointer hover:bg-background"
+                    onClick={modalClickHandler}
+                  >
+                    <div className="rounded-full bg-primary text-white p-2">
+                      <Plus />
+                    </div>
+                    <p>Lägg till deltagare</p>
+                  </div>
+                </div>
+              </aside>
             </section>
           )}
         </div>
+        <Modal
+          header={"Skapa en modul"}
+          showModal={showModal}
+          setShowModal={setShowModal}
+        >
+          <CreateModuleForm />
+        </Modal>
       </UserLayout>
     </>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (context: any) => {
+  const currentSession = await getServerSession(
+    context.req,
+    context.res,
+    nextAuthOptions
+  );
+
+  //Set up a trpc helper, needed for serverSide fetching
+  const helpers = createServerSideHelpers({
+    router: serverRouter,
+    ctx: await createContext(context),
+  });
+  //might have to cast context to string
+  const slug = String(context.params.course);
+
+  //fetch the course from params to get the courseId
+  const course = await helpers.course.getCourseBySlug.fetch({
+    courseSlug: slug,
+  });
+
+  const courseId = String(course?.course.id);
+
+  // fetch all the modules with with courseId
+  const res = await helpers.module.getManyByCourseId.fetch({
+    courseId: String(courseId),
+  });
+
+  //Needed to serialize Date objects for createdAt + updatedAt otherwise error is thrown
+  const modules = JSON.parse(JSON.stringify(res));
+  const courseData = JSON.parse(JSON.stringify(course));
+
+  console.log(courseData);
+
+  return {
+    props: {
+      session: currentSession,
+      modules: modules.module,
+      course: courseData.course,
+    },
+  };
 };
 
 export default CourseOverview;

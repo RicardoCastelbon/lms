@@ -52,20 +52,20 @@ model Course_lib {
   id          Int          @id @default(autoincrement())
   modules     Module_lib[]
   title       String
-  description String
-  content     String
+  description String       @db.LongText
+  content     String       @db.LongText
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @default(now()) @updatedAt
 }
 
 model Module_lib {
   id          Int            @id @default(autoincrement())
-  course      Course_lib     @relation(fields: [courseId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-  courseId    Int
+  courseLib   Course_lib     @relation(fields: [courseLibId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  courseLibId Int
   exercises   Exercise_lib[]
   title       String
-  description String
-  content     String
+  description String         @db.LongText
+  content     String         @db.LongText
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @default(now()) @updatedAt
 }
@@ -75,8 +75,8 @@ model Exercise_lib {
   module      Module_lib? @relation(fields: [moduleId], references: [id], onDelete: Restrict, onUpdate: Cascade)
   moduleId    Int?
   title       String
-  description String
-  content     String
+  description String      @db.LongText
+  content     String      @db.LongText
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @default(now()) @updatedAt
 }
@@ -91,7 +91,7 @@ model Course {
   points      String
   icon        String
   color       String
-  content     String
+  content     String     @db.LongText
   published   Boolean    @default(false)
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @default(now()) @updatedAt
@@ -103,8 +103,10 @@ model Module {
   courseId    Int?
   exercises   Exercise[]
   title       String
-  description String
-  content     String
+  startDate   String
+  endDate     String
+  content     String     @db.LongText
+  description String     @db.LongText
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @default(now()) @updatedAt
 }
@@ -114,8 +116,8 @@ model Exercise {
   module      Module?  @relation(fields: [moduleId], references: [id], onDelete: Restrict, onUpdate: Cascade)
   moduleId    Int?
   title       String
-  description String
-  content     String
+  description String   @db.LongText
+  content     String   @db.LongText
   createdAt   DateTime @default(now())
   updatedAt   DateTime @default(now()) @updatedAt
 }
