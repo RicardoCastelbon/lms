@@ -4,6 +4,7 @@ import { userRouter } from "./user";
 import { adminRouter } from "./admin/admin";
 import { courseLibRouter } from "./admin/course-lib";
 import { courseRouter } from "./course";
+import { moduleRouter } from "./module";
 import { exerciseLibRouter } from "./admin/exercise_lib";
 
 export const serverRouter = t.router({
@@ -13,6 +14,7 @@ export const serverRouter = t.router({
   exercise_lib: exerciseLibRouter,
   courseLib: courseLibRouter,
   course: courseRouter,
+  module: moduleRouter,
 });
 
 //Should this have "I" prefixed in the name? Since it's a type, not an interface.
