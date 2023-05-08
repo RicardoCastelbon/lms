@@ -10,6 +10,10 @@ export const educationId = z.object({
   educationId: z.string(),
 });
 
+export const courseLibId = z.object({
+  courseLibId: z.string(),
+});
 export type FilterQuerySchema = z.infer<typeof filterQuery>;
 export type NoInputSchema = z.infer<typeof noInput>;
 export type EducationIdSchema = z.infer<typeof educationId>;
+export type CourseLibIdSchema = z.infer<typeof courseLibId>;

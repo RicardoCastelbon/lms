@@ -96,7 +96,7 @@ export const updateCourseInputSchema = z.object({
     .partial(),
 });
 export const courseId = z.object({
-  courseId: z.string(),
+  courseId: z.number(),
 });
 export const courseSlug = z.object({
   courseSlug: z.string(),
