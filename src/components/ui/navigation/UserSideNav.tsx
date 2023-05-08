@@ -36,14 +36,14 @@ const UserSideNav = ({ sideBarClass, role, education }: Props) => {
           <>
             <Link
               className="flex gap-2 items-center hover:text-primary"
-              href={`/${education?.toLocaleLowerCase()}/dashboard`}
+              href={`/dashboard`}
             >
               <FileText />
               <span className="text-sm">Kurser</span>
             </Link>
             <Link
               className="flex gap-2 items-center hover:text-primary"
-              href={`/${education?.toLocaleLowerCase()}/dashboard`}
+              href={`/dashboard`}
             >
               <Users />
               <span className="text-sm">Personer</span>
@@ -51,7 +51,7 @@ const UserSideNav = ({ sideBarClass, role, education }: Props) => {
             {role === Role.STUDENT && (
               <Link
                 className="flex gap-2 items-center hover:text-primary"
-                href={`/${education?.toLocaleLowerCase()}/dashboard`}
+                href={`/dashboard`}
               >
                 <BarChart2 />
                 <span className="text-sm">Omdömen</span>
@@ -63,7 +63,7 @@ const UserSideNav = ({ sideBarClass, role, education }: Props) => {
       <div className="flex flex-col gap-4 justify-self-end">
         <Link
           className="flex gap-2 items-center hover:text-primary"
-          href={`/${education?.toLocaleLowerCase()}/dashboard`}
+          href={`/dashboard`}
         >
           <Settings />
           <span className="text-sm">Inställningar</span>

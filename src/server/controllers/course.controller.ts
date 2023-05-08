@@ -2,10 +2,9 @@ import { Course, Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import {
   CourseInputSchema,
-  courseInputSchema,
-  updateCourseInputSchema,
   UpdateCourseInputSchema,
   CourseIdSchema,
+  CourseSlugSchema,
 } from "../../common/validation/course-end-user";
 import { IContext } from "../context";
 import { EducationIdSchema, educationId } from "@/src/common/validation/global";
@@ -113,6 +112,7 @@ export const getAllCourses = async ({ ctx }: { ctx: IContext }) => {
     };
   }
 };
+
 export const getCoursesByEducationId = async ({
   input,
   ctx,
@@ -163,6 +163,46 @@ export const getOneCourse = async ({
   try {
     const course: Course | null = await ctx.prisma.course.findFirst({
       where: { id: Number(input.courseId) },
+    });
+
+    if (course === null) {
+      return {
+        success: false,
+        code: 404,
+        message: "Course not found, please try again.",
+        course,
+      };
+    } else {
+      return {
+        success: true,
+        code: 200,
+        message: "Resource found",
+        course,
+      };
+    }
+  } catch (error) {
+    return {
+      success: false,
+      error: new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "An unexpected error occurred, please try again later.",
+        // optional: pass the original error to retain stack trace
+        cause: error,
+      }),
+    };
+  }
+};
+
+export const getOneCourseBySlug = async ({
+  input,
+  ctx,
+}: {
+  input: CourseSlugSchema;
+  ctx: IContext;
+}) => {
+  try {
+    const course: Course | null = await ctx.prisma.course.findFirst({
+      where: { slug: input.courseSlug },
     });
 
     if (course === null) {

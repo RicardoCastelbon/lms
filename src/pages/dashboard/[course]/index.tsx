@@ -11,14 +11,15 @@ import { serverRouter } from "@/src/server/routers";
 import { createContext } from "@/src/server/context";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { Module } from "@prisma/client";
+import { Course, Module } from "@prisma/client";
 import ModuleAccordion from "@/src/components/ui/cards/ModuleAccordion";
 
 type Props = {
   modules: Module[];
+  course: Course;
 };
 
-const CourseOverview = ({ modules }: Props) => {
+const CourseOverview = ({ modules, course }: Props) => {
   const [desktopVersion, setdesktopVersion] = useState<boolean>(true);
   const [screenWidth, setScreenWidth] = useState<number>();
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -69,10 +70,8 @@ const CourseOverview = ({ modules }: Props) => {
       <UserLayout role={session?.user.role}>
         <div className="flex p-1">
           <section className=" w-full h-full bg-cyan-50 font-mont">
-            <p className=" ">"Kurser -&gt; React"</p>
-            <h1 className="text-2xl font-bold my-16">
-              "Frontend-utveckling i React"
-            </h1>
+            <p className=" ">Kurser -&gt; {course?.title}</p>
+            <h1 className="text-2xl font-bold my-16">{course?.title}</h1>
             <section className="">
               <div className="w-full">
                 <ul className="flex font-medium text-slate-400">
@@ -166,22 +165,32 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
     router: serverRouter,
     ctx: await createContext(context),
   });
+  //might have to cast context to string
+  const slug = String(context.params.course);
 
-  //The actual fetching / ->getManyByCourseSlug<-
-  //WE HAVE ACCESS TO THE COURSE SLUG BUT NOT THE COURSEID.
-  //THE "MODULE TABLE" CONTAIN THE COURSE ID BUT NOT THE SLUG. HOW CAN WE DO IT????
-  const res = await helpers.module.getManyByCourseSlug.fetch({
-    //courseId: context.params.course,
-    courseId: "1",
+  //fetch the course from params to get the courseId
+  const course = await helpers.course.getCourseBySlug.fetch({
+    courseSlug: slug,
+  });
+
+  const courseId = String(course?.course.id);
+
+  // fetch all the modules with with courseId
+  const res = await helpers.module.getManyByCourseId.fetch({
+    courseId: String(courseId),
   });
 
   //Needed to serialize Date objects for createdAt + updatedAt otherwise error is thrown
   const modules = JSON.parse(JSON.stringify(res));
+  const courseData = JSON.parse(JSON.stringify(course));
+
+  console.log(courseData);
 
   return {
     props: {
       session: currentSession,
       modules: modules.module,
+      course: courseData.course,
     },
   };
 };

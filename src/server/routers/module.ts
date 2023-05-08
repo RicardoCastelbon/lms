@@ -2,7 +2,7 @@ import { t } from "../trpc";
 import {
   createModuleController,
   deleteModuleController,
-  findAllModulesByCourseSlugController,
+  findAllModulesByCourseIdController,
   findAllModulesController,
   findModuleController,
   updateModuleController,
@@ -52,17 +52,17 @@ export const moduleRouter = t.router({
       findAllModulesController({ filterQuery: input, ctx })
     ),
 
-  getManyByCourseSlug: t.procedure
+  getManyByCourseId: t.procedure
     .meta({
       openapi: {
         method: "GET",
-        path: "/modules/getManyByCourseSlug",
+        path: "/modules/getMany/{courseId}",
       },
     })
-    .input(courseId) //Only used to satisfy Swagger, not needed within the controller function.
+    .input(courseId)
     .output(moduleOutputSchema)
     .query(({ input, ctx }) =>
-      findAllModulesByCourseSlugController({ input, ctx })
+      findAllModulesByCourseIdController({ input, ctx })
     ),
 
   update: t.procedure

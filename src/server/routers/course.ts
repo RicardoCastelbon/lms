@@ -6,23 +6,18 @@ import {
   courseInputSchema,
   updateCourseInputSchema,
   courseId,
+  courseSlug,
 } from "../../common/validation/course-end-user";
-import {
-  FilterQuerySchema,
-  educationId,
-  noInput,
-} from "@/src/common/validation/global";
+import { educationId, noInput } from "@/src/common/validation/global";
 import {
   addCourse,
   deleteCourse,
   getAllCourses,
   getCoursesByEducationId,
   getOneCourse,
+  getOneCourseBySlug,
   updateCourse,
 } from "../controllers/course.controller";
-import { Course } from "@prisma/client";
-import { IContext } from "../context";
-import { TRPCError } from "@trpc/server";
 
 export const courseRouter = t.router({
   create: t.procedure
@@ -42,19 +37,30 @@ export const courseRouter = t.router({
         path: "/course/getMany",
       },
     })
-    .input(noInput) //Only used to satisfy Swagger, not needed within the controller function.
+    .input(noInput)
     .output(courseOutputSchema)
     .query(({ ctx }) => getAllCourses({ ctx })),
   getManyByEducationId: t.procedure
     .meta({
       openapi: {
         method: "GET",
-        path: "/course/getManyByEducationId/{educationId}",
+        path: "/course/getMany/{educationId}",
       },
     })
-    .input(educationId) //Only used to satisfy Swagger, not needed within the controller function.
+    .input(educationId)
     .output(courseOutputSchema)
     .query(({ input, ctx }) => getCoursesByEducationId({ input, ctx })),
+
+  getCourseBySlug: t.procedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/course/getOne/{courseSlug}",
+      },
+    })
+    .input(courseSlug)
+    .output(courseOutputSchema)
+    .query(({ input, ctx }) => getOneCourseBySlug({ input, ctx })),
 
   getOne: t.procedure
     .meta({
@@ -63,7 +69,7 @@ export const courseRouter = t.router({
         path: "/course/getOne/{courseId}",
       },
     })
-    .input(courseId) //Only used to satisfy Swagger, not needed within the controller function.
+    .input(courseId)
     .output(courseOutputSchema)
     .query(({ input, ctx }) => getOneCourse({ input, ctx })),
   // UPDATE COURSE_LIB

@@ -1,7 +1,4 @@
-import {
-  courseId,
-  CourseIdSchema,
-} from "@/src/common/validation/course-end-user";
+import { CourseIdSchema } from "@/src/common/validation/course-end-user";
 import { FilterQueryInput } from "@/src/common/validation/education";
 import CoursesPage from "@/src/pages/admin/courses";
 import { Education, Module, Prisma } from "@prisma/client";
@@ -210,7 +207,7 @@ export const findAllModulesController = async ({
   }
 };
 
-export const findAllModulesByCourseSlugController = async ({
+export const findAllModulesByCourseIdController = async ({
   input,
   ctx,
 }: {
@@ -218,7 +215,6 @@ export const findAllModulesByCourseSlugController = async ({
   ctx: IContext;
 }) => {
   try {
-    //THE INPUT IS THE COURSE SLUG BUT IT DOESNT EXIST IN MODULE TABLE
     const modules: Module[] = await ctx.prisma.module.findMany({
       where: { courseId: Number(input.courseId) },
     });
@@ -228,7 +224,7 @@ export const findAllModulesByCourseSlugController = async ({
         success: false,
         code: 404,
         message: "No modules found, please try again",
-        modules,
+        module: modules,
       };
     } else {
       return {
