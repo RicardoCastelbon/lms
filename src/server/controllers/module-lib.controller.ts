@@ -152,100 +152,100 @@ export const getOneModuleLib = async ({
   }
 };
 
-// export const updateModuleLib = async ({
-//   input,
-//   ctx,
-// }: {
-//   input: UpdatemoduleLibInputSchema;
-//   ctx: IContext;
-// }) => {
-//   // NOTE!!! The input params passed to the update function will update, if a certain param isn't passed the old value will remain. Be careful what params are sent from the frontend. Might have to write a util for this to remove all unused parameters.
-//   try {
-//     const moduleLib = await ctx.prisma.module_lib.update({
-//       where: { id: Number(input.moduleLibId) },
-//       data: input.body,
-//     });
+export const updateModuleLib = async ({
+  input,
+  ctx,
+}: {
+  input: UpdateModuleLibInputSchema;
+  ctx: IContext;
+}) => {
+  // NOTE!!! The input params passed to the update function will update, if a certain param isn't passed the old value will remain. Be careful what params are sent from the frontend. Might have to write a util for this to remove all unused parameters.
+  try {
+    const moduleLib = await ctx.prisma.module_lib.update({
+      where: { id: Number(input.moduleLibId) },
+      data: input.body,
+    });
 
-//     return {
-//       success: true,
-//       code: 200,
-//       message: "Resource found",
-//       moduleLib,
-//     };
-//   } catch (error) {
-//     console.error("Error in updateModuleLib:", error); // Add this line to log the error
+    return {
+      success: true,
+      code: 200,
+      message: "Resource found",
+      moduleLib,
+    };
+  } catch (error) {
+    console.error("Error in updateModuleLib:", error); // Add this line to log the error
 
-//     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-//       if (error.code === "P2025") {
-//         console.log(
-//           `An operation failed because it depends on one or more records that were required but not found. ${error.cause}`
-//         );
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === "P2025") {
+        console.log(
+          `An operation failed because it depends on one or more records that were required but not found. ${error.cause}`
+        );
 
-//         return {
-//           success: false,
-//           error: {
-//             code: error.code,
-//             message: error.message,
-//             meta: { ...error.meta },
-//           },
-//         };
-//       }
-//     }
+        return {
+          success: false,
+          error: {
+            code: error.code,
+            message: error.message,
+            meta: { ...error.meta },
+          },
+        };
+      }
+    }
 
-//     return {
-//       success: false,
-//       error: new TRPCError({
-//         code: "INTERNAL_SERVER_ERROR",
-//         message: "An unexpected error occurred, please try again later.",
-//         // optional: pass the original error to retain stack trace
-//         cause: error,
-//       }),
-//     };
-//   }
-// };
+    return {
+      success: false,
+      error: new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "An unexpected error occurred, please try again later.",
+        // optional: pass the original error to retain stack trace
+        cause: error,
+      }),
+    };
+  }
+};
 
-// export const deleteModuleLib = async ({
-//   input,
-//   ctx,
-// }: {
-//   input: ModuleLibIdSchema;
-//   ctx: IContext;
-// }) => {
-//   try {
-//     const moduleLib = await ctx.prisma.module_lib.delete({
-//       where: { id: Number(input.moduleLibId) },
-//     });
-//     return {
-//       success: true,
-//       code: 200,
-//       message: "Resource found",
-//       moduleLib,
-//     };
-//   } catch (error) {
-//     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-//       if (error.code === "P2025") {
-//         console.log(
-//           `An operation failed because it depends on one or more records that were required but not found. ${error.cause}`
-//         );
+export const deleteModuleLib = async ({
+  input,
+  ctx,
+}: {
+  input: ModuleLibIdSchema;
+  ctx: IContext;
+}) => {
+  try {
+    const moduleLib = await ctx.prisma.module_lib.delete({
+      where: { id: Number(input.moduleLibId) },
+    });
+    return {
+      success: true,
+      code: 200,
+      message: "Resource found",
+      moduleLib,
+    };
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === "P2025") {
+        console.log(
+          `An operation failed because it depends on one or more records that were required but not found. ${error.cause}`
+        );
 
-//         return {
-//           success: false,
-//           error: {
-//             code: error.code,
-//             message: error.message,
-//             meta: { ...error.meta },
-//           },
-//         };
-//       }
-//     }
-//     return {
-//       success: false,
-//       error: new TRPCError({
-//         code: "INTERNAL_SERVER_ERROR",
-//         message: "An unexpected error occurred, please try again later.",
-//         // optional: pass the original error to retain stack trace
-//         cause: error,
-//       }),
-//     };
-//   }
-// };
+        return {
+          success: false,
+          error: {
+            code: error.code,
+            message: error.message,
+            meta: { ...error.meta },
+          },
+        };
+      }
+    }
+    return {
+      success: false,
+      error: new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "An unexpected error occurred, please try again later.",
+        // optional: pass the original error to retain stack trace
+        cause: error,
+      }),
+    };
+  }
+};

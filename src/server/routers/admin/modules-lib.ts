@@ -11,6 +11,8 @@ import {
   createModuleLibController, getOneModuleLib,
 //   deleteModuleLib,
    getAllModulesLib,
+   updateModuleLib,
+   deleteModuleLib,
 //   getOneModuleLib,
 //   updateModuleLib,
 } from "../../controllers/module-lib.controller";
@@ -56,36 +58,36 @@ export const moduleLibRouter = t.router({
     .query(({ input, ctx }) => getOneModuleLib({ input, ctx })),
 
 //   // UPDATE EXERCISE_LIB
-//   updatemoduleLib: t.procedure
-//     .meta({
-//       openapi: {
-//         method: "PUT",
-//         path: "/module-lib/update/{moduleLibId}",
-//       },
-//     })
-//     .input(updateModuleInputSchema)
-//     .output(moduleLibOutputSchema)
-//     .mutation(({ input, ctx }) =>
-//       updateModuleLib({
-//         input,
-//         ctx,
-//       })
-//     ),
-//   deletemoduleLib: t.procedure
-//     .meta({
-//       openapi: {
-//         method: "DELETE",
-//         path: "/module-lib/delete/{moduleLibId}",
-//       },
-//     })
-//     .input(moduleLibId)
-//     .output(moduleLibOutputSchema)
-//     .mutation(({ input, ctx }) =>
-//       deleteModuleLib({
-//         input,
-//         ctx,
-//       })
-//     ),
+  updateModuleLib: t.procedure
+    .meta({
+      openapi: {
+        method: "PUT",
+        path: "/module-lib/update/{moduleLibId}",
+      },
+    })
+    .input(updateModuleLibInputSchema)
+    .output(moduleLibOutputSchema)
+    .mutation(({ input, ctx }) =>
+      updateModuleLib({
+        input,
+        ctx,
+      })
+    ),
+  deletemoduleLib: t.procedure
+    .meta({
+      openapi: {
+        method: "DELETE",
+        path: "/module-lib/delete/{moduleLibId}",
+      },
+    })
+    .input(moduleLibId)
+    .output(moduleLibOutputSchema)
+    .mutation(({ input, ctx }) =>
+      deleteModuleLib({
+        input,
+        ctx,
+      })
+    ),
 });
 
 //GET ONE Course
