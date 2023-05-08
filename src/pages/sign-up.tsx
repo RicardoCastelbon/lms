@@ -1,4 +1,8 @@
-import type { NextPage } from "next";
+import type {
+  GetServerSideProps,
+  GetServerSidePropsContext,
+  NextPage,
+} from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { ChangeEvent, useCallback } from "react";
@@ -11,6 +15,11 @@ import Select, { SingleValue } from "react-select";
 
 import { signUpSchema, ISignUp } from "../common/validation/auth";
 import { trpc } from "../common/trpc";
+import { getServerSession } from "next-auth";
+import { nextAuthOptions } from "../common/auth";
+import { createServerSideHelpers } from "@trpc/react-query/server";
+import { serverRouter } from "../server/routers";
+import { createContext } from "../server/context";
 
 const educations = [
   { label: "React", value: 1 },
@@ -176,6 +185,35 @@ const SignUp: NextPage = () => {
       </Layout>
     </div>
   );
+};
+export const getServerSideProps: GetServerSideProps = async (context: any) => {
+  const currentSession = await getServerSession(
+    context.req,
+    context.res,
+    nextAuthOptions
+  );
+  const educationId = String(currentSession?.user.educationId);
+
+  //Set up a trpc helper, needed for serverSide fetching
+  const helpers = createServerSideHelpers({
+    router: serverRouter,
+    ctx: await createContext(context),
+  });
+
+  //The actual fetching
+  const res = await helpers.course.getManyByEducationId.fetch({
+    educationId,
+  });
+
+  //Needed to serialize Date objects for createdAt + updatedAt otherwise error is thrown
+  const courses = JSON.parse(JSON.stringify(res));
+
+  return {
+    props: {
+      session: currentSession,
+      // courses: courses.course,
+    },
+  };
 };
 
 export default SignUp;

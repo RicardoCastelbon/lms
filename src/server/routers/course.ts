@@ -45,6 +45,7 @@ export const courseRouter = t.router({
     .input(noInput) //Only used to satisfy Swagger, not needed within the controller function.
     .output(courseOutputSchema)
     .query(({ ctx }) => getAllCourses({ ctx })),
+
   getManyByEducationId: t.procedure
     .meta({
       openapi: {

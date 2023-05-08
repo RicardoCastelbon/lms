@@ -1,19 +1,27 @@
 import { Education, Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { Context } from "vm";
+import { IContext } from "../context";
 import {
-  CreateEducationInput,
+  EducationIdSchema,
+  FilterQuerySchema,
+  educationId,
+  noInput,
+} from "@/src/common/validation/global";
+import {
+  // CreateEducationInput,
   UpdateEducationInput,
-  ParamsInput,
+  // ParamsInput,
   FilterQueryInput,
+  EducationInput,
 } from "../../common/validation/education";
 
 export const createEducationController = async ({
   input,
   ctx,
 }: {
-  input: CreateEducationInput;
-  ctx: Context;
+  input: EducationInput;
+  ctx: IContext;
 }) => {
   try {
     const education: Education = await ctx.prisma.education.create({
@@ -22,7 +30,267 @@ export const createEducationController = async ({
       },
     });
 
-    /*  
+    return {
+      success: true,
+      code: 201,
+      message: "Resource created",
+      education,
+    };
+  } catch (error) {
+    console.log(error);
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      return {
+        success: false,
+        error: {
+          code: error.code,
+          message: error.message,
+          meta: { ...error.meta },
+        },
+      };
+    }
+    return {
+      success: false,
+      error: new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "An unexpected error occurred, please try again later.",
+        // optional: pass the original error to retain stack trace
+        cause: error,
+      }),
+    };
+  }
+};
+
+export const updateEducationController = async ({
+  paramsInput,
+  input,
+  ctx,
+}: {
+  paramsInput: EducationIdSchema;
+  input: UpdateEducationInput["body"];
+  ctx: IContext;
+}) => {
+  try {
+    const education = await ctx.prisma.education.update({
+      where: { id: Number(paramsInput.educationId) },
+      data: input,
+    });
+
+    return {
+      success: true,
+      code: 200,
+      message: "Resource found",
+      education,
+    };
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === "P2025") {
+        console.log(
+          `An operation failed because it depends on one or more records that were required but not found. ${error.cause}`
+        );
+
+        return {
+          success: false,
+          error: {
+            code: error.code,
+            message: error.message,
+            meta: { ...error.meta },
+          },
+        };
+      }
+    }
+
+    return {
+      success: false,
+      error: new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "An unexpected error occurred, please try again later.",
+        // optional: pass the original error to retain stack trace
+        cause: error,
+      }),
+    };
+  }
+};
+
+export const findEducationController = async ({
+  input,
+  ctx,
+}: {
+  input: EducationIdSchema;
+  ctx: IContext;
+}) => {
+  try {
+    const education: Education | null = await ctx.prisma.education.findFirst({
+      where: { id: Number(input.educationId) },
+    });
+
+    if (!education) {
+      return {
+        success: false,
+        code: 404,
+        message: "Education not found, please try again.",
+        education,
+      };
+    } else {
+      return {
+        success: true,
+        code: 200,
+        message: "Resource found",
+        education,
+      };
+    }
+  } catch (error) {
+    return {
+      success: false,
+      error: new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "An unexpected error occurred, please try again later.",
+        // optional: pass the original error to retain stack trace
+        cause: error,
+      }),
+    };
+  }
+};
+
+export const findAllEducationsController = async ({
+  filterQuery,
+  ctx,
+}: {
+  filterQuery: FilterQueryInput;
+  ctx: IContext;
+}) => {
+  try {
+    const page = filterQuery.page || 1;
+    const limit = filterQuery.limit || 10;
+    const skip = (page - 1) * limit;
+
+    const education = await ctx.prisma.education.findMany({
+      skip,
+      take: limit,
+    });
+    if (education.length <= 0) {
+      return {
+        success: false,
+        code: 404,
+        message: "No educations found, please try again",
+        education,
+      };
+    } else {
+      return {
+        success: true,
+        code: 200,
+        message: "Resource found.",
+        education,
+      };
+    }
+  } catch (error) {
+    return {
+      success: false,
+      error: new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "An unexpected error occurred, please try again later.",
+        // optional: pass the original error to retain stack trace
+        cause: error,
+      }),
+    };
+  }
+};
+
+//Would later need one to get all educations within a school // Niclas.
+export const findAllEducations = async ({ ctx }: { ctx: IContext }) => {
+  try {
+    // const page = filterQuery.page || 1;
+    // const limit = filterQuery.limit || 10;
+    // const skip = (page - 1) * limit;
+
+    const education = await ctx.prisma.education.findMany();
+
+    if (education.length <= 0) {
+      return {
+        success: false,
+        code: 404,
+        message: "No educations found, please try again",
+        education,
+      };
+    } else {
+      return {
+        success: true,
+        code: 200,
+        message: "Resource found",
+        education: education,
+      };
+    }
+  } catch (error) {
+    return {
+      success: false,
+      error: new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "An unexpected error occurred, please try again later.",
+        // optional: pass the original error to retain stack trace
+        cause: error,
+      }),
+    };
+  }
+};
+
+export const deleteEducationController = async ({
+  input,
+  ctx,
+}: {
+  input: EducationIdSchema;
+  ctx: IContext;
+}) => {
+  try {
+    const education = await ctx.prisma.education.delete({
+      where: { id: Number(input.educationId) },
+    });
+
+    return {
+      success: true,
+      code: 200,
+      message: "Resource found",
+      education,
+    };
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === "P2025") {
+        console.log(
+          `An operation failed because it depends on one or more records that were required but not found. ${error.cause}`
+        );
+
+        return {
+          success: false,
+          error: {
+            code: error.code,
+            message: error.message,
+            meta: { ...error.meta },
+          },
+        };
+      }
+    }
+
+    return {
+      success: false,
+      error: new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "An unexpected error occurred, please try again later.",
+        // optional: pass the original error to retain stack trace
+        cause: error,
+      }),
+    };
+  }
+};
+
+/* 
+      EXAMPLE OF ERROR CATCH. 
+      LINK TO ERROR CODES REFERENCE -> https://www.prisma.io/docs/reference/api-reference/error-reference
+      if (error.code === "P2002") {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "Note with that title already exists",
+        });
+      } */
+
+/*  
    USEFUL INFO ABOUT PRISMA
    const result = await ctx.prisma.user.create({
       //yarn prisma generate -> it generates the atributes to work in prisma client
@@ -46,141 +314,3 @@ export const createEducationController = async ({
           email: true,
         }, 
     }); */
-
-    return {
-      status: "success",
-      education,
-    };
-  } catch (error) {
-    console.log(error);
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      /* 
-      EXAMPLE OF ERROR CATCH. 
-      LINK TO ERROR CODES REFERENCE -> https://www.prisma.io/docs/reference/api-reference/error-reference
-      if (error.code === "P2002") {
-        throw new TRPCError({
-          code: "CONFLICT",
-          message: "Note with that title already exists",
-        });
-      } */
-      console.log(error.code, error.message);
-      return error;
-    }
-  }
-};
-
-export const updateEducationController = async ({
-  paramsInput,
-  input,
-  ctx,
-}: {
-  paramsInput: ParamsInput;
-  input: UpdateEducationInput["body"];
-  ctx: Context;
-}) => {
-  try {
-    const education = await ctx.prisma.education.update({
-      where: { id: Number(paramsInput.educationId) },
-      data: input,
-    });
-
-    return {
-      status: "success",
-      education,
-    };
-  } catch (error) {
-    console.log(error);
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      console.log(error.code, error.message);
-      return error;
-    }
-  }
-};
-
-export const findEducationController = async ({
-  paramsInput,
-  ctx,
-}: {
-  paramsInput: ParamsInput;
-  ctx: Context;
-}) => {
-  try {
-    const education: Education = await ctx.prisma.education.findFirst({
-      where: { id: Number(paramsInput.educationId) },
-    });
-
-    if (!education) {
-      return new TRPCError({
-        code: "NOT_FOUND",
-        message: `Education with ID: ${paramsInput.educationId} not found`,
-      });
-    }
-
-    return {
-      status: "success",
-      education,
-    };
-  } catch (error) {
-    console.log(error);
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      console.log(error.code, error.message);
-      return error;
-    }
-  }
-};
-
-export const findAllEducationsController = async ({
-  filterQuery,
-  ctx,
-}: {
-  filterQuery: FilterQueryInput;
-  ctx: Context;
-}) => {
-  try {
-    const page = filterQuery.page || 1;
-    const limit = filterQuery.limit || 10;
-    const skip = (page - 1) * limit;
-
-    const education = await ctx.prisma.education.findMany({
-      skip,
-      take: limit,
-    });
-
-    return {
-      status: "success",
-      results: education.length,
-      education,
-    };
-  } catch (error) {
-    console.log(error);
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      console.log(error.code, error.message);
-      return error;
-    }
-  }
-};
-
-export const deleteEducationController = async ({
-  paramsInput,
-  ctx,
-}: {
-  paramsInput: ParamsInput;
-  ctx: Context;
-}) => {
-  try {
-    const education = await ctx.prisma.education.delete({
-      where: { id: Number(paramsInput.educationId) },
-    });
-
-    return {
-      status: "success",
-      education,
-    };
-  } catch (error) {
-    console.log(error);
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      console.log(error.code, error.message);
-      return error;
-    }
-  }
-};
