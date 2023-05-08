@@ -3,6 +3,7 @@ import { courses } from "./data/courses";
 import { educations } from "./data/educations";
 import { PrismaClient } from "@prisma/client";
 import { users } from "./data/users";
+import { modules } from "./data/modules";
 
 const prisma = new PrismaClient();
 
@@ -24,6 +25,12 @@ async function main() {
       data: course,
     });
   }
+  for (let module of modules) {
+    await prisma.module.create({
+      data: module,
+    });
+  }
+
   for (let user of users) {
     await prisma.user.create({
       data: user,

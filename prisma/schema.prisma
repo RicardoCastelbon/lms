@@ -60,8 +60,8 @@ model Course_lib {
 
 model Module_lib {
   id          Int            @id @default(autoincrement())
-  course      Course_lib     @relation(fields: [courseId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-  courseId    Int
+  courseLib   Course_lib     @relation(fields: [courseLibId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  courseLibId Int
   exercises   Exercise_lib[]
   title       String
   description String         @db.LongText
@@ -103,8 +103,10 @@ model Module {
   courseId    Int?
   exercises   Exercise[]
   title       String
-  description String     @db.LongText
+  startDate   String
+  endDate     String
   content     String     @db.LongText
+  description String     @db.LongText
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @default(now()) @updatedAt
 }

@@ -1,11 +1,12 @@
 import type { NextPage } from "next";
 import { useSession, signOut } from "next-auth/react";
-import { requireAuth } from "../../common/requireAuth";
+import { requireAuth } from "../../../common/requireAuth";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import { useForm, Controller } from "react-hook-form";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
+
 import { Button } from "@/src/components/ui/button";
 
 export const getServerSideProps = requireAuth(async (ctx) => {
@@ -18,22 +19,18 @@ type FormData = {
   education: string;
   color: string;
 };
-const createModule: NextPage = () => {
+const CreateModule: NextPage = () => {
   const [selectedCourse, setSelectedCourse] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
 
   const { data } = useSession();
   const router = useRouter();
 
-  const {
-    handleSubmit,
-    control,
-    formState: { errors },
-  } = useForm<FormData>({
+  const { handleSubmit, control, formState: { errors } } = useForm<FormData>({
     defaultValues: {
-      education: "",
       title: "",
       text: "",
+      education: "",
       color: "",
     },
   });
@@ -51,6 +48,7 @@ const createModule: NextPage = () => {
   const onSubmit = (data: FormData) => {
     console.log(data);
   };
+  
   return (
     <>
       <Head>
@@ -128,4 +126,4 @@ const createModule: NextPage = () => {
   );
 };
 
-export default createModule;
+export default CreateModule;

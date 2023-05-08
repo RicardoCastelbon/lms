@@ -89,10 +89,14 @@ export const updateCourseInputSchema = z.object({
     .partial(),
 });
 export const courseId = z.object({
-  courseId: z.string(),
+  courseId: z.number(),
+});
+export const courseSlug = z.object({
+  courseSlug: z.string(),
 });
 
 export type CourseIdSchema = z.infer<typeof courseId>;
+export type CourseSlugSchema = z.infer<typeof courseSlug>;
 export type CourseInputSchema = z.infer<typeof courseInputSchema>;
 export type CourseOutputSchema = z.infer<typeof courseOutputSchema>;
 export type UpdateCourseInputSchema = z.infer<typeof updateCourseInputSchema>;
