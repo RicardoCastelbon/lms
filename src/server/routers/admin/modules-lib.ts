@@ -10,7 +10,7 @@ import {
 import {
   createModuleLibController, getOneModuleLib,
 //   deleteModuleLib,
-//   getAllModuleLib,
+   getAllModulesLib,
 //   getOneModuleLib,
 //   updateModuleLib,
 } from "../../controllers/module-lib.controller";
@@ -33,16 +33,16 @@ export const moduleLibRouter = t.router({
     .output(moduleLibOutputSchema)
     .mutation(({ input, ctx }) => createModuleLibController({ input, ctx })),
 
-  // getMany: t.procedure
-  //   .meta({
-  //     openapi: {
-  //       method: "GET",
-  //       path: "/module-lib/getMany",
-  //     },
-  //   })
-  //   .input(noInput) //Only used to satisfy Swagger, not needed within the controller function.
-  //   .output(moduleLibOutputSchema)
-  //   .query(({ ctx }) => getAllModuleLib({ ctx })),
+  getMany: t.procedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/module-lib/getMany",
+      },
+    })
+    .input(noInput) //Only used to satisfy Swagger, not needed within the controller function.
+    .output(moduleLibOutputSchema)
+    .query(({ ctx }) => getAllModulesLib({ ctx })),
 
   getOne: t.procedure
     .meta({

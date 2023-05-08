@@ -32,56 +32,84 @@ export const createModuleLibController = async ({
             },
           });
       
+          return {
+            success: true,
+            code: 201,
+            message: "Resource created",
+            moduleLib,
+          };
+        } catch (error) {
+          console.log(error);
+      
+          if (error instanceof Prisma.PrismaClientKnownRequestError) {
+            // related records could not be found.
+            if (error.code === "P2015") {
+              return {
+                success: false,
+                error: {
+                  code: error.code,
+                  message: error.message,
+                  meta: { ...error.meta },
+                },
+              };
+            }
+            if (error.code === "P2025") {
+              return {
+                success: false,
+                error: {
+                  code: error.code,
+                  message: error.message,
+                  meta: { ...error.meta },
+                },
+              };
+            }
+          }
+          return {
+            success: false,
+            error: new TRPCError({
+              code: "INTERNAL_SERVER_ERROR",
+              message: "An unexpected error occurred, please try again later.",
+              // optional: pass the original error to retain stack trace
+              cause: error,
+            }),
+          };
+        }
+      };
 
-    return {
-      success: true,
-      code: 201,
-      message: "Module library created successfully.",
-      moduleLib,
-    };
+export const getAllModulesLib = async ({ ctx }: { ctx: IContext }) => {
+  try {
+    const modulesLib: Module_lib[] =
+      await ctx.prisma.module_lib.findMany();
+
+    console.log("Modules fetched from database:", modulesLib);
+
+    if (modulesLib.length <= 0) {
+      return {
+        success: false,
+        code: 404,
+        message: "No modules found, please try again",
+        modulesLib,
+      };
+    } else {
+      return {
+        success: true,
+        code: 200,
+        message: "Resource found",
+        moduleLib: modulesLib,
+      };
+    }
   } catch (error) {
-    console.log("Error creating module lib:", error);
-    throw new TRPCError({
-      code: "INTERNAL_SERVER_ERROR",
-      message: "Failed to create module library",
-    });
+    return {
+      success: false,
+      error: new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "An unexpected error occurred, please try again later.",
+        // optional: pass the original error to retain stack trace
+        cause: error,
+      }),
+    };
   }
 };
-
-// export const getAllmoduleLib = async ({ ctx }: { ctx: IContext }) => {
-//   try {
-//     const modulesLib: Module_lib[] =
-//       await ctx.prisma.module_lib.findMany();
-
-//     console.log("Modules fetched from database:", modulesLib);
-
-//     if (modulesLib.length <= 0) {
-//       return {
-//         success: false,
-//         code: 404,
-//         message: "No modules found, please try again",
-//         modulesLib,
-//       };
-//     } else {
-//       return {
-//         success: true,
-//         code: 200,
-//         message: "Resource found",
-//         moduleLib: modulesLib,
-//       };
-//     }
-//   } catch (error) {
-//     return {
-//       success: false,
-//       error: new TRPCError({
-//         code: "INTERNAL_SERVER_ERROR",
-//         message: "An unexpected error occurred, please try again later.",
-//         // optional: pass the original error to retain stack trace
-//         cause: error,
-//       }),
-//     };
-//   }
-// };
 
 export const getOneModuleLib = async ({
   input,
