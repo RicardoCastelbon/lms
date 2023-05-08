@@ -1,13 +1,9 @@
-// import { ModuleLibIdSchema, ModuleLibInputSchema } from "@/src/common/validation/module-lib";
-// import { CourseIdSchema,courseId } from "@/src/common/validation/course-end-user";
-import { courseLibId } from "@/src/common/validation/course-lib";
+
 import {  Module_lib, Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
-import { Context } from "vm";
 import {
   ModuleLibIdSchema,
   ModuleLibInputSchema,
-  ModuleLibOutputSchema,
   UpdateModuleLibInputSchema,
 } from "../../common/validation/module-lib"
 import { IContext } from "../context";
@@ -42,7 +38,6 @@ export const createModuleLibController = async ({
           console.log(error);
       
           if (error instanceof Prisma.PrismaClientKnownRequestError) {
-            // related records could not be found.
             if (error.code === "P2015") {
               return {
                 success: false,

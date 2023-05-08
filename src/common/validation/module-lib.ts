@@ -6,8 +6,8 @@ const moduleLib = z
     title: z.string(),
     description: z.string(),
     content: z.string(),
-    createdAt: z.date().optional(), // make createdAt optional
-    updatedAt: z.date().optional(), // make updatedAt optional
+    createdAt: z.date().optional(), 
+    updatedAt: z.date().optional(), 
   })
   .or(
     z
@@ -16,7 +16,7 @@ const moduleLib = z
         title: z.string(),
         description: z.string(),
         content: z.string(),
-        createdAt: z.date().optional(), // make createdAt optional
+        createdAt: z.date().optional(),
         updatedAt: z.date().optional(), 
       })
       .array()

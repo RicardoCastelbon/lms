@@ -4,22 +4,18 @@ import {
   moduleLibInputSchema,
   updateModuleLibInputSchema,
   moduleLibId,
-  // ModuleLibInputSchema,
 } from "../../../common/validation/module-lib";
 
 import {
   createModuleLibController, getOneModuleLib,
-//   deleteModuleLib,
    getAllModulesLib,
    updateModuleLib,
    deleteModuleLib,
-//   getOneModuleLib,
-//   updateModuleLib,
+
 } from "../../controllers/module-lib.controller";
 import { z } from "zod";
 import {
-  FilterQuerySchema,
-  educationId,
+
   noInput,
 } from "@/src/common/validation/global";
 export const moduleLibRouter = t.router({
@@ -90,16 +86,3 @@ export const moduleLibRouter = t.router({
     ),
 });
 
-//GET ONE Course
-// getOne: t.procedure
-//   .meta({
-//     openapi: {
-//       method: "GET",
-//       path: "/course-lib/getOne/{course_libId}",
-//     },
-//   })
-//   .input(exerciseLibInputSchema)
-//   .output(exerciseLibId);
-// .query(({ input, ctx }) =>
-//   findExerciseLibController({ paramsInput: input, ctx })
-// ),
