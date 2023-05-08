@@ -96,7 +96,7 @@ export const updateCourseInputSchema = z.object({
     .partial(),
 });
 export const courseId = z.object({
-  courseId: z.string(),
+  courseId: z.number(),
 });
 
 export type CourseIdSchema = z.infer<typeof courseId>;
