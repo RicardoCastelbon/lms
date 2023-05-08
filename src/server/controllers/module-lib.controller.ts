@@ -83,46 +83,46 @@ export const createModuleLibController = async ({
 //   }
 // };
 
-// export const getOneModuleLib = async ({
-//   input,
-//   ctx,
-// }: {
-//   input: ModuleLibIdSchema;
-//   ctx: IContext;
-// }) => {
-//   try {
-//     const moduleLib: Module_lib | null =
-//       await ctx.prisma.module_lib.findFirst({
-//         where: { id: Number(input.moduleLibId) },
-//       });
+export const getOneModuleLib = async ({
+  input,
+  ctx,
+}: {
+  input: ModuleLibIdSchema;
+  ctx: IContext;
+}) => {
+  try {
+    const moduleLib: Module_lib | null =
+      await ctx.prisma.module_lib.findFirst({
+        where: { id: Number(input.moduleLibId) },
+      });
 
-//     if (moduleLib === null) {
-//       return {
-//         success: false,
-//         code: 404,
-//         message: "Module not found, please try again.",
-//         moduleLib,
-//       };
-//     } else {
-//       return {
-//         success: true,
-//         code: 200,
-//         message: "Resource found",
-//         moduleLib,
-//       };
-//     }
-//   } catch (error) {
-//     return {
-//       success: false,
-//       error: new TRPCError({
-//         code: "INTERNAL_SERVER_ERROR",
-//         message: "An unexpected error occurred, please try again later.",
-//         // optional: pass the original error to retain stack trace
-//         cause: error,
-//       }),
-//     };
-//   }
-// };
+    if (moduleLib === null) {
+      return {
+        success: false,
+        code: 404,
+        message: "Module not found, please try again.",
+        moduleLib,
+      };
+    } else {
+      return {
+        success: true,
+        code: 200,
+        message: "Resource found",
+        moduleLib,
+      };
+    }
+  } catch (error) {
+    return {
+      success: false,
+      error: new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "An unexpected error occurred, please try again later.",
+        // optional: pass the original error to retain stack trace
+        cause: error,
+      }),
+    };
+  }
+};
 
 // export const updateModuleLib = async ({
 //   input,

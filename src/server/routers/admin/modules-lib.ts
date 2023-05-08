@@ -8,7 +8,7 @@ import {
 } from "../../../common/validation/module-lib";
 
 import {
-  createModuleLibController,
+  createModuleLibController, getOneModuleLib,
 //   deleteModuleLib,
 //   getAllModuleLib,
 //   getOneModuleLib,
@@ -33,27 +33,27 @@ export const moduleLibRouter = t.router({
     .output(moduleLibOutputSchema)
     .mutation(({ input, ctx }) => createModuleLibController({ input, ctx })),
 
-//   getMany: t.procedure
-//     .meta({
-//       openapi: {
-//         method: "GET",
-//         path: "/module-lib/getMany",
-//       },
-//     })
-//     .input(noInput) //Only used to satisfy Swagger, not needed within the controller function.
-//     .output(moduleLibOutputSchema)
-//     .query(({ ctx }) => getAllModuleLib({ ctx })),
+  // getMany: t.procedure
+  //   .meta({
+  //     openapi: {
+  //       method: "GET",
+  //       path: "/module-lib/getMany",
+  //     },
+  //   })
+  //   .input(noInput) //Only used to satisfy Swagger, not needed within the controller function.
+  //   .output(moduleLibOutputSchema)
+  //   .query(({ ctx }) => getAllModuleLib({ ctx })),
 
-//   getOne: t.procedure
-//     .meta({
-//       openapi: {
-//         method: "GET",
-//         path: "/module-lib/getOne/{moduleLibId}",
-//       },
-//     })
-//     .input(moduleLibId)
-//     .output(moduleLibOutputSchema)
-//     .query(({ input, ctx }) => getOneModuleLib({ input, ctx })),
+  getOne: t.procedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/module-lib/getOne/{moduleLibId}",
+      },
+    })
+    .input(moduleLibId)
+    .output(moduleLibOutputSchema)
+    .query(({ input, ctx }) => getOneModuleLib({ input, ctx })),
 
 //   // UPDATE EXERCISE_LIB
 //   updatemoduleLib: t.procedure
