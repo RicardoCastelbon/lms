@@ -12,12 +12,18 @@ import CreateCourseAdminForm from "@/src/components/ui/forms/admin/CreateCourseA
 import RichText from "@/src/components/ui/text-editor/RichText";
 import { useQuill } from "react-quilljs";
 import { IconContext } from "react-icons";
+import AdminCreateCards from "@/src/components/ui/cards/AdminCreateCards";
+import { getServerSession } from "next-auth";
+import {  Course_lib, Module_lib } from "@prisma/client";
 
 type Props = {
   sideBarClass: boolean;
   role?: string | null;
   admin?: string | null;
-  
+  modules?: Module_lib[];
+  courses?: Course_lib[];
+  // entity?: any
+
 };
 
 const ModulesPage = (props: Props) => {
@@ -41,12 +47,23 @@ const ModulesPage = (props: Props) => {
         <div className="w-full flex flex-col md:flex-row gap-8">
           {/* Main content */}
           <div className="w-full h-full flex flex-wrap justify-center gap-4 md:justify-start md:w-3/6 lg:w-4/6">
-            {/* {courses &&
-              courses?.map((course: Course) => (
-                <CourseCard key={course.id} course={course} />
-              ))} */}
+                   {/* For modules */}
+        {props.modules &&
+          props.modules.map((module: Module_lib) => (
+            <AdminCreateCards key={module.id} entity={module} />
+          ))}
+        {/* // For courses */}
+        {props.courses &&
+          props.courses.map((course: Course_lib) => (
+            <AdminCreateCards key={course.id} entity={course} />
+          ))}
           </div>
-          {/* Aside right */}
+          <input
+            type="text"
+            placeholder="Sök kurser här..."
+            className="border border-gray-300 rounded-md py-2 px-3 w-80 mr-2 flex-grow"
+          />
+          {/* Aside right */}Module
           <aside className="flex-1 bg-green">
             {/* quick-menu */}
             <div className="w-full p-2">

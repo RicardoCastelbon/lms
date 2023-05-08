@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { Role } from "@prisma/client";
+import { Course_lib, Module_lib, Role } from "@prisma/client";
 // import Sidebar from "../../components/Sidebar";
 import { useEffect, useState } from "react";
 import Spinner from "@/src/components/ui/Spinner";
@@ -13,8 +13,16 @@ import CourseCard from "@/src/components/ui/cards/CourseCard";
 import AdminCreateCards from "@/src/components/ui/cards/AdminCreateCards";
 // import CalendarDemo from "@/src/components/ui/CalendarDemo";
 
-const Dashboard: NextPage = ( )=> {
+type Props = {
+  // sideBarClass: boolean;
+  role?: string | null;
+  admin?: string | null;
+  modules?: Module_lib[];
+  courses?: Course_lib[];
+  // entity?: any
 
+};
+const Dashboard: NextPage =  (props: Props)=> {
 
 const adminCreate = [
   {
@@ -69,9 +77,22 @@ const adminCreate = [
       <div className="flex-flex sm:flex-row">
         <UserLayout role={session?.user.role ?? ""}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full md:w-3/6 lg:w-4/6 mx-auto mt-4">
-            {adminCreate.map((create) => (
+            {/* {adminCreate.map((create) => (
               <AdminCreateCards key={create.id} create={create} />
-            ))}
+            ))} */}
+
+{/* <div className="w-full h-full flex flex-wrap justify-center gap-4 md:justify-start md:w-3/6 lg:w-4/6"> */}
+                   {/* For modules */}
+        {props.modules &&
+          props.modules.map((module: Module_lib) => (
+            <AdminCreateCards key={module.id} entity={module} />
+          ))}
+        {/* // For courses */}
+        {props.courses &&
+          props.courses.map((course: Course_lib) => (
+            <AdminCreateCards key={course.id} entity={course} />
+          ))}
+          {/* </div> */}
           </div>
           <div className="mt-8">
             {/* <CalendarDemo /> */}
