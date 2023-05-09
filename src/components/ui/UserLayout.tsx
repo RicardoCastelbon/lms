@@ -35,7 +35,7 @@ const UserLayout = ({ children, role }: Props) => {
       }
       //else check if data is present, if so do something with it.
       if (data) {
-        setEduName(data.education.name);
+        setEduName(data?.education?.name); //Why is education optional?
       }
     }
   }, [data, error, isLoading]);

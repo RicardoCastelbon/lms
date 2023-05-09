@@ -20,6 +20,7 @@ import { nextAuthOptions } from "../common/auth";
 import { createServerSideHelpers } from "@trpc/react-query/server";
 import { serverRouter } from "../server/routers";
 import { createContext } from "../server/context";
+import { Education } from "@prisma/client";
 
 const educations = [
   { label: "React", value: 1 },
@@ -27,21 +28,25 @@ const educations = [
   // { label: "Angular 2", value: "317774eb-7d44-4d01-a93a-22b3f30f17df" },
   // { label: "FWD22", value: "ea70de22-e81d-4c6c-a6e3-d1a18fe43aea" },
 ];
+type Props = {
+  educations: Education[];
+};
 
-const SignUp: NextPage = () => {
+const SignUp: NextPage<Props> = ({ educations }: Props) => {
   const router = useRouter();
   const { handleSubmit, control, register, setValue, reset } = useForm<ISignUp>(
     {
       defaultValues: {
         email: "",
         password: "",
-        education: 1,
+        education: 0,
         firstName: "",
         lastName: "",
       },
       resolver: zodResolver(signUpSchema),
     }
   );
+  // console.log("edu", educations);
 
   const { mutateAsync } = trpc.users.signup.useMutation();
 
@@ -91,17 +96,18 @@ const SignUp: NextPage = () => {
               rules={{ required: true }}
               render={({ field }) => (
                 <div className="w-full max-w-md flex flex-col mb-4">
-                  <label htmlFor="education">Choose education</label>
+                  <label htmlFor="education">Välj utbildning</label>
                   <select
                     className="input h-[40px] bg-muted input-bordered w-full mt-2 rounded-md"
-                    name="education"
+                    // name="education"
                     id="education"
+                    {...register("education", { required: true })}
                     onChange={(e) => handleSelectChange(e)}
                   >
-                    <option value="default">Choose education</option>
-                    {educations.map((edu) => (
-                      <option key={edu.value} value={edu.value}>
-                        {edu.label}
+                    {/* <option value="default">Välj utbildning</option> */}
+                    {educations?.map((edu) => (
+                      <option key={edu.id} value={edu.id}>
+                        {edu.name}
                       </option>
                     ))}
                   </select>
@@ -113,13 +119,14 @@ const SignUp: NextPage = () => {
               control={control}
               render={({ field }) => (
                 <div className="w-full max-w-md flex flex-col mb-4">
-                  <label htmlFor="email">Email</label>
+                  <label htmlFor="email">Ange din email</label>
                   <input
                     id="email"
                     type="email"
                     placeholder="Type your email..."
                     className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
                     {...field}
+                    {...register("email", { required: true })}
                   />
                 </div>
               )}
@@ -130,13 +137,14 @@ const SignUp: NextPage = () => {
               control={control}
               render={({ field }) => (
                 <div className="w-full max-w-md flex flex-col mb-4">
-                  <label htmlFor="password">Enter your password</label>
+                  <label htmlFor="password">Ange ett lösenord</label>
                   <input
                     id="password"
                     type="password"
                     placeholder="Type your password..."
                     className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
                     {...field}
+                    {...register("password", { required: true })}
                   />
                 </div>
               )}
@@ -146,13 +154,14 @@ const SignUp: NextPage = () => {
               control={control}
               render={({ field }) => (
                 <div className="w-full max-w-md flex flex-col mb-4">
-                  <label htmlFor="firstName">First name</label>
+                  <label htmlFor="firstName">Namn</label>
                   <input
                     id="firstName"
                     type="text"
                     placeholder="Your first name"
                     className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
                     {...field}
+                    {...register("firstName", { required: true })}
                   />
                 </div>
               )}
@@ -162,23 +171,32 @@ const SignUp: NextPage = () => {
               control={control}
               render={({ field }) => (
                 <div className="w-full max-w-md flex flex-col">
-                  <label htmlFor="lastName">Last name</label>
+                  <label htmlFor="lastName">Efternamn</label>
                   <input
                     id="lastName"
                     type="text"
                     placeholder="Type your email..."
                     className="input bg-muted h-[40px] input-bordered w-full rounded-md  mt-2 pl-2"
                     {...field}
+                    {...register("lastName", { required: true })}
                   />
                 </div>
               )}
             />
 
-            <div className="w-full flex items-center justify-between max-w-md text-primary mt-8 hover:text-muted">
-              <Link href="/login" className="link">
-                Go to login
-              </Link>
-              <Button>Become a member</Button>
+            <div className="w-full flex items-center justify-between gap-4 max-w-md  mt-8">
+              <span>
+                Har du redan ett konto?
+                <Link
+                  href="/login"
+                  className="link ml-2 text-primary hover:text-secondary"
+                >
+                  Logga in
+                </Link>
+              </span>
+              <Button className="hover:bg-background hover:text-foreground">
+                Skapa konto
+              </Button>
             </div>
           </form>
         </div>
@@ -192,7 +210,7 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
     context.res,
     nextAuthOptions
   );
-  const educationId = String(currentSession?.user.educationId);
+  // const educationId = String(currentSession?.user.educationId);
 
   //Set up a trpc helper, needed for serverSide fetching
   const helpers = createServerSideHelpers({
@@ -201,17 +219,16 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
   });
 
   //The actual fetching
-  const res = await helpers.course.getManyByEducationId.fetch({
-    educationId,
-  });
+  const res = await helpers.education.getAll.fetch();
 
   //Needed to serialize Date objects for createdAt + updatedAt otherwise error is thrown
-  const courses = JSON.parse(JSON.stringify(res));
+  const educations = JSON.parse(JSON.stringify(res));
+  console.log(educations.education);
 
   return {
     props: {
       session: currentSession,
-      // courses: courses.course,
+      educations: educations.education,
     },
   };
 };

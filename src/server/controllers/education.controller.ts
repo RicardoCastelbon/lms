@@ -150,7 +150,7 @@ export const findEducationController = async ({
     };
   }
 };
-
+// Find educations paginated
 export const findAllEducationsController = async ({
   filterQuery,
   ctx,
