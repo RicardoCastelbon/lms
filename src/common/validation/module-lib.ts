@@ -41,7 +41,7 @@ export const moduleLibInputSchema = z.object({
       title: z.string(),
       description: z.string(),
       content: z.string(),
-      courseLibId: z.number(),
+      // courseLibId: z.number(),
     }),
   });
 

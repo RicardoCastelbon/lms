@@ -23,7 +23,7 @@ const CreateCourseForm = (props: Props) => {
         </div>
         <div className="flex flex-col">
           {/* <label htmlFor="color">Välj en bakgrundsfärg</label> */}
-          <ColorSelect />
+          {/* <ColorSelect /> */}
         </div>
       </section>
       {/* Right side */}

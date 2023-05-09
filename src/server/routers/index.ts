@@ -6,7 +6,7 @@ import { courseLibRouter } from "./admin/course-lib";
 import { courseRouter } from "./course";
 import { moduleRouter } from "./module";
 import { exerciseLibRouter } from "./admin/exercise_lib";
-import { moduleLibRouter } from "./admin/modules-lib";
+import { moduleLibRouter } from "./admin/module-lib";
 
 export const serverRouter = t.router({
   users: userRouter,
