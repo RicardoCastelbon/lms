@@ -13,30 +13,15 @@ import RichText from "../../text-editor/RichText";
 import ColorSelect from "../../dropdowns/ColorSelect";
 import { trpc } from "@/src/common/trpc";
 import { useSession } from "next-auth/react";
-
 type Course = {
   title: string;
   color: string;
   description: string;
   content: string;
 };
+type Props = {};
 
-type Props = {
-  title?: string;
-  titlePlaceholder?: string;
-  pointsLabel?: string;
-  pointsPlaceholder?: string;
-  courseInfoText?: string;
-};
-
-
-const CreateCourseForm = ({
-  title = "Kursnamn",
-  titlePlaceholder = "Skriv in kursnamn",
-  pointsLabel = "Kurspoäng",
-  pointsPlaceholder = "Ange antal kurspoäng",
-  courseInfoText = "Kursinformation",
-}: Props) => {
+const CreateCourseForm = (props: Props) => {
   const [iconName, setIconName] = useState<string>("");
   const [color, setColor] = useState<string>("");
   const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
@@ -45,6 +30,7 @@ const CreateCourseForm = ({
       defaultValues: {
         title: "",
         icon: "",
+        // slug: "",
         color: "",
         content: "",
         educationId: 0,
@@ -97,9 +83,6 @@ const CreateCourseForm = ({
     },
     [iconName, color, mutateAsync, quill, reset]
   );
-
- 
-  
   return (
     <form
       className="flex flex-col gap-4 md:flex-row"
@@ -114,13 +97,11 @@ const CreateCourseForm = ({
           rules={{ required: true }}
           render={({ field }) => (
             <div className="w-full max-w-md flex flex-col mb-4">
-          <label htmlFor="title" className="text-sm mb-2 block">
-            {title}
-          </label>         
-             <input
+              <label htmlFor="title">Kursnamn</label>
+              <input
                 id="title"
                 type="text"
-                placeholder={titlePlaceholder}
+                placeholder="Skriv in kursnamn"
                 className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
                 {...field}
               />
@@ -133,11 +114,11 @@ const CreateCourseForm = ({
           rules={{ required: true }}
           render={({ field }) => (
             <div className="w-full max-w-md flex flex-col mb-4">
-              <label htmlFor="title">{pointsLabel}</label>
+              <label htmlFor="title">Kurspoäng</label>
               <input
                 id="course-points"
                 type="text"
-                placeholder={pointsPlaceholder}
+                placeholder="Ange antal kurspoäng"
                 className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
                 {...field}
               />
@@ -164,8 +145,8 @@ const CreateCourseForm = ({
           control={control}
           render={({ field }) => (
             <div className="w-full max-w-md flex flex-col mb-4">
-            <label htmlFor="title">{title}</label>
-                          <IconSelect
+              <label htmlFor="icon">Välj en kursikon</label>
+              <IconSelect
                 hasSubmitted={hasSubmitted}
                 field={field}
                 setIconName={setIconName}
@@ -177,9 +158,8 @@ const CreateCourseForm = ({
       {/* Right side */}
       <section className="h-full flex-1">
         <div className="flex justify-between p-2 items-center">
-        <p>{courseInfoText}</p> 
-        
-                 <button
+          <p>Kursinformation</p>
+          <button
             type="submit"
             className="bg-indigo-500 text-white py-2 px-6 rounded-sm hover:bg-indigo-50 hover:text-foreground"
           >
