@@ -5,9 +5,9 @@ import type {
 } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import { ChangeEvent, useCallback } from "react";
+import { ChangeEvent, useCallback, useEffect } from "react";
 import { useRouter } from "next/router";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, useFormState } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Layout from "../components/ui/Layout";
 import { Button } from "../components/ui/button";
@@ -21,47 +21,63 @@ import { createServerSideHelpers } from "@trpc/react-query/server";
 import { serverRouter } from "../server/routers";
 import { createContext } from "../server/context";
 import { Education } from "@prisma/client";
+import { error } from "console";
 
-const educations = [
-  { label: "React", value: 1 },
-  { label: "Angular", value: 2 },
-  // { label: "Angular 2", value: "317774eb-7d44-4d01-a93a-22b3f30f17df" },
-  // { label: "FWD22", value: "ea70de22-e81d-4c6c-a6e3-d1a18fe43aea" },
-];
 type Props = {
   educations: Education[];
 };
 
 const SignUp: NextPage<Props> = ({ educations }: Props) => {
   const router = useRouter();
-  const { handleSubmit, control, register, setValue, reset } = useForm<ISignUp>(
-    {
-      defaultValues: {
-        email: "",
-        password: "",
-        education: 0,
-        firstName: "",
-        lastName: "",
-      },
-      resolver: zodResolver(signUpSchema),
-    }
-  );
+  const {
+    handleSubmit,
+    getValues,
+    control,
+    register,
+    setValue,
+    reset,
+    formState: { errors, isValid, isDirty },
+  } = useForm<ISignUp>({
+    // mode: "onSubmit",
+    defaultValues: {
+      email: "",
+      password: "",
+      education: 0,
+      firstName: "",
+      lastName: "",
+    },
+    // resolver: zodResolver(signUpSchema),
+  });
+  /*  const { isDirty, isValid } = useFormState({
+    control,
+  }); */
   // console.log("edu", educations);
+  // console.log(errors);
+
+  useEffect(() => {
+    // console.log(isValid);
+
+    console.log(errors?.email?.message);
+  }, [errors]);
 
   const { mutateAsync } = trpc.users.signup.useMutation();
 
   const onSubmit = useCallback(
     async (data: ISignUp) => {
       try {
+        //Check if value is a string, if true, cast to number
+        if (typeof data.education === "string") {
+          data.education = Number(data.education);
+        }
         //data.userRole = "student";
-        // console.log(data);
-        const result = await mutateAsync(data);
+        console.log(data);
+        /*   const result = await mutateAsync(data);
         if (result.status) {
           reset();
           router.push("/login");
         } else {
           console.log(result.message);
-        }
+        } */
       } catch (err) {
         console.error(err);
       }
@@ -93,49 +109,138 @@ const SignUp: NextPage<Props> = ({ educations }: Props) => {
             <Controller
               name="education"
               control={control}
-              rules={{ required: true }}
-              render={({ field }) => (
+              rules={{ required: "Välj en utbildning" }}
+              render={({
+                field: { value, onChange, onBlur, name, ...field },
+              }) => (
                 <div className="w-full max-w-md flex flex-col mb-4">
                   <label htmlFor="education">Välj utbildning</label>
                   <select
+                    {...field}
                     className="input h-[40px] bg-muted input-bordered w-full mt-2 rounded-md"
-                    // name="education"
                     id="education"
-                    {...register("education", { required: true })}
-                    onChange={(e) => handleSelectChange(e)}
+                    onChange={onChange}
+                    onBlur={onBlur}
+                    name={name}
+                    value={value}
                   >
-                    {/* <option value="default">Välj utbildning</option> */}
+                    <option value="default">Välj utbildning</option>
                     {educations?.map((edu) => (
-                      <option key={edu.id} value={edu.id}>
+                      <option key={edu.id} value={Number(edu.id)}>
                         {edu.name}
                       </option>
                     ))}
                   </select>
+                  <p className="text-xs text-red-500">
+                    {errors.education?.message}
+                  </p>
                 </div>
               )}
             />
+            {/*  <div className="w-full max-w-md flex flex-col mb-4">
+              <label htmlFor="education">Välj utbildning</label>
+              <select
+                // {...field}
+                className="input h-[40px] bg-muted input-bordered w-full mt-2 rounded-md"
+                // name="education"
+                id="education"
+                {...register("education", {
+                  required: {
+                    value: true,
+                    message: "En utbildning måste väljas",
+                  },
+                })}
+                onChange={(e) => handleSelectChange(e)}
+                // onBlur={onBlur}
+                // name={name}
+                // value={value}
+              >
+                <option value="default">Välj utbildning</option>
+                {educations?.map((edu) => (
+                  <option key={edu.id} value={Number(edu.id)}>
+                    {edu.name}
+                  </option>
+                ))}
+              </select>
+              <p>{errors?.education?.message}</p>
+            </div> */}
             <Controller
               name="email"
               control={control}
-              render={({ field }) => (
+              rules={{
+                required: "Ange en email",
+                pattern: {
+                  value:
+                    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                  message: "Ange en giltlig email",
+                },
+              }}
+              render={({
+                field: { value, onChange, onBlur, name, ...field },
+              }) => (
                 <div className="w-full max-w-md flex flex-col mb-4">
-                  <label htmlFor="email">Ange din email</label>
+                  <label htmlFor="email">Email</label>
                   <input
-                    id="email"
-                    type="email"
-                    placeholder="Type your email..."
-                    className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
                     {...field}
-                    {...register("email", { required: true })}
+                    onChange={onChange}
+                    onBlur={onBlur}
+                    name={name}
+                    value={value}
+                    id="email"
+                    placeholder="Email"
+                    className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
                   />
+
+                  {errors?.email && (
+                    <p className="text-xs text-red-500 mt-1">
+                      {errors?.email?.message}
+                    </p>
+                  )}
                 </div>
               )}
             />
+            {/* <div className="w-full max-w-md flex flex-col mb-4">
+              <label htmlFor="email">Email</label>
+              <input
+                // {...field}
+                // onChange={onChange}
+                // onBlur={onBlur}
+                // name={name}
+                // value={value}
+                {...register("email", {
+                  required: {
+                    value: true,
+                    message: "Du måste ange en epost",
+                  },
+                  pattern: {
+                    value:
+                      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                    message: "Ogiltlig email",
+                  },
+                  // validate: (value) => value === getValues("email"),
+                })}
+                id="email"
+                placeholder="Type your email..."
+                className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
+              />
+
+              {errors?.email && <p>{errors?.email?.message}</p>}
+              {errors.email?.type === "pattern" && <p>fel email</p>}
+            </div> */}
 
             <Controller
               name="password"
               control={control}
-              render={({ field }) => (
+              rules={{
+                required: "Du måste ange ett lösenord",
+                minLength: {
+                  value: 6,
+                  message: "Ange minst 6 tecken",
+                },
+              }}
+              render={({
+                field: { value, name, onChange, onBlur, ...field },
+              }) => (
                 <div className="w-full max-w-md flex flex-col mb-4">
                   <label htmlFor="password">Ange ett lösenord</label>
                   <input
@@ -144,42 +249,79 @@ const SignUp: NextPage<Props> = ({ educations }: Props) => {
                     placeholder="Type your password..."
                     className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
                     {...field}
-                    {...register("password", { required: true })}
+                    onChange={onChange}
+                    onBlur={onBlur}
+                    name={name}
+                    value={value}
                   />
+                  <p className="text-xs text-red-500 mt-1">
+                    {errors?.password?.message}
+                  </p>
                 </div>
               )}
             />
             <Controller
               name="firstName"
               control={control}
-              render={({ field }) => (
+              rules={{
+                required: "Ange ditt förnamn",
+                minLength: {
+                  value: 2,
+                  message: "Ange minst 2 tecken",
+                },
+              }}
+              render={({
+                field: { value, name, onChange, onBlur, ...field },
+              }) => (
                 <div className="w-full max-w-md flex flex-col mb-4">
                   <label htmlFor="firstName">Namn</label>
                   <input
+                    {...field}
                     id="firstName"
                     type="text"
+                    onChange={onChange}
+                    onBlur={onBlur}
+                    name={name}
+                    value={value}
                     placeholder="Your first name"
                     className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
-                    {...field}
-                    {...register("firstName", { required: true })}
                   />
+                  <p className="text-xs text-red-500 mt-1">
+                    {errors?.firstName?.message}
+                  </p>
                 </div>
               )}
             />
             <Controller
               name="lastName"
               control={control}
-              render={({ field }) => (
+              rules={{
+                required: "Ange ditt efternamn",
+                minLength: {
+                  value: 2,
+                  message: "Ange minst 2 tecken",
+                },
+              }}
+              render={({
+                field: { value, name, onChange, onBlur, ...field },
+              }) => (
                 <div className="w-full max-w-md flex flex-col">
                   <label htmlFor="lastName">Efternamn</label>
                   <input
+                    {...field}
+                    onChange={onChange}
+                    onBlur={onBlur}
+                    name={name}
+                    value={value}
                     id="lastName"
                     type="text"
                     placeholder="Type your email..."
                     className="input bg-muted h-[40px] input-bordered w-full rounded-md  mt-2 pl-2"
-                    {...field}
-                    {...register("lastName", { required: true })}
+                    // {...register("lastName", { required: true })}
                   />
+                  <p className="text-xs text-red-500 mt-1">
+                    {errors?.lastName?.message}
+                  </p>
                 </div>
               )}
             />
@@ -194,7 +336,10 @@ const SignUp: NextPage<Props> = ({ educations }: Props) => {
                   Logga in
                 </Link>
               </span>
-              <Button className="hover:bg-background hover:text-foreground">
+              <Button
+                // disabled={!isValid}
+                className="hover:bg-background hover:text-foreground"
+              >
                 Skapa konto
               </Button>
             </div>
