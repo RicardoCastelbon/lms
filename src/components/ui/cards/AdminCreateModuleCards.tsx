@@ -3,7 +3,7 @@ import { Module_lib } from "@prisma/client";
 import { log } from "console";
 import Link from "next/link";
 import React from "react";
-import { FaHtml5 } from "react-icons/fa";
+import { FaHtml5, FaTrash } from "react-icons/fa";
 interface ICourse {
   id: number;
   name: string;
@@ -13,10 +13,15 @@ interface ICourse {
 
 type Props = {
   moduleLib: Module_lib;
+  // onDelete: () => void;
+
 };
 
 const AdminCreateModuleCards = ({ moduleLib }: Props) => {
   // console.log(course);
+  // const handleDelete = () => {
+  //   onDelete();
+  // };
 
   return (
     <div className="w-[232px] h-[338px] shadow-lg flex flex-col rounded-lg">
@@ -28,7 +33,12 @@ const AdminCreateModuleCards = ({ moduleLib }: Props) => {
       <div className="flex flex-col gap-2 p-2 text-center">
 
         <p>{moduleLib.title}</p>
-
+        <button
+          className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600"
+          // onClick={handleDelete}
+        >
+          <FaTrash /> Delete
+        </button>
       </div>
     </div>
   );

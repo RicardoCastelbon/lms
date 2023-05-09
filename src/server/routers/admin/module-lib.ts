@@ -71,7 +71,7 @@ export const moduleLibRouter = t.router({
         ctx,
       })
     ),
-  deletemoduleLib: t.procedure
+  delete: t.procedure
     .meta({
       openapi: {
         method: "DELETE",

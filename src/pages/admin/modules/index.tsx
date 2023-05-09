@@ -1,20 +1,15 @@
-import CreateCourseForm from "@/src/components/ui/forms/teacher/CreateCourseForm";
 import Modal from "@/src/components/ui/modals/Modal";
 import UserLayout from "@/src/components/ui/UserLayout";
 import { useSession } from "next-auth/react";
 import React, { useState } from "react";
-import { Button } from "@/src/components/ui/button";
-import { Calendar } from "@/src/components/ui/calendar";
-import Layout from "@/src/components/ui/Layout";
+
 import UserSideNav from "@/src/components/ui/navigation/UserSideNav";
 import { CalendarIcon, Plus, PlusIcon } from "lucide-react";
-import CreateCourseAdminForm from "@/src/components/ui/forms/admin/CreateCourseAdminForm";
 import RichText from "@/src/components/ui/text-editor/RichText";
 import { useQuill } from "react-quilljs";
 import { IconContext } from "react-icons";
-import AdminCreateCards from "@/src/components/ui/cards/AdminCreateCards";
 import { getServerSession } from "next-auth";
-import {  Course_lib, Module_lib } from "@prisma/client";
+import {   Module_lib } from "@prisma/client";
 import { createServerSideHelpers } from "@trpc/react-query/server";
 import type { GetServerSideProps, NextPage } from "next";
 import { nextAuthOptions } from "@/src/common/auth";
@@ -23,6 +18,7 @@ import { createContext } from "@/src/server/context";
 import { moduleLibId } from "@/src/common/validation/module-lib";
 import CreateModuleAdminForm from "@/src/components/ui/forms/admin/CreateModuleAdminForm";
 import AdminCreateModuleCards from "@/src/components/ui/cards/AdminCreateModuleCards";
+import { trpc } from "@/src/common/trpc";
 type Props = {
   sideBarClass: boolean;
   role?: string | null;
@@ -42,7 +38,16 @@ const ModulesPage = (props: Props) => {
   const modalClickHandler = () => {
     setShowModal((prev) => !prev);
   };
-
+  // const handleDeleteModule = async (moduleLibId: number) => {
+  //   try {
+  //     const result = await trpc.moduleLib.deletemoduleLib(moduleLibId);
+  //     if (result.success) {
+  //       // TODO: handle successful deletion
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
   return (
     <IconContext.Provider
   value={{
@@ -71,6 +76,8 @@ const ModulesPage = (props: Props) => {
               <AdminCreateModuleCards
                 key={moduleLib.id}
                 moduleLib={moduleLib}
+                // onDelete={() => handleDeleteModule(moduleLib.id)}
+
                 />
             ))}
         </div>
@@ -129,7 +136,6 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
    console.log("Module library fetched:", res);
   //Needed to serialize Date objects for createdAt + updatedAt otherwise error is thrown
   const moduleLib = JSON.parse(JSON.stringify(res));
-  console.log(moduleLib);
   
   return {
     props: {
