@@ -25,6 +25,7 @@ export const nextAuthOptions: NextAuthOptions = {
       },
       authorize: async (credentials) => {
         try {
+          // console.log(credentials);
           const { email, password } = await loginSchema.parseAsync(credentials);
 
           const result = await prisma.user.findFirst({
@@ -33,8 +34,6 @@ export const nextAuthOptions: NextAuthOptions = {
               education: true,
             },
           });
-
-          // console.log(result);
 
           if (!result) return null;
 
