@@ -38,7 +38,6 @@ const SignUp: NextPage<Props> = ({ educations }: Props) => {
     reset,
     formState: { errors, isValid, isDirty },
   } = useForm<ISignUp>({
-    // mode: "onSubmit",
     defaultValues: {
       email: "",
       password: "",
@@ -48,17 +47,6 @@ const SignUp: NextPage<Props> = ({ educations }: Props) => {
     },
     // resolver: zodResolver(signUpSchema),
   });
-  /*  const { isDirty, isValid } = useFormState({
-    control,
-  }); */
-  // console.log("edu", educations);
-  // console.log(errors);
-
-  useEffect(() => {
-    // console.log(isValid);
-
-    console.log(errors?.email?.message);
-  }, [errors]);
 
   const { mutateAsync } = trpc.users.signup.useMutation();
 
@@ -69,15 +57,15 @@ const SignUp: NextPage<Props> = ({ educations }: Props) => {
         if (typeof data.education === "string") {
           data.education = Number(data.education);
         }
-        //data.userRole = "student";
-        console.log(data);
-        /*   const result = await mutateAsync(data);
+
+        // console.log(data);
+        const result = await mutateAsync(data);
         if (result.status) {
           reset();
           router.push("/login");
         } else {
           console.log(result.message);
-        } */
+        }
       } catch (err) {
         console.error(err);
       }
@@ -137,33 +125,6 @@ const SignUp: NextPage<Props> = ({ educations }: Props) => {
                 </div>
               )}
             />
-            {/*  <div className="w-full max-w-md flex flex-col mb-4">
-              <label htmlFor="education">Välj utbildning</label>
-              <select
-                // {...field}
-                className="input h-[40px] bg-muted input-bordered w-full mt-2 rounded-md"
-                // name="education"
-                id="education"
-                {...register("education", {
-                  required: {
-                    value: true,
-                    message: "En utbildning måste väljas",
-                  },
-                })}
-                onChange={(e) => handleSelectChange(e)}
-                // onBlur={onBlur}
-                // name={name}
-                // value={value}
-              >
-                <option value="default">Välj utbildning</option>
-                {educations?.map((edu) => (
-                  <option key={edu.id} value={Number(edu.id)}>
-                    {edu.name}
-                  </option>
-                ))}
-              </select>
-              <p>{errors?.education?.message}</p>
-            </div> */}
             <Controller
               name="email"
               control={control}
@@ -199,34 +160,6 @@ const SignUp: NextPage<Props> = ({ educations }: Props) => {
                 </div>
               )}
             />
-            {/* <div className="w-full max-w-md flex flex-col mb-4">
-              <label htmlFor="email">Email</label>
-              <input
-                // {...field}
-                // onChange={onChange}
-                // onBlur={onBlur}
-                // name={name}
-                // value={value}
-                {...register("email", {
-                  required: {
-                    value: true,
-                    message: "Du måste ange en epost",
-                  },
-                  pattern: {
-                    value:
-                      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-                    message: "Ogiltlig email",
-                  },
-                  // validate: (value) => value === getValues("email"),
-                })}
-                id="email"
-                placeholder="Type your email..."
-                className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
-              />
-
-              {errors?.email && <p>{errors?.email?.message}</p>}
-              {errors.email?.type === "pattern" && <p>fel email</p>}
-            </div> */}
 
             <Controller
               name="password"
@@ -317,7 +250,6 @@ const SignUp: NextPage<Props> = ({ educations }: Props) => {
                     type="text"
                     placeholder="Type your email..."
                     className="input bg-muted h-[40px] input-bordered w-full rounded-md  mt-2 pl-2"
-                    // {...register("lastName", { required: true })}
                   />
                   <p className="text-xs text-red-500 mt-1">
                     {errors?.lastName?.message}
@@ -337,7 +269,7 @@ const SignUp: NextPage<Props> = ({ educations }: Props) => {
                 </Link>
               </span>
               <Button
-                // disabled={!isValid}
+                disabled={!isValid}
                 className="hover:bg-background hover:text-foreground"
               >
                 Skapa konto
