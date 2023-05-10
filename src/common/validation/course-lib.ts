@@ -44,19 +44,13 @@ const error = z
 
 //Default resourse input schema, used for creating a resource
 export const courseLibInputSchema = z.object({
-  id: z.number(),
+   id: z.number(),
   title: z.string(),
   description: z.string(),
   content: z.string(),
-  createdAt: z.date(),
-  updatedAt: z.date(),
-  /*  education: z
-    .object({
-      connect: z.object({
-        id: z.number(),
-      }),
-    })
-    .optional(), */
+  // createdAt: z.date(),
+  // updatedAt: z.date(),
+
 });
 
 //Default resource output schema, used in all output methods in router.
@@ -83,7 +77,7 @@ export const updateCourseLibInputSchema = z.object({
     .partial(),
 });
 export const courseLibId = z.object({
-  courseLibId: z.number(),
+  courseLibId: z.string(),
 });
 
 export type CourseLibIdSchema = z.infer<typeof courseLibId>;

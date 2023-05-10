@@ -55,7 +55,7 @@ const ModulesPage = (props: Props) => {
       "text-primary hover:text-indigo-50 hover:bg-primary hover:cursor-pointer rounded-sm",
   }}
 >
-  <UserLayout role={session?.admin?.role}>
+<UserLayout role={session?.user.role ?? ""}>
     <div className="flex items-center mb-4">
       <input
         type="text"

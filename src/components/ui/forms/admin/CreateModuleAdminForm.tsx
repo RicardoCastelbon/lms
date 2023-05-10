@@ -10,12 +10,12 @@ import { trpc } from "@/src/common/trpc";
 import { moduleLibInputSchema, ModuleLibInputSchema } from "@/src/common/validation/module-lib";
 
 type Props = {
-    closeModal: () => void; // New property
+    closeModal: () => void;
 
 };
 
 const CreateModuleAdminForm = ({ closeModal }: Props) => {
-    const [isOpen, setIsOpen] = useState(true);
+    // const [isOpen, setIsOpen] = useState(true);
 
   const { handleSubmit, control, reset } = useForm<ModuleLibInputSchema>({
     defaultValues: {
@@ -99,7 +99,7 @@ const CreateModuleAdminForm = ({ closeModal }: Props) => {
                     />
                 </div>
             )}
-/>
+            />
         <button
           type="submit"
           className="bg-indigo-500 text-white py-2 px-6 rounded-sm hover:bg-indigo-50 hover:text-foreground"
