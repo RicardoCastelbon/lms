@@ -35,11 +35,11 @@ type Props = {
 
 const CoursesPage = (props: Props) => {
   const [showModal, setShowModal] = useState<boolean>(false);
-  const { quill, quillRef } = useQuill();
+  // const { quill, quillRef } = useQuill();
   const { data: session } = useSession(); 
   const [courseLib, setCourseLib] = useState<Course_lib[]>(props.coursesLib || []);
 
-  const router = useRouter();
+  // const router = useRouter();
 
   const modalClickHandler = () => {
     setShowModal((prev) => !prev);

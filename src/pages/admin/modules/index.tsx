@@ -34,20 +34,26 @@ const ModulesPage = (props: Props) => {
   const { quill, quillRef } = useQuill();
 
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [moduleLib, setModuleLib] = useState<Module_lib[]>(props.modulesLibs || []);
 
   const modalClickHandler = () => {
     setShowModal((prev) => !prev);
   };
-  // const handleDeleteModule = async (moduleLibId: number) => {
-  //   try {
-  //     const result = await trpc.moduleLib.deletemoduleLib(moduleLibId);
-  //     if (result.success) {
-  //       // TODO: handle successful deletion
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
+
+  const { mutateAsync: deleteModuleLib } = trpc.moduleLib.delete.useMutation();
+  
+  const handleDelete = async (moduleLibId: number) => {
+    // Optimistically remove the course from state
+    setModuleLib(moduleLib.filter(course => course.id !== moduleLibId));
+  
+    try {
+      await deleteModuleLib({ moduleLibId: String(moduleLibId) });
+    } catch (error) {
+      console.error('Failed to delete course: ', error);
+      // If the deletion fails, reset the state
+      setModuleLib(props.modulesLibs || []);
+    }
+  };
   return (
     <IconContext.Provider
   value={{
@@ -76,7 +82,7 @@ const ModulesPage = (props: Props) => {
               <AdminCreateModuleCards
                 key={moduleLib.id}
                 moduleLib={moduleLib}
-                // onDelete={() => handleDeleteModule(moduleLib.id)}
+                onDelete={handleDelete}
 
                 />
             ))}

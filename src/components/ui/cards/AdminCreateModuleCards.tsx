@@ -13,16 +13,18 @@ interface ICourse {
 
 type Props = {
   moduleLib: Module_lib;
-  // onDelete: () => void;
+  onDelete: (moduleLibId: number) => void;
 
 };
 
-const AdminCreateModuleCards = ({ moduleLib }: Props) => {
-  // console.log(course);
-  // const handleDelete = () => {
-  //   onDelete();
-  // };
-
+const AdminCreateModuleCards = ({ moduleLib, onDelete }: Props) => {
+ 
+  const handleDelete = () => {
+    if (window.confirm("Are you sure")) {
+    onDelete(moduleLib.id)
+       }
+}
+ 
   return (
     <div className="w-[232px] h-[338px] shadow-lg flex flex-col rounded-lg">
       {/* card header */}
@@ -35,8 +37,8 @@ const AdminCreateModuleCards = ({ moduleLib }: Props) => {
         <p>{moduleLib.title}</p>
         <button
           className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600"
-          // onClick={handleDelete}
-        >
+          onClick={handleDelete}
+          >
           <FaTrash /> Delete
         </button>
       </div>
