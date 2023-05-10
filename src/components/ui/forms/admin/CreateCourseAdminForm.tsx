@@ -1,12 +1,8 @@
-
-
 "use client";
 import React, { useCallback, useState } from "react";
-
 import { useQuill } from "react-quilljs";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
 import IconSelect from "../../dropdowns/IconSelect";
 import RichText from "../../text-editor/RichText";
 import ColorSelect from "../../dropdowns/ColorSelect";
@@ -19,8 +15,6 @@ type Props = {
 
 };
 const CreateCourseAdminForm = ({ closeModal }: Props) => {
-  const [iconName, setIconName] = useState<string>("");
-  // const [color, setColor] = useState<string>("");
   const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
 
 
@@ -37,7 +31,7 @@ const CreateCourseAdminForm = ({ closeModal }: Props) => {
   });
 
 
-  const { data: session } = useSession();
+  // const { data: session } = useSession();
 
   const { quill, quillRef } = useQuill();
   const { mutateAsync } = trpc.courseLib.create.useMutation();
@@ -58,6 +52,7 @@ const CreateCourseAdminForm = ({ closeModal }: Props) => {
       } else {
         console.log(courseLibData);
         const result = await mutateAsync(courseLibData );
+        console.log("result",result)
         if (result.success) {
           quill!.root.innerHTML = "";
           reset();
@@ -70,6 +65,9 @@ const CreateCourseAdminForm = ({ closeModal }: Props) => {
   },
   [mutateAsync, reset, quill, closeModal]
   );
+
+  console.log("on SUBMIT", onSubmit)
+
   return (
     <form
       className="flex flex-col gap-4 md:flex-row"
@@ -84,7 +82,7 @@ const CreateCourseAdminForm = ({ closeModal }: Props) => {
             rules={{ required: true }}
             render={({ field }) => (
                 <div className="w-full max-w-md flex flex-col mb-4">
-                <label htmlFor="title">Modulnamn</label>
+                <label htmlFor="title">Kurs namn</label>
                 <input
                     id="title"
                     type="text"
@@ -113,18 +111,17 @@ const CreateCourseAdminForm = ({ closeModal }: Props) => {
                 </div>
             )}
             />
-
-      </section>
-      {/* Right side */}
-      <section className="h-full flex-1">
-        <div className="flex justify-between p-2 items-center">
-          <p>Kursinformation</p>
-          <button
+         <button
             type="submit"
             className="bg-indigo-500 text-white py-2 px-6 rounded-sm hover:bg-indigo-50 hover:text-foreground"
           >
             Spara
           </button>
+      </section>
+      {/* Right side */}
+      <section className="h-full flex-1">
+        <div className="flex justify-between p-2 items-center">
+          <p>Kursinformation</p>
         </div>
         <RichText ref={quillRef} />
       </section>

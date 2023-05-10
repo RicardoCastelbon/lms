@@ -15,6 +15,8 @@ export const createCourseLib = async ({
   ctx: IContext;
 }) => {
   try {
+    console.log("Creating modules lib with input:", input);
+
     const course_lib: Course_lib = await ctx.prisma.course_lib.create({
       data: {
         title: input.title,

@@ -61,7 +61,8 @@ const CreateModuleAdminForm = ({ closeModal }: Props) => {
   );
 
   return (
-    <form className="md:flex gap-4 block" onSubmit={handleSubmit(onSubmit)}>
+    <form className="md:flex gap-4 block" 
+    onSubmit={handleSubmit(onSubmit)}>
       {/* left side */}
       <section className="flex-1 flex flex-col gap-4">
         {/* form group */}
