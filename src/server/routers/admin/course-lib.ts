@@ -27,8 +27,8 @@ export const courseLibRouter = t.router({
         path: "/course-lib/create",
       },
     })
-    .output(courseLibOutputSchema)
     .input(courseLibInputSchema)
+    .output(courseLibOutputSchema)
     .mutation(({ input, ctx }) => createCourseLib({ input, ctx })),
   // GET MANY coursers_lib
   getMany: t.procedure

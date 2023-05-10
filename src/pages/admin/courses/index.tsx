@@ -18,6 +18,12 @@ import { getServerSession } from "next-auth";
 import { createServerSideHelpers } from "@trpc/react-query/server";
 import { createContext } from "@/src/server/context";
 import type { GetServerSideProps, NextPage } from "next";
+import { deleteCourseLib } from "@/src/server/controllers/course-lib.controller";
+
+import { useMutation } from 'react-query';
+
+import { useRouter } from 'next/router';
+import { trpc } from "@/src/common/trpc";
 
 type Props = {
   sideBarClass: boolean;
@@ -32,8 +38,22 @@ const CoursesPage = (props: Props) => {
   const { quill, quillRef } = useQuill();
   const { data: session } = useSession(); 
 
+  const router = useRouter();
+
   const modalClickHandler = () => {
     setShowModal((prev) => !prev);
+  };
+
+
+  const { mutateAsync: deleteCourseLib } = trpc.courseLib.delete.useMutation();
+  
+  const handleDelete = async (courseLibId: number) => {
+    try {
+      await deleteCourseLib({ courseLibId: String(courseLibId) });
+      router.reload();
+    } catch (error) {
+      console.error('Failed to delete course: ', error);
+    }
   };
 
   return (
@@ -64,6 +84,7 @@ const CoursesPage = (props: Props) => {
           <AdminCreateCourseCards
             key={courseLib.id}
             courseLib={courseLib}
+            onDelete={handleDelete}
           />
         ))}
         </div>
