@@ -40,6 +40,7 @@ export const courseRouter = t.router({
     .input(noInput)
     .output(courseOutputSchema)
     .query(({ ctx }) => getAllCourses({ ctx })),
+
   getManyByEducationId: t.procedure
     .meta({
       openapi: {

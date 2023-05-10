@@ -177,7 +177,7 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
 
   // fetch all the modules with with courseId
   const res = await helpers.module.getManyByCourseId.fetch({
-    courseId: String(courseId),
+    courseId: course?.course.id,
   });
 
   //Needed to serialize Date objects for createdAt + updatedAt otherwise error is thrown
