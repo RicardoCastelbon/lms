@@ -37,6 +37,7 @@ const CoursesPage = (props: Props) => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const { quill, quillRef } = useQuill();
   const { data: session } = useSession(); 
+  const [courseLib, setCourseLib] = useState<Course_lib[]>(props.coursesLib || []);
 
   const router = useRouter();
 
@@ -48,13 +49,18 @@ const CoursesPage = (props: Props) => {
   const { mutateAsync: deleteCourseLib } = trpc.courseLib.delete.useMutation();
   
   const handleDelete = async (courseLibId: number) => {
+    // Optimistically remove the course from state
+    setCourseLib(courseLib.filter(course => course.id !== courseLibId));
+  
     try {
       await deleteCourseLib({ courseLibId: String(courseLibId) });
-      router.reload();
     } catch (error) {
       console.error('Failed to delete course: ', error);
+      // If the deletion fails, reset the state
+      setCourseLib(props.coursesLib || []);
     }
   };
+  
 
   return (
     <IconContext.Provider
