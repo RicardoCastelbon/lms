@@ -10,12 +10,12 @@ import { trpc } from "@/src/common/trpc";
 import { moduleLibInputSchema, ModuleLibInputSchema } from "@/src/common/validation/module-lib";
 
 type Props = {
-    closeModal: () => void; // New property
+    closeModal: () => void;
 
 };
 
 const CreateModuleAdminForm = ({ closeModal }: Props) => {
-    const [isOpen, setIsOpen] = useState(true);
+    // const [isOpen, setIsOpen] = useState(true);
 
   const { handleSubmit, control, reset } = useForm<ModuleLibInputSchema>({
     defaultValues: {
@@ -61,7 +61,8 @@ const CreateModuleAdminForm = ({ closeModal }: Props) => {
   );
 
   return (
-    <form className="md:flex gap-4 block" onSubmit={handleSubmit(onSubmit)}>
+    <form className="md:flex gap-4 block" 
+    onSubmit={handleSubmit(onSubmit)}>
       {/* left side */}
       <section className="flex-1 flex flex-col gap-4">
         {/* form group */}
@@ -99,7 +100,7 @@ const CreateModuleAdminForm = ({ closeModal }: Props) => {
                     />
                 </div>
             )}
-/>
+            />
         <button
           type="submit"
           className="bg-indigo-500 text-white py-2 px-6 rounded-sm hover:bg-indigo-50 hover:text-foreground"

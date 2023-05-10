@@ -22,7 +22,6 @@ export const createModuleLibController = async ({
               title: input.moduleLib.title,
               description: input.moduleLib.description,
               content: input.moduleLib.content,
-        
             },
           })
       
