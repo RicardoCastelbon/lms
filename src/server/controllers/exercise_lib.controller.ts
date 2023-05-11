@@ -21,9 +21,9 @@ export const createExerciseLibController = async ({
     const exerciseLib: Exercise_lib = await ctx.prisma.exercise_lib.create({
       // Fix the typo here
       data: {
-        title: input.exerciseLib.title, // Access the properties from the first element of exercise_lib array
-        description: input.exerciseLib.description,
-        content: input.exerciseLib.content,
+        title: input.title, // Access the properties from the first element of exercise_lib array
+        description: input.description,
+        content: input.content,
       },
     });
 
@@ -47,14 +47,14 @@ export const getAllExercisesLib = async ({ ctx }: { ctx: IContext }) => {
     const exercisesLib: Exercise_lib[] =
       await ctx.prisma.exercise_lib.findMany();
 
-    console.log("Exercises fetched from database:", exercisesLib);
+    // console.log("Exercises fetched from database:", exercisesLib);
 
     if (exercisesLib.length <= 0) {
       return {
         success: false,
         code: 404,
         message: "No exercises found, please try again",
-        exercisesLib,
+        exerciseLib: null,
       };
     } else {
       return {

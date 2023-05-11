@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import React, { useEffect, useRef, useState, forwardRef } from "react";
 import { useQuill } from "react-quilljs";
 import "react-quill/dist/quill.snow.css";
+import { ControllerRenderProps, RefCallBack } from "react-hook-form";
 type Course = {
   title: string;
   color: string;
@@ -12,9 +13,22 @@ type Course = {
 };
 type Props = {
   // quillRef: React.RefObject<any>;
+  id?: string;
+  name?: string;
+  value?: string;
+  onChange?: () => void;
+  onBlur?: () => void;
+  field?: ControllerRenderProps<
+    {
+      title: string;
+      description: string;
+      content: string;
+    },
+    "description"
+  >;
 };
 
-const RichText = forwardRef<HTMLDivElement>(function Editor(props, ref) {
+const RichText = forwardRef<HTMLDivElement, Props>(function Editor(props, ref) {
   // const { ...restProps } = props;
   /*   const modules = {
     toolbar: [
@@ -33,7 +47,30 @@ const RichText = forwardRef<HTMLDivElement>(function Editor(props, ref) {
 
   return (
     <>
-      <div className="w-full" ref={ref} />
+      {props.name && props.name === "content" ? (
+        <div
+          id={props.id}
+          className="w-full"
+          ref={ref}
+          onChange={props.onChange}
+          {...props.field}
+        />
+      ) : (
+        <div
+          id={props.id}
+          className="w-full"
+          ref={ref}
+          onChange={props.onChange}
+          {...props.field}
+        />
+      )}
+      {/*  <div
+        id={props.id}
+        className="w-full"
+        ref={ref}
+        onChange={props.onChange}
+        {...props.field}
+      /> */}
 
       {/*     <ReactQuill
       forwardedRef={editorRef}

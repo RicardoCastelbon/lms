@@ -269,7 +269,7 @@ const SignUp: NextPage<Props> = ({ educations }: Props) => {
                 </Link>
               </span>
               <Button
-                disabled={!isValid}
+                // disabled={!isValid}
                 className="hover:bg-background hover:text-foreground"
               >
                 Skapa konto
