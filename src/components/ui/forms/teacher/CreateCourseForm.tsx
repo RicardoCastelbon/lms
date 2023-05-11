@@ -1,5 +1,11 @@
 "use client";
-import React, { useCallback, useEffect, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import {
   CourseInputSchema,
   courseInputSchema,
@@ -21,12 +27,21 @@ import { useSession } from "next-auth/react";
 }; */
 type Props = {
   educationId: number;
+  setHasSubmitted: Dispatch<SetStateAction<boolean>>;
+  setShowModal: Dispatch<SetStateAction<boolean>>;
+  hasSubmitted: boolean;
 };
 
-const CreateCourseForm = ({ educationId }: Props) => {
+const CreateCourseForm = ({
+  educationId,
+  hasSubmitted,
+  setHasSubmitted,
+
+  setShowModal,
+}: Props) => {
   const [iconName, setIconName] = useState<string>("");
   const [color, setColor] = useState<string>("");
-  const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
+  // const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
   const {
     handleSubmit,
     control,
@@ -44,10 +59,7 @@ const CreateCourseForm = ({ educationId }: Props) => {
       points: "",
       published: false,
     },
-    // resolver: zodResolver(courseInputSchema),
   });
-
-  // const { data: session } = useSession();
 
   const { quill, quillRef } = useQuill();
   const { mutateAsync } = trpc.course.create.useMutation();
@@ -55,10 +67,6 @@ const CreateCourseForm = ({ educationId }: Props) => {
   useEffect(() => {
     console.log(errors);
   }, [errors]);
-
-  useEffect(() => {
-    console.log(color);
-  }, [color]);
 
   const onSubmit = useCallback(
     async (data: CourseInputSchema) => {
@@ -72,28 +80,16 @@ const CreateCourseForm = ({ educationId }: Props) => {
         // data.color = color;
         data.published = false; // needed?
         console.log(data);
-        /*  if (
-          !data.title ||
-          !data.color ||
-          !data.icon ||
-          !data.content ||
-          !data.educationId ||
-          !data.points
-        ) {
-          console.log("need to fill in all fields");
-          console.log(data);
-          return;
-        } else {
-          console.log(data);
-          const result = await mutateAsync(data);
-          console.log(result);
+        setHasSubmitted((prev) => !prev);
+        // console.log(hasSubmitted);
 
-          if (result.success) {
-            quill!.root.innerHTML = "";
-            setHasSubmitted(true);
-            reset();
-          }
-        } */
+        const result = await mutateAsync(data);
+        if (result.success) {
+          setHasSubmitted(true);
+          quill!.root.innerHTML = "";
+          reset();
+          setShowModal(false);
+        }
       } catch (err) {
         console.log(err);
         reset();
@@ -176,12 +172,10 @@ const CreateCourseForm = ({ educationId }: Props) => {
                 hasSubmitted={hasSubmitted}
                 {...field}
                 value={value}
-                // name={name}
                 setValue={setValue}
                 onChange={onChange}
                 onBlur={onBlur}
-                // setColor={setColor}
-                // {...register("color")}
+                setColor={setColor}
               />
               <p className="text-xs text-red-500 mt-1">
                 {errors?.color?.message}
@@ -192,14 +186,31 @@ const CreateCourseForm = ({ educationId }: Props) => {
         <Controller
           name="icon"
           control={control}
-          render={({ field }) => (
+          rules={{
+            validate: {
+              hasIcon: (value) => {
+                console.log(value);
+
+                return value.length > 0 || "Välj en ikon";
+              },
+            },
+          }}
+          render={({ field: { value, onChange, onBlur, name, ...field } }) => (
             <div className="w-full max-w-md flex flex-col mb-4">
               <label htmlFor="icon">Välj en kursikon</label>
               <IconSelect
                 hasSubmitted={hasSubmitted}
-                field={field}
+                {...field}
+                value={value}
+                // name={name}
+                setValue={setValue}
+                onChange={onChange}
+                onBlur={onBlur}
                 setIconName={setIconName}
               />
+              <p className="text-xs text-red-500 mt-1">
+                {errors?.icon?.message}
+              </p>
             </div>
           )}
         />
@@ -215,7 +226,36 @@ const CreateCourseForm = ({ educationId }: Props) => {
             Spara
           </button>
         </div>
-        <RichText ref={quillRef} />
+        <Controller
+          name="content"
+          control={control}
+          rules={{
+            // required: "Ange en beskrivande text av uppgiften",
+            validate: {
+              hasContent: (value) => {
+                value = String(quill?.getText());
+
+                return value.length > 10 || "Ange en text med minst 10 tecken";
+              },
+            },
+          }}
+          render={({ field: { value, onChange, onBlur, name, ...field } }) => (
+            <div className="w-full max-w-md flex flex-col mb-4">
+              <RichText
+                id="content"
+                {...field}
+                name={name}
+                value={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                ref={quillRef}
+              />
+              <p className="text-xs text-red-500 mt-1">
+                {errors?.content?.message}
+              </p>
+            </div>
+          )}
+        />
       </section>
     </form>
   );

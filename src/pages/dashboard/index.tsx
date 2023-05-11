@@ -16,6 +16,7 @@ import Modal from "@/src/components/ui/modals/Modal";
 import { serverRouter } from "@/src/server/routers";
 import { IContext, createContext } from "@/src/server/context";
 import { Course, Education } from "@prisma/client";
+import { trpc } from "@/src/common/trpc";
 
 type Props = {
   courses: Course[];
@@ -25,14 +26,24 @@ const Dashboard = ({ courses, education }: Props) => {
   const [sideBarClass, setSideBarClass] = useState<boolean>(false);
   const [screenWidth, setScreenWidth] = useState<number>();
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
+  const [clientCourses, setClientCourses] = useState<Course[]>();
+
   const { data: session } = useSession();
   const router = useRouter();
+  /* const { data, isLoading } = trpc.course.getManyByEducationId.useQuery({
+    educationId: String(session?.user.educationId),
+  }); */
 
   const modalRef = useRef(null);
 
   useEffect(() => {
-    console.log(session);
-    console.log(courses);
+    console.log(hasSubmitted);
+  }, [hasSubmitted]);
+
+  useEffect(() => {
+    // console.log(session);
+    // console.log(courses);
 
     if (!session) {
       router.push("/401");
@@ -128,7 +139,12 @@ const Dashboard = ({ courses, education }: Props) => {
           showModal={showModal}
           setShowModal={setShowModal}
         >
-          <CreateCourseForm educationId={education?.id} />
+          <CreateCourseForm
+            hasSubmitted={hasSubmitted}
+            setHasSubmitted={setHasSubmitted}
+            educationId={education?.id}
+            setShowModal={setShowModal}
+          />
         </Modal>
       </UserLayout>
     </IconContext.Provider>

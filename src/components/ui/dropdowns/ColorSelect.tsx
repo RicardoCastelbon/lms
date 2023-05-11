@@ -61,16 +61,17 @@ type Props = {
       points: string;
       published: boolean;
     },
-    "points"
+    "color"
   >;
   hasSubmitted: boolean;
-  // setColor: React.Dispatch<React.SetStateAction<string>>;
+
+  setColor: React.Dispatch<React.SetStateAction<string>>;
   // setIconName: React.Dispatch<React.SetStateAction<string>>;
 };
 
 const ColorSelect = ({
   field,
-  // setColor,
+  setColor,
   hasSubmitted,
   value,
   onChange,
@@ -82,6 +83,7 @@ const ColorSelect = ({
 
   //If form has been submitted, reset selectedColor to = ""
   useEffect(() => {
+    console.log("color", hasSubmitted);
     if (hasSubmitted) {
       setSelectedColor("");
     }
@@ -91,7 +93,7 @@ const ColorSelect = ({
     if (!color) return;
     const col = selectColor(color);
     setSelectedColor(col!);
-    // setColor(color);
+    setColor(color);
     setValue("color", color);
   };
   return (
