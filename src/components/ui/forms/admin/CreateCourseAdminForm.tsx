@@ -85,7 +85,7 @@ const CreateCourseAdminForm = ({ closeModal }: Props) => {
         <Controller
               name="title"
               control={control}
-              rules={{ required: "Sätt namn på denna kurs" }}
+              rules={{ required: "Lägg till ett namn på denna kurs" }}
               render={({
                 field: { value, onChange, onBlur, name, ...field },
               }) => (
@@ -93,9 +93,11 @@ const CreateCourseAdminForm = ({ closeModal }: Props) => {
               <label htmlFor="title">Kursnamn</label>
                   <input
                     {...field}
-                    className="input h-[40px] bg-muted input-bordered w-full mt-2 rounded-md"
+                    className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
                     id="education"
                     onChange={onChange}
+                    placeholder="Lägg till en en kurs titel"
+
                     onBlur={onBlur}
                     name={name}
                     value={value}
@@ -122,7 +124,7 @@ const CreateCourseAdminForm = ({ closeModal }: Props) => {
                     name={name}
                     value={value}
                     id="description"
-                    // placeholder="Kurs beskrivning"
+                    placeholder="Lägg till en kursbeskrivning"
                     className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
                   />
                   {errors?.description && (

@@ -86,7 +86,7 @@ const CreateEduAdminForm = ({ closeModal }: Props) => {
                 {...field}
                 id="name"
                 type="text"
-                placeholder="Skriv in utbildnings namn"
+                placeholder="Lägg till ett utbildnings namn"
                 className="input h-[40px] bg-muted input-bordered w-full mt-2 rounded-md"
                 onChange={onChange}
                 onBlur={onBlur}

@@ -1,10 +1,8 @@
 "use client";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-
 import { useQuill } from "react-quilljs";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
 import RichText from "../../text-editor/RichText";
 import { trpc } from "@/src/common/trpc";
 import {
@@ -24,13 +22,12 @@ const CreateModuleAdminForm = ({ closeModal }: Props) => {
     formState: { errors, isValid, isDirty },
   } = useForm<ModuleLibInputSchema>({
     defaultValues: {
-      moduleLib: {
-        title: "",
-        description: "",
-        content: "",
-      },
-    },
-    resolver: zodResolver(moduleLibInputSchema),
+          title: "",
+          description: "",
+          content: "",
+    
+  },
+    // resolver: zodResolver(moduleLibInputSchema),
   });
 
   const { quill, quillRef } = useQuill();
@@ -40,7 +37,7 @@ const CreateModuleAdminForm = ({ closeModal }: Props) => {
     async (data: ModuleLibInputSchema) => {
       try {
         const moduleLibData = {
-          ...data.moduleLib,
+          ...data,
           content: String(quill?.root.innerHTML),
         };
 
@@ -55,7 +52,7 @@ const CreateModuleAdminForm = ({ closeModal }: Props) => {
           return;
         } else {
           console.log(moduleLibData);
-          const result = await mutateAsync({ moduleLib: moduleLibData });
+          const result = await mutateAsync(moduleLibData );
           if (result.success) {
             quill!.root.innerHTML = "";
             reset();
@@ -75,32 +72,33 @@ const CreateModuleAdminForm = ({ closeModal }: Props) => {
       <section className="flex-1 flex flex-col gap-4">
         {/* form group */}
         <Controller
-          name="moduleLib.title"
+          name="title"
           control={control}
           rules={{ required: "Lägg till en title för denna modal" }}
-          render={({ field: { value, onChange, onBlur, name, ...field } }) => (
+          render={({
+             field: { value, onChange, onBlur, name, ...field } }) => (
             <div className="w-full max-w-md flex flex-col mb-4">
-              <label htmlFor="moduleLib.title">Modalnamn</label>
+              <label htmlFor=".title">Modalnamn</label>
               <input
                 {...field}
-                id="moduleLib.title"
+                id="title"
                 type="text"
-                placeholder="Skriv in modulnamn"
+                 placeholder="Lägg till modalnamn"
                 className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
                 onChange={onChange}
                 onBlur={onBlur}
-                value={value}
+                 value={value}
               />
-              {errors?.moduleLib?.title && (
+              {/* {errors?.title && ( */}
                 <p className="text-xs text-red-500 mt-1">
-                  {errors?.moduleLib.title?.message}
+                  {errors?.title?.message}
                 </p>
-              )}
+              {/* )} */}
             </div>
           )}
         />
         <Controller
-          name="moduleLib.description"
+          name="description"
           control={control}
           rules={{ required: "Lägg till en beskrivning på denna modal" }}
           render={({ field: { value, onChange, onBlur, name, ...field } }) => (
@@ -108,16 +106,18 @@ const CreateModuleAdminForm = ({ closeModal }: Props) => {
               <label htmlFor="description">Beskrivning</label>
               <input
                 {...field}
+                id="description"
+                type="text"
+                placeholder="Lägg till en beskrivning"
                 onChange={onChange}
                 onBlur={onBlur}
                 name={name}
                 value={value}
-                id="description"
                 className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
               />
-              {errors?.moduleLib?.description && (
+              {errors?.description && (
                 <p className="text-xs text-red-500 mt-1">
-                  {errors?.moduleLib.description?.message}
+                  {errors.description?.message}
                 </p>
               )}
             </div>
@@ -133,7 +133,7 @@ const CreateModuleAdminForm = ({ closeModal }: Props) => {
       {/* Right side */}
       <section className="h-full flex-1">
         <div className="flex justify-between p-2 items-center">
-          <p>Modulinformation</p>
+          <p>Modalinformation</p>
         </div>
         <RichText ref={quillRef} />
       </section>
