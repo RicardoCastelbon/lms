@@ -36,6 +36,7 @@ const Dashboard = ({ courses, education }: Props) => {
   }); */
 
   const modalRef = useRef(null);
+  // console.log(courses);
 
   useEffect(() => {
     console.log(hasSubmitted);
@@ -103,14 +104,39 @@ const Dashboard = ({ courses, education }: Props) => {
         <div className="w-full flex flex-col md:flex-row gap-8">
           {/* Main content */}
           <div className="w-full h-full flex flex-wrap justify-center gap-4 md:justify-start md:w-3/6 lg:w-4/6">
-            {courses &&
+            {courses !== null ? (
               courses?.map((course: Course) => (
                 <CourseCard
                   key={course.id}
                   course={course}
                   role={session?.user.role}
                 />
-              ))}
+              ))
+            ) : (
+              <section className="w-full flex flex-col justify-center items-center gap-4">
+                <h2 className="text-2xl">Inga övningar finns</h2>
+                {/* <div className="flex justify-center items-center gap-6"> */}
+
+                {session?.user.role === "TEACHER" ? (
+                  <>
+                    <p className="">Skapa en nu!</p>
+
+                    <button
+                      className="bg-primary text-white px-4 py-2 rounded-md hover:bg-indigo-50 hover:text-primary"
+                      onClick={(e) => {
+                        // e.preventDefault();
+                        setShowModal(true);
+                      }}
+                    >
+                      Skapa en övning
+                    </button>
+                  </>
+                ) : (
+                  <p className="">Invänta info från din handledare</p>
+                )}
+                {/* </div> */}
+              </section>
+            )}
           </div>
           {/* Aside right */}
           <aside className="flex-1">
@@ -182,7 +208,7 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
   return {
     props: {
       session: currentSession,
-      courses: courses.course,
+      courses: courses.course || null,
       education: education.education,
     },
   };
