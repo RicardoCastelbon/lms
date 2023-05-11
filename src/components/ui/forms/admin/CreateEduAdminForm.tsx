@@ -2,26 +2,38 @@
 import React, { useCallback, useState } from "react";
 import { useQuill } from "react-quilljs";
 import { Controller, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+// import { zodResolver } from "@hookform/resolvers/zod";
 import RichText from "../../text-editor/RichText";
 import { trpc } from "@/src/common/trpc";
-import { useSession } from "next-auth/react";
+// import { useSession } from "next-auth/react";
 import { educationInputSchema, EducationInput } from "@/src/common/validation/education";
+import { Education } from "@prisma/client";
 
 type Props = {
   closeModal: () => void;
+  // educations: Education[];
 
 };
 const CreateEduAdminForm = ({ closeModal }: Props) => {
-  const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
 
-
-  const { handleSubmit, control, reset } = useForm<EducationInput>({
+  const {
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors, isValid, isDirty },
+  } = useForm<EducationInput>({
     defaultValues: {
-        name: "",
+      name: "",
+
     },
-    resolver: zodResolver(educationInputSchema),
+    // resolver: zodResolver(signUpSchema),
   });
+  // const { handleSubmit, control, reset } = useForm<EducationInput>({
+  //   defaultValues: {
+  //       name: "",
+  //   },
+  //   // resolver: zodResolver(educationInputSchema),
+  // });
 
   const { quill, quillRef } = useQuill();
   const { mutateAsync } = trpc.education.create.useMutation();
@@ -33,6 +45,10 @@ const CreateEduAdminForm = ({ closeModal }: Props) => {
         ...data,
         content: String(quill?.root.innerHTML),
       };
+      //Check if value is a string, if true, cast to number
+      if (typeof data.name === "string") {
+        data.name = String(data.name);
+      }
 
       // Check all fields are filled
       if (!educationData.name  ) {
@@ -56,7 +72,6 @@ const CreateEduAdminForm = ({ closeModal }: Props) => {
   [mutateAsync, reset, quill, closeModal]
   );
 
-  console.log("on SUBMIT", onSubmit)
 
   return (
     <form
@@ -67,23 +82,29 @@ const CreateEduAdminForm = ({ closeModal }: Props) => {
       <section className="flex-1 flex flex-col gap-4">
         {/* form group */}
         <Controller
-            name="name"
-            control={control}
-            rules={{ required: true }}
-            render={({ field }) => (
-                <div className="w-full max-w-md flex flex-col mb-4">
-                <label htmlFor="title">Utbildnings namn</label>
-                <input
-                    id="title"
-                    type="text"
-                    placeholder="Skriv in utbildnings namn"
-                    className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
-                    {...field}
-                />
+  name="name"
+  control={control}
+  rules={{ required: "Skriv in ett namn för denna utbildning" }}
+  render={({ field }) => (
+    <div className="w-full max-w-md flex flex-col mb-4">
+      <label htmlFor="title">Utbildnings namn</label>
+      <input
+        id="title"
+        type="text"
+        placeholder="Skriv in utbildnings namn"
+        className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
+        {...field}
+        required
+      />
+      {errors.name && (
+        <p className="text-xs text-red-500 mt-1">
+          {errors.name.message}
+        </p>
+      )}
+    </div>
+  )}
+/>
 
-                </div>
-            )}
-            />
          <button
             type="submit"
             className="bg-indigo-500 text-white py-2 px-6 rounded-sm hover:bg-indigo-50 hover:text-foreground"
@@ -96,7 +117,8 @@ const CreateEduAdminForm = ({ closeModal }: Props) => {
         <div className="flex justify-between p-2 items-center">
           <p>Utbildningsinformation</p>
         </div>
-        <RichText ref={quillRef} />
+        <RichText ref={quillRef} 
+                    />
       </section>
     </form>
   );

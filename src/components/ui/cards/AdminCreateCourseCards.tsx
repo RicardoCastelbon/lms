@@ -1,22 +1,12 @@
 
-import { trpc } from "@/src/common/trpc";
-// import { deleteCourseLib } from "@/src/server/controllers/course-lib.controller";
 import { Course_lib} from "@prisma/client";
-import Link from "next/link";
 import React from "react";
 import { FaHtml5, FaTrash } from "react-icons/fa";
 
-interface ICourse {
-  id: number;
-  name: string;
-  title: string;
-  slug: string;
-}
 
 type Props = {
   courseLib: Course_lib;
   onDelete: (courseLibId: number) => void;
-
 };
 
 const AdminCreateCourseCards = ({ courseLib, onDelete }: Props) => {
@@ -38,11 +28,12 @@ const handleDelete = () => {
 
         <p>{courseLib.title}</p>
         <button
-          className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600"
+          className="bg-red-400 text-white py-1 px-2 rounded-md hover:bg-red-600"
            onClick={handleDelete}
+           
         >
-          <FaTrash /> Delete
-        </button>
+          {/* <FaTrash className="m-1"/> Delete */}
+        Radera</button>
       </div>
     </div>
   );
