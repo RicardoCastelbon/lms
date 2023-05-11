@@ -97,7 +97,7 @@ const Dashboard = ({ courses }: Props) => {
               ))}
           </div>
           {/* Aside right */}
-          <aside className="flex-1 bg-green">
+          <aside className="flex-1">
             {/* quick-menu */}
             <div className="w-full p-2">
               {/* quick menu items */}

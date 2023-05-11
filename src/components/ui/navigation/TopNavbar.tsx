@@ -14,7 +14,7 @@ const TopNavbar = ({ session, setSideBarClass }: Props) => {
     setSideBarClass((prev) => !prev);
   };
   return (
-    <nav className="w-full h-[70px] z-10 flex justify-between fixed top-0 left-0 items-center px-4 md:hidden bg-primary">
+    <nav className="w-full h-[70px] z-10 flex justify-between fixed top-0 left-0 items-center px-4 lg:hidden bg-primary">
       {/* Not sure the logo link has to be conditional - niclas */}
       {session?.user ? (
         <Link href="/dashboard">
