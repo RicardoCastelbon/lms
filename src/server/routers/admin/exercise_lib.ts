@@ -1,4 +1,4 @@
-import { t } from "../../trpc";
+import { adminProcedure, t } from "../../trpc";
 import {
   exerciseLibOutputSchema,
   exerciseLibInputSchema,
@@ -21,7 +21,7 @@ import {
 } from "@/src/common/validation/global";
 export const exerciseLibRouter = t.router({
   // Create Exercise_Lib
-  create: t.procedure
+  create: adminProcedure
     .meta({
       openapi: {
         method: "POST",
@@ -54,7 +54,7 @@ export const exerciseLibRouter = t.router({
     .query(({ input, ctx }) => getOneExerciseLib({ input, ctx })),
 
   // UPDATE EXERCISE_LIB
-  updateExerciseLib: t.procedure
+  updateExerciseLib: adminProcedure
     .meta({
       openapi: {
         method: "PUT",
@@ -69,7 +69,7 @@ export const exerciseLibRouter = t.router({
         ctx,
       })
     ),
-  deleteExerciseLib: t.procedure
+  deleteExerciseLib: adminProcedure
     .meta({
       openapi: {
         method: "DELETE",
