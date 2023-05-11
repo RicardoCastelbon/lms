@@ -37,12 +37,12 @@ const error = z
 
 //Default resourse input schema, used for creating a resource
 export const moduleLibInputSchema = z.object({
-    moduleLib: z.object({
+    // moduleLib: z.object({
       title: z.string(),
       description: z.string(),
       content: z.string(),
-      courseLibId: z.number(),
-    }),
+      // courseLibId: z.number(),
+    // }),
   });
 
 //Default resource output schema, used in all outputs.

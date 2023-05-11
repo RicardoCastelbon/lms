@@ -42,6 +42,7 @@ export const moduleLibRouter = t.router({
     .output(moduleLibOutputSchema)
     .query(({ ctx }) => getAllModulesLib({ ctx })),
 
+    
   getOne: t.procedure
     .meta({
       openapi: {
@@ -49,6 +50,7 @@ export const moduleLibRouter = t.router({
         path: "/module-lib/getOne/{moduleLibId}",
       },
     })
+    
     .input(moduleLibId)
     .output(moduleLibOutputSchema)
     .query(({ input, ctx }) => getOneModuleLib({ input, ctx })),
@@ -69,7 +71,7 @@ export const moduleLibRouter = t.router({
         ctx,
       })
     ),
-  deletemoduleLib: t.procedure
+  delete: t.procedure
     .meta({
       openapi: {
         method: "DELETE",

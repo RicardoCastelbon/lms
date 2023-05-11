@@ -22,11 +22,8 @@ export const createModuleLibController = async ({
               title: input.moduleLib.title,
               description: input.moduleLib.description,
               content: input.moduleLib.content,
-              course: { 
-                connect: { id: input.moduleLib.courseLibId },
             },
-            },
-          });
+          })
       
           return {
             success: true,
@@ -72,6 +69,7 @@ export const createModuleLibController = async ({
       };
 
 export const getAllModulesLib = async ({ ctx }: { ctx: IContext }) => {
+  console.log("first, getAllModulesLib", getAllModulesLib)
   try {
     const modulesLib: Module_lib[] =
       await ctx.prisma.module_lib.findMany();
@@ -114,12 +112,14 @@ export const getOneModuleLib = async ({
   ctx: IContext;
 }) => {
   try {
+    console.log("getOneModuleLib input:", input);
     const moduleLib: Module_lib | null =
       await ctx.prisma.module_lib.findFirst({
         where: { id: Number(input.moduleLibId) },
       });
 
     if (moduleLib === null) {
+      console.log("modulelib" , moduleLib)
       return {
         success: false,
         code: 404,

@@ -2,19 +2,24 @@ import { t } from "../trpc";
 import {
   createEducationController,
   deleteEducationController,
+  findAllEducations,
   findAllEducationsController,
   findEducationController,
   updateEducationController,
 } from "../controllers/education.controller";
 import {
   createEducationSchema,
-  educationSchema,
-  educationsSchema,
+  educationInputSchema,
+  educationOutputSchema,
+  // educationSchema,
+  // educationsSchema,
   filterQuery,
-  params,
+  // params,
+  updatedEducationResponse,
   updateEducationSchema,
 } from "../../common/validation/education";
 import { z } from "zod";
+import { educationId, noInput } from "@/src/common/validation/global";
 
 export const educationRouter = t.router({
   //CREATE EDUCATION
@@ -25,8 +30,8 @@ export const educationRouter = t.router({
         path: "/educations/create",
       },
     })
-    .output(educationSchema)
-    .input(createEducationSchema)
+    .input(educationInputSchema)
+    .output(educationOutputSchema)
     .mutation(({ input, ctx }) => createEducationController({ input, ctx })),
 
   //GET ONE EDUCATION
@@ -37,13 +42,11 @@ export const educationRouter = t.router({
         path: "/educations/getOne/{educationId}",
       },
     })
-    .input(params)
-    .output(educationSchema)
-    .query(({ input, ctx }) =>
-      findEducationController({ paramsInput: input, ctx })
-    ),
+    .input(educationId)
+    .output(educationOutputSchema)
+    .query(({ input, ctx }) => findEducationController({ input, ctx })),
 
-  //GET MANY EDUCATIONS
+  //GET MANY EDUCATIONS Pagination
   getMany: t.procedure
     .meta({
       openapi: {
@@ -51,11 +54,22 @@ export const educationRouter = t.router({
         path: "/educations/getMany",
       },
     })
-    .output(educationsSchema)
     .input(filterQuery)
+    .output(educationOutputSchema)
     .query(({ input, ctx }) =>
       findAllEducationsController({ filterQuery: input, ctx })
     ),
+  //GET ALL EDUCATIONS
+  getAll: t.procedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/educations/get-all",
+      },
+    })
+    .input(noInput)
+    .output(educationOutputSchema)
+    .query(({ ctx }) => findAllEducations({ ctx })),
 
   //UPDATE EDUCATION
   update: t.procedure
@@ -65,8 +79,8 @@ export const educationRouter = t.router({
         path: "/educations/update/{educationId}",
       },
     })
-    .output(educationSchema)
     .input(updateEducationSchema)
+    .output(educationOutputSchema)
     .mutation(({ input, ctx }) =>
       updateEducationController({
         paramsInput: input,
@@ -83,9 +97,7 @@ export const educationRouter = t.router({
         path: "/educations/delete/{educationId}",
       },
     })
-    .input(params)
-    .output(educationSchema)
-    .mutation(({ input, ctx }) =>
-      deleteEducationController({ paramsInput: input, ctx })
-    ),
+    .input(educationId)
+    .output(educationOutputSchema)
+    .mutation(({ input, ctx }) => deleteEducationController({ input, ctx })),
 });

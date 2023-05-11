@@ -49,36 +49,36 @@ model Admin {
 }
 
 model Course_lib {
-  id          Int          @id @default(autoincrement())
-  modules     Module_lib[]
+  id          Int      @id @default(autoincrement())
+  // modules     Module_lib[]
   title       String
-  description String       @db.LongText
-  content     String       @db.LongText
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @default(now()) @updatedAt
+  description String   @db.LongText
+  content     String   @db.LongText
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
 }
 
 model Module_lib {
-  id          Int            @id @default(autoincrement())
-  courseLib   Course_lib     @relation(fields: [courseLibId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-  courseLibId Int
-  exercises   Exercise_lib[]
+  id          Int      @id @default(autoincrement())
+  // courseLib   Course_lib     @relation(fields: [courseLibId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  // courseLibId Int
+  // exercises   Exercise_lib[]
   title       String
-  description String         @db.LongText
-  content     String         @db.LongText
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @default(now()) @updatedAt
+  description String   @db.LongText
+  content     String   @db.LongText
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
 }
 
 model Exercise_lib {
-  id          Int         @id @default(autoincrement())
-  module      Module_lib? @relation(fields: [moduleId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  id          Int      @id @default(autoincrement())
+  // module      Module_lib? @relation(fields: [moduleId], references: [id], onDelete: Restrict, onUpdate: Cascade)
   moduleId    Int?
   title       String
-  description String      @db.LongText
-  content     String      @db.LongText
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @default(now()) @updatedAt
+  description String   @db.LongText
+  content     String   @db.LongText
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
 }
 
 model Course {

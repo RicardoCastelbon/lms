@@ -1,9 +1,13 @@
-import type { NextPage } from "next";
+import type {
+  GetServerSideProps,
+  GetServerSidePropsContext,
+  NextPage,
+} from "next";
 import Head from "next/head";
 import Link from "next/link";
-import { ChangeEvent, useCallback } from "react";
+import { ChangeEvent, useCallback, useEffect } from "react";
 import { useRouter } from "next/router";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, useFormState } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Layout from "../components/ui/Layout";
 import { Button } from "../components/ui/button";
@@ -11,35 +15,49 @@ import Select, { SingleValue } from "react-select";
 
 import { signUpSchema, ISignUp } from "../common/validation/auth";
 import { trpc } from "../common/trpc";
+import { getServerSession } from "next-auth";
+import { nextAuthOptions } from "../common/auth";
+import { createServerSideHelpers } from "@trpc/react-query/server";
+import { serverRouter } from "../server/routers";
+import { createContext } from "../server/context";
+import { Education } from "@prisma/client";
+import { error } from "console";
 
-const educations = [
-  { label: "React", value: 1 },
-  { label: "Angular", value: 2 },
-  // { label: "Angular 2", value: "317774eb-7d44-4d01-a93a-22b3f30f17df" },
-  // { label: "FWD22", value: "ea70de22-e81d-4c6c-a6e3-d1a18fe43aea" },
-];
+type Props = {
+  educations: Education[];
+};
 
-const SignUp: NextPage = () => {
+const SignUp: NextPage<Props> = ({ educations }: Props) => {
   const router = useRouter();
-  const { handleSubmit, control, register, setValue, reset } = useForm<ISignUp>(
-    {
-      defaultValues: {
-        email: "",
-        password: "",
-        education: 1,
-        firstName: "",
-        lastName: "",
-      },
-      resolver: zodResolver(signUpSchema),
-    }
-  );
+  const {
+    handleSubmit,
+    getValues,
+    control,
+    register,
+    setValue,
+    reset,
+    formState: { errors, isValid, isDirty },
+  } = useForm<ISignUp>({
+    defaultValues: {
+      email: "",
+      password: "",
+      education: 0,
+      firstName: "",
+      lastName: "",
+    },
+    // resolver: zodResolver(signUpSchema),
+  });
 
   const { mutateAsync } = trpc.users.signup.useMutation();
 
   const onSubmit = useCallback(
     async (data: ISignUp) => {
       try {
-        //data.userRole = "student";
+        //Check if value is a string, if true, cast to number
+        if (typeof data.education === "string") {
+          data.education = Number(data.education);
+        }
+
         // console.log(data);
         const result = await mutateAsync(data);
         if (result.status) {
@@ -79,39 +97,66 @@ const SignUp: NextPage = () => {
             <Controller
               name="education"
               control={control}
-              rules={{ required: true }}
-              render={({ field }) => (
+              rules={{ required: "Välj en utbildning" }}
+              render={({
+                field: { value, onChange, onBlur, name, ...field },
+              }) => (
                 <div className="w-full max-w-md flex flex-col mb-4">
-                  <label htmlFor="education">Choose education</label>
+                  <label htmlFor="education">Välj utbildning</label>
                   <select
+                    {...field}
                     className="input h-[40px] bg-muted input-bordered w-full mt-2 rounded-md"
-                    name="education"
                     id="education"
-                    onChange={(e) => handleSelectChange(e)}
+                    onChange={onChange}
+                    onBlur={onBlur}
+                    name={name}
+                    value={value}
                   >
-                    <option value="default">Choose education</option>
-                    {educations.map((edu) => (
-                      <option key={edu.value} value={edu.value}>
-                        {edu.label}
+                    <option value="default">Välj utbildning</option>
+                    {educations?.map((edu) => (
+                      <option key={edu.id} value={Number(edu.id)}>
+                        {edu.name}
                       </option>
                     ))}
                   </select>
+                  <p className="text-xs text-red-500">
+                    {errors.education?.message}
+                  </p>
                 </div>
               )}
             />
             <Controller
               name="email"
               control={control}
-              render={({ field }) => (
+              rules={{
+                required: "Ange en email",
+                pattern: {
+                  value:
+                    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                  message: "Ange en giltlig email",
+                },
+              }}
+              render={({
+                field: { value, onChange, onBlur, name, ...field },
+              }) => (
                 <div className="w-full max-w-md flex flex-col mb-4">
                   <label htmlFor="email">Email</label>
                   <input
-                    id="email"
-                    type="email"
-                    placeholder="Type your email..."
-                    className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
                     {...field}
+                    onChange={onChange}
+                    onBlur={onBlur}
+                    name={name}
+                    value={value}
+                    id="email"
+                    placeholder="Email"
+                    className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
                   />
+
+                  {errors?.email && (
+                    <p className="text-xs text-red-500 mt-1">
+                      {errors?.email?.message}
+                    </p>
+                  )}
                 </div>
               )}
             />
@@ -119,63 +164,150 @@ const SignUp: NextPage = () => {
             <Controller
               name="password"
               control={control}
-              render={({ field }) => (
+              rules={{
+                required: "Du måste ange ett lösenord",
+                minLength: {
+                  value: 6,
+                  message: "Ange minst 6 tecken",
+                },
+              }}
+              render={({
+                field: { value, name, onChange, onBlur, ...field },
+              }) => (
                 <div className="w-full max-w-md flex flex-col mb-4">
-                  <label htmlFor="password">Enter your password</label>
+                  <label htmlFor="password">Ange ett lösenord</label>
                   <input
                     id="password"
                     type="password"
                     placeholder="Type your password..."
                     className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
                     {...field}
+                    onChange={onChange}
+                    onBlur={onBlur}
+                    name={name}
+                    value={value}
                   />
+                  <p className="text-xs text-red-500 mt-1">
+                    {errors?.password?.message}
+                  </p>
                 </div>
               )}
             />
             <Controller
               name="firstName"
               control={control}
-              render={({ field }) => (
+              rules={{
+                required: "Ange ditt förnamn",
+                minLength: {
+                  value: 2,
+                  message: "Ange minst 2 tecken",
+                },
+              }}
+              render={({
+                field: { value, name, onChange, onBlur, ...field },
+              }) => (
                 <div className="w-full max-w-md flex flex-col mb-4">
-                  <label htmlFor="firstName">First name</label>
+                  <label htmlFor="firstName">Namn</label>
                   <input
+                    {...field}
                     id="firstName"
                     type="text"
+                    onChange={onChange}
+                    onBlur={onBlur}
+                    name={name}
+                    value={value}
                     placeholder="Your first name"
                     className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
-                    {...field}
                   />
+                  <p className="text-xs text-red-500 mt-1">
+                    {errors?.firstName?.message}
+                  </p>
                 </div>
               )}
             />
             <Controller
               name="lastName"
               control={control}
-              render={({ field }) => (
+              rules={{
+                required: "Ange ditt efternamn",
+                minLength: {
+                  value: 2,
+                  message: "Ange minst 2 tecken",
+                },
+              }}
+              render={({
+                field: { value, name, onChange, onBlur, ...field },
+              }) => (
                 <div className="w-full max-w-md flex flex-col">
-                  <label htmlFor="lastName">Last name</label>
+                  <label htmlFor="lastName">Efternamn</label>
                   <input
+                    {...field}
+                    onChange={onChange}
+                    onBlur={onBlur}
+                    name={name}
+                    value={value}
                     id="lastName"
                     type="text"
                     placeholder="Type your email..."
                     className="input bg-muted h-[40px] input-bordered w-full rounded-md  mt-2 pl-2"
-                    {...field}
                   />
+                  <p className="text-xs text-red-500 mt-1">
+                    {errors?.lastName?.message}
+                  </p>
                 </div>
               )}
             />
 
-            <div className="w-full flex items-center justify-between max-w-md text-primary mt-8 hover:text-muted">
-              <Link href="/login" className="link">
-                Go to login
-              </Link>
-              <Button>Become a member</Button>
+            <div className="w-full flex items-center justify-between gap-4 max-w-md  mt-8">
+              <span>
+                Har du redan ett konto?
+                <Link
+                  href="/login"
+                  className="link ml-2 text-primary hover:text-secondary"
+                >
+                  Logga in
+                </Link>
+              </span>
+              <Button
+                disabled={!isValid}
+                className="hover:bg-background hover:text-foreground"
+              >
+                Skapa konto
+              </Button>
             </div>
           </form>
         </div>
       </Layout>
     </div>
   );
+};
+export const getServerSideProps: GetServerSideProps = async (context: any) => {
+  const currentSession = await getServerSession(
+    context.req,
+    context.res,
+    nextAuthOptions
+  );
+  // const educationId = String(currentSession?.user.educationId);
+
+  //Set up a trpc helper, needed for serverSide fetching
+  const helpers = createServerSideHelpers({
+    router: serverRouter,
+    ctx: await createContext(context),
+  });
+
+  //The actual fetching
+  const res = await helpers.education.getAll.fetch();
+
+  //Needed to serialize Date objects for createdAt + updatedAt otherwise error is thrown
+  const educations = JSON.parse(JSON.stringify(res));
+  console.log(educations.education);
+
+  return {
+    props: {
+      session: currentSession,
+      educations: educations.education,
+    },
+  };
 };
 
 export default SignUp;

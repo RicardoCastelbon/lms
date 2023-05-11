@@ -14,7 +14,7 @@ import { Plus, X } from "lucide-react";
 import CreateCourseForm from "@/src/components/ui/forms/teacher/CreateCourseForm";
 import Modal from "@/src/components/ui/modals/Modal";
 import { serverRouter } from "@/src/server/routers";
-import { createContext } from "@/src/server/context";
+import { IContext, createContext } from "@/src/server/context";
 import { Course } from "@prisma/client";
 
 type Props = {
@@ -148,6 +148,7 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
 
   //Needed to serialize Date objects for createdAt + updatedAt otherwise error is thrown
   const courses = JSON.parse(JSON.stringify(res));
+  console.log(courses);
 
   return {
     props: {
