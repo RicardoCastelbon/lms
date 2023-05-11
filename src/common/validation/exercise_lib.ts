@@ -38,12 +38,9 @@ const error = z
 
 //Default resourse input schema, used for creating a resource
 export const exerciseLibInputSchema = z.object({
-  exerciseLib: z.object({
-    // id: z.number(),
-    title: z.string(),
-    description: z.string(),
-    content: z.string(),
-  }),
+  title: z.string(),
+  description: z.string(),
+  content: z.string(),
 });
 
 //Default resource output schema, used in all outputs.
