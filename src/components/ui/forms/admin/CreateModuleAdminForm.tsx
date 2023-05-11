@@ -7,17 +7,22 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import RichText from "../../text-editor/RichText";
 import { trpc } from "@/src/common/trpc";
-import { moduleLibInputSchema, ModuleLibInputSchema } from "@/src/common/validation/module-lib";
+import {
+  moduleLibInputSchema,
+  ModuleLibInputSchema,
+} from "@/src/common/validation/module-lib";
 
 type Props = {
-    closeModal: () => void;
-
+  closeModal: () => void;
 };
 
 const CreateModuleAdminForm = ({ closeModal }: Props) => {
-    // const [isOpen, setIsOpen] = useState(true);
-
-  const { handleSubmit, control, reset } = useForm<ModuleLibInputSchema>({
+  const {
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors, isValid, isDirty },
+  } = useForm<ModuleLibInputSchema>({
     defaultValues: {
       moduleLib: {
         title: "",
@@ -33,16 +38,20 @@ const CreateModuleAdminForm = ({ closeModal }: Props) => {
 
   const onSubmit = useCallback(
     async (data: ModuleLibInputSchema) => {
-        try {
+      try {
         const moduleLibData = {
           ...data.moduleLib,
           content: String(quill?.root.innerHTML),
         };
-  
+
         // Check all fields are filled
-        if (!moduleLibData.title || !moduleLibData.description || !moduleLibData.content) {
-          console.log("need to fill in all fields");
-          console.log(moduleLibData);
+        if (
+          !moduleLibData.title ||
+          !moduleLibData.description ||
+          !moduleLibData.content
+        ) {
+          // console.log("need to fill in all fields");
+          // console.log(moduleLibData);
           return;
         } else {
           console.log(moduleLibData);
@@ -61,46 +70,59 @@ const CreateModuleAdminForm = ({ closeModal }: Props) => {
   );
 
   return (
-    <form className="md:flex gap-4 block" 
-    onSubmit={handleSubmit(onSubmit)}>
+    <form className="md:flex gap-4 block" onSubmit={handleSubmit(onSubmit)}>
       {/* left side */}
       <section className="flex-1 flex flex-col gap-4">
         {/* form group */}
         <Controller
-            name="moduleLib.title"
-            control={control}
-            rules={{ required: true }}
-            render={({ field }) => (
-                <div className="w-full max-w-md flex flex-col mb-4">
-                <label htmlFor="title">Modulnamn</label>
-                <input
-                    id="title"
-                    type="text"
-                    placeholder="Skriv in modulnamn"
-                    className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
-                    {...field}
-                />
-
-                <Controller
-                name="moduleLib.description"
-                control={control}
-                rules={{ required: true }}
-                render={({ field }) => (
-                    <div className="w-full max-w-md flex flex-col mb-4">
-                    <label htmlFor="title">Beskrivning</label>
-                    <input
-                        id="title"
-                        type="text"
-                        placeholder="Skriv in modulnamn"
-                        className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
-                        {...field}
-                    />
-                    </div>
-                    )}
-                    />
-                </div>
-            )}
-            />
+          name="moduleLib.title"
+          control={control}
+          rules={{ required: "Lägg till en title för denna modal" }}
+          render={({ field: { value, onChange, onBlur, name, ...field } }) => (
+            <div className="w-full max-w-md flex flex-col mb-4">
+              <label htmlFor="moduleLib.title">Modalnamn</label>
+              <input
+                {...field}
+                id="moduleLib.title"
+                type="text"
+                placeholder="Skriv in modulnamn"
+                className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
+                onChange={onChange}
+                onBlur={onBlur}
+                value={value}
+              />
+              {errors?.moduleLib?.title && (
+                <p className="text-xs text-red-500 mt-1">
+                  {errors?.moduleLib.title?.message}
+                </p>
+              )}
+            </div>
+          )}
+        />
+        <Controller
+          name="moduleLib.description"
+          control={control}
+          rules={{ required: "Lägg till en beskrivning på denna modal" }}
+          render={({ field: { value, onChange, onBlur, name, ...field } }) => (
+            <div className="w-full max-w-md flex flex-col mb-4">
+              <label htmlFor="description">Beskrivning</label>
+              <input
+                {...field}
+                onChange={onChange}
+                onBlur={onBlur}
+                name={name}
+                value={value}
+                id="description"
+                className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
+              />
+              {errors?.moduleLib?.description && (
+                <p className="text-xs text-red-500 mt-1">
+                  {errors?.moduleLib.description?.message}
+                </p>
+              )}
+            </div>
+          )}
+        />
         <button
           type="submit"
           className="bg-indigo-500 text-white py-2 px-6 rounded-sm hover:bg-indigo-50 hover:text-foreground"
