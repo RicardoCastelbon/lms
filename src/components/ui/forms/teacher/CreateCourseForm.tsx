@@ -71,6 +71,8 @@ const CreateCourseForm = (props: Props) => {
         } else {
           console.log(data);
           const result = await mutateAsync(data);
+          console.log(result);
+
           if (result.success) {
             quill!.root.innerHTML = "";
             setHasSubmitted(true);
@@ -78,7 +80,8 @@ const CreateCourseForm = (props: Props) => {
           }
         }
       } catch (err) {
-        console.error(err);
+        console.log(err);
+        reset();
       }
     },
     [iconName, color, mutateAsync, quill, reset]

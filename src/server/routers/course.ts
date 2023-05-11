@@ -1,5 +1,5 @@
 //All teacher-created course routes goes here
-import { t } from "../trpc";
+import { privateProcedure, t, teacherProcedure } from "../trpc";
 
 import {
   courseOutputSchema,
@@ -20,7 +20,7 @@ import {
 } from "../controllers/course.controller";
 
 export const courseRouter = t.router({
-  create: t.procedure
+  create: teacherProcedure
     .meta({
       openapi: {
         method: "POST",
@@ -30,7 +30,7 @@ export const courseRouter = t.router({
     .input(courseInputSchema)
     .output(courseOutputSchema)
     .mutation(({ input, ctx }) => addCourse({ input, ctx })),
-  getMany: t.procedure
+  getMany: privateProcedure
     .meta({
       openapi: {
         method: "GET",
@@ -41,7 +41,7 @@ export const courseRouter = t.router({
     .output(courseOutputSchema)
     .query(({ ctx }) => getAllCourses({ ctx })),
 
-  getManyByEducationId: t.procedure
+  getManyByEducationId: privateProcedure
     .meta({
       openapi: {
         method: "GET",
@@ -52,7 +52,7 @@ export const courseRouter = t.router({
     .output(courseOutputSchema)
     .query(({ input, ctx }) => getCoursesByEducationId({ input, ctx })),
 
-  getCourseBySlug: t.procedure
+  getCourseBySlug: privateProcedure
     .meta({
       openapi: {
         method: "GET",
@@ -63,7 +63,7 @@ export const courseRouter = t.router({
     .output(courseOutputSchema)
     .query(({ input, ctx }) => getOneCourseBySlug({ input, ctx })),
 
-  getOne: t.procedure
+  getOne: privateProcedure
     .meta({
       openapi: {
         method: "GET",
@@ -74,7 +74,7 @@ export const courseRouter = t.router({
     .output(courseOutputSchema)
     .query(({ input, ctx }) => getOneCourse({ input, ctx })),
   // UPDATE COURSE_LIB
-  updateCourse: t.procedure
+  updateCourse: teacherProcedure
     .meta({
       openapi: {
         method: "PUT",
@@ -89,7 +89,7 @@ export const courseRouter = t.router({
         ctx,
       })
     ),
-  deleteCourse: t.procedure
+  deleteCourse: teacherProcedure
     .meta({
       openapi: {
         method: "DELETE",

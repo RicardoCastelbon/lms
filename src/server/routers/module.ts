@@ -1,4 +1,4 @@
-import { t } from "../trpc";
+import { privateProcedure, t, teacherProcedure } from "../trpc";
 import {
   createModuleController,
   deleteModuleController,
@@ -17,7 +17,7 @@ import {
 import { courseId } from "@/src/common/validation/course-end-user";
 
 export const moduleRouter = t.router({
-  create: t.procedure
+  create: teacherProcedure
     .meta({
       openapi: {
         method: "POST",
@@ -28,7 +28,7 @@ export const moduleRouter = t.router({
     .output(moduleOutputSchema)
     .mutation(({ input, ctx }) => createModuleController({ input, ctx })),
 
-  getOne: t.procedure
+  getOne: privateProcedure
     .meta({
       openapi: {
         method: "GET",
@@ -39,7 +39,7 @@ export const moduleRouter = t.router({
     .output(moduleOutputSchema)
     .query(({ input, ctx }) => findModuleController({ input: input, ctx })),
 
-  getMany: t.procedure
+  getMany: privateProcedure
     .meta({
       openapi: {
         method: "GET",
@@ -52,7 +52,7 @@ export const moduleRouter = t.router({
       findAllModulesController({ filterQuery: input, ctx })
     ),
 
-  getManyByCourseId: t.procedure
+  getManyByCourseId: privateProcedure
     .meta({
       openapi: {
         method: "GET",
@@ -65,7 +65,7 @@ export const moduleRouter = t.router({
       findAllModulesByCourseIdController({ input, ctx })
     ),
 
-  update: t.procedure
+  update: teacherProcedure
     .meta({
       openapi: {
         method: "PUT",
@@ -82,7 +82,7 @@ export const moduleRouter = t.router({
       })
     ),
 
-  delete: t.procedure
+  delete: teacherProcedure
     .meta({
       openapi: {
         method: "DELETE",

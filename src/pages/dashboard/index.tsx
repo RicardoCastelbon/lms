@@ -148,7 +148,7 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
 
   //Needed to serialize Date objects for createdAt + updatedAt otherwise error is thrown
   const courses = JSON.parse(JSON.stringify(res));
-  console.log(courses);
+  // console.log(courses);
 
   return {
     props: {
