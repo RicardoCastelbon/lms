@@ -8,6 +8,8 @@ import React from "react";
 import { createServerSideHelpers } from "@trpc/react-query/server";
 import { useSession } from "next-auth/react";
 import { User } from "@prisma/client";
+import { trpc } from "@/src/common/trpc";
+import { getSession } from "next-auth/react";
 
 type Props = {
   users?: User[];
@@ -78,30 +80,29 @@ const students = (props: Props) => {
 
 };
 /* getServerSideProps */
+
 export const getServerSideProps: GetServerSideProps = async (context: any) => {
-  const currentSession = await getServerSession(
-    context.req,
-    context.res,
-    nextAuthOptions
-  );
-  
+  const session = await getSession(context);
+
   const helpers = createServerSideHelpers({
     router: serverRouter,
     ctx: await createContext(context),
   });
 
-  const { educationId } = context.query;
+  const educationId = String(session?.user?.educationId);
 
   const res = await helpers.users.getManyByEducationId.fetch({
-    educationId: String(educationId),
-  });  // const students = studentsResponse.data?.students || null;
-  const students = JSON.parse(JSON.stringify(res));
+    educationId: educationId,
+  });
+
+  const students = JSON.parse(JSON.stringify(res?.students)) || null;
 
   return {
     props: {
-      session: currentSession,
+      session: educationId,
       users: students?.students || null,
     },
   };
 };
+
 export default students;

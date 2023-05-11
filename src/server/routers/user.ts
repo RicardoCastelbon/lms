@@ -10,6 +10,7 @@ import { studentOutputSchema,  } from "@/src/common/validation/student";
 import { educationId, noInput, EducationIdSchema } from "@/src/common/validation/global";
 import {  getStudentsByEducationId } from "../controllers/student.controller";
 import { z } from "zod";
+import { getEducationById } from "@/src/lib/services/education";
 
 
 export const userRouter = t.router({
@@ -76,10 +77,10 @@ getManyByEducationId: t.procedure
 .meta({
   openapi: {
     method: "GET",
-    path: "/dashboard/{course}/students{educationId}",
+    path: "/dashboard/course/students{educationId}",
   },
 })
-.input(educationId)
+.input( educationId )
 .output(studentOutputSchema)
 .query(({ input, ctx }) => getStudentsByEducationId({ input, ctx }))
 });

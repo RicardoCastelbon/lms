@@ -219,11 +219,28 @@ export const getStudentsByEducationId = async ({
     ctx: IContext;
   }) => {
     try {
+      if (!ctx.session || !ctx.session.user || !ctx.session.user.educationId) {
+        // Handle the case when session or user or educationId is not available
+        return {
+          success: false,
+          code: 400,
+          message: "Invalid session data",
+          students: null,
+        };
+      }
+  
+      const educationId = input.educationId; // Use the educationId from the input directly
+  
+      console.log("Fetching students with educationId:", educationId);
+  
       const users: User[] = await ctx.prisma.user.findMany({
-        where: { educationId: Number(input.educationId) },
+        where: { educationId: Number(educationId) },
       });
   
+      console.log("Fetched students:", users);
+  
       if (users.length <= 0) {
+        console.log("No users found");
         return {
           success: false,
           code: 404,
@@ -231,15 +248,18 @@ export const getStudentsByEducationId = async ({
           students: null,
         };
       } else {
+        console.log("Users found");
         return {
           success: true,
           code: 200,
           message: "Resource found",
           students: users,
-          error: undefined, // Add the error field with value undefined
+          error: undefined,
         };
       }
     } catch (error) {
+      console.log("An error occurred:", error);
+  
       return {
         success: false,
         code: 500,
