@@ -65,20 +65,16 @@ const CoursesPage = (props: Props) => {
 >
   <UserLayout role={session?.user.role ?? ""}>
   <div className="flex items-center mb-4">
-  <div className="flex flex-wrap w-full">
-    <div className="flex flex-col w-full">
-      <input
-        type="text"
-        placeholder="Sök kurser här..."
-        className="border border-gray-300 rounded-md py-2 px-3 w-full mb-2"
-      />
-      <button className="bg-primary text-white px-4 py-2 rounded-md hover:bg-indigo-50 hover:text-primary w-full">
-        Sök
-      </button>
-    </div>
-  </div>
-</div>
-{/* <div className="flex flex-col md:flex-row gap-8"> */}
+          <input
+            type="text"
+            placeholder="Sök kurser här..."
+            className="border border-gray-300 rounded-md py-2 px-3 w-80 mr-2 flex-grow"
+          />
+          <button className="bg-primary text-white px-4 py-2 rounded-md hover:bg-indigo-50 hover:text-primary">
+            Sök
+          </button>
+        </div>
+<div className="flex flex-col md:flex-row gap-8">
   {/* Main content */}
   <div className="flex-1 mx-auto md:mx-0">
   <div className="flex justify-center">
@@ -112,10 +108,7 @@ const CoursesPage = (props: Props) => {
       </div>
     </div>
   </aside>
-{/* </div> */}
-
-
-
+</div>
   </UserLayout>
   <Modal
     header={"Skapa en kurs"}
