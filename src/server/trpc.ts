@@ -10,8 +10,22 @@ export const router = t.router;
 /* const isAuthed = t.middleware(({ctx, next}) => {
 
 }) */
+
+const isAuthed = middleware(async (opts) => {
+  const { ctx } = opts;
+  console.log("isAuthed middleware", ctx.session);
+  if (!ctx.session) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+  return opts.next();
+});
+
 const isAdmin = middleware(async (opts) => {
   const { ctx } = opts;
+  //   console.log(ctx);
+
+  console.log("isAdmin middleware", ctx.session);
+
   if (ctx.session?.admin?.role === "ADMIN") {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
@@ -22,4 +36,5 @@ const isAdmin = middleware(async (opts) => {
   });
 });
 
+export const privateProcedure = t.procedure.use(isAuthed);
 export const adminProcedure = t.procedure.use(isAdmin);

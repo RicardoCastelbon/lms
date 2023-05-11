@@ -1,4 +1,4 @@
-import { adminProcedure, t } from "../../trpc";
+import { adminProcedure, privateProcedure, t } from "../../trpc";
 import {
   exerciseLibOutputSchema,
   exerciseLibInputSchema,
@@ -31,7 +31,7 @@ export const exerciseLibRouter = t.router({
     .input(exerciseLibInputSchema)
     .output(exerciseLibOutputSchema)
     .mutation(({ input, ctx }) => createExerciseLibController({ input, ctx })),
-  getMany: t.procedure
+  getMany: privateProcedure
     .meta({
       openapi: {
         method: "GET",
@@ -42,7 +42,7 @@ export const exerciseLibRouter = t.router({
     .output(exerciseLibOutputSchema)
     .query(({ ctx }) => getAllExercisesLib({ ctx })),
 
-  getOne: t.procedure
+  getOne: privateProcedure
     .meta({
       openapi: {
         method: "GET",
