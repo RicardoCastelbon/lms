@@ -1,4 +1,4 @@
-import { t } from "../../trpc";
+import { adminProcedure, t } from "../../trpc";
 import {
   moduleLibOutputSchema,
   moduleLibInputSchema,
@@ -7,20 +7,17 @@ import {
 } from "../../../common/validation/module-lib";
 
 import {
-  createModuleLibController, getOneModuleLib,
-   getAllModulesLib,
-   updateModuleLib,
-   deleteModuleLib,
-
+  createModuleLibController,
+  getOneModuleLib,
+  getAllModulesLib,
+  updateModuleLib,
+  deleteModuleLib,
 } from "../../controllers/module-lib.controller";
 import { z } from "zod";
-import {
-
-  noInput,
-} from "@/src/common/validation/global";
+import { noInput } from "@/src/common/validation/global";
 export const moduleLibRouter = t.router({
   // Create Exercise_Lib
-  create: t.procedure
+  create: adminProcedure
     .meta({
       openapi: {
         method: "POST",
@@ -42,7 +39,6 @@ export const moduleLibRouter = t.router({
     .output(moduleLibOutputSchema)
     .query(({ ctx }) => getAllModulesLib({ ctx })),
 
-    
   getOne: t.procedure
     .meta({
       openapi: {
@@ -50,13 +46,13 @@ export const moduleLibRouter = t.router({
         path: "/module-lib/getOne/{moduleLibId}",
       },
     })
-    
+
     .input(moduleLibId)
     .output(moduleLibOutputSchema)
     .query(({ input, ctx }) => getOneModuleLib({ input, ctx })),
 
-//   // UPDATE EXERCISE_LIB
-  updateModuleLib: t.procedure
+  //   // UPDATE EXERCISE_LIB
+  updateModuleLib: adminProcedure
     .meta({
       openapi: {
         method: "PUT",
@@ -71,7 +67,7 @@ export const moduleLibRouter = t.router({
         ctx,
       })
     ),
-  delete: t.procedure
+  delete: adminProcedure
     .meta({
       openapi: {
         method: "DELETE",
@@ -87,4 +83,3 @@ export const moduleLibRouter = t.router({
       })
     ),
 });
-

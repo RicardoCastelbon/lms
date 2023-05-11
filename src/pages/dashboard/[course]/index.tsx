@@ -68,8 +68,8 @@ const CourseOverview = ({ modules, course }: Props) => {
   return (
     <>
       <UserLayout role={session?.user.role}>
-        <div className="flex p-1">
-          <section className=" w-full h-full bg-cyan-50 font-mont">
+        <div className="flex flex-col lg:flex-row p-1">
+          <section className=" w-full h-full bg-cyan-50 font-mont p-2">
             <p className=" ">Kurser -&gt; {course?.title}</p>
             <h1 className="text-2xl font-bold my-16">{course?.title}</h1>
             <section className="">
@@ -93,49 +93,41 @@ const CourseOverview = ({ modules, course }: Props) => {
               {/* Aside right */}
               <aside className="flex-1 bg-green">
                 {/* quick-menu */}
-                <div className="w-full p-2">
+                <div className="w-full flex flex-col gap-2 p-2">
                   {/* quick menu items */}
-                  <div
-                    className="flex items-center gap-2 bg-card p-4 rounded-lg hover:cursor-pointer hover:bg-background"
-                    onClick={modalClickHandler}
-                  >
-                    <div className="rounded-full bg-primary text-white p-2">
-                      <Plus />
-                    </div>
-                    <p>Lägg till modul</p>
-                  </div>
-                </div>
-              </aside>
-              {/* Aside right */}
-              <aside className="flex-1 bg-green">
-                {/* quick-menu */}
-                <div className="w-full p-2">
-                  {/* quick menu items */}
-                  <div
-                    className="flex items-center gap-2 bg-card p-4 rounded-lg hover:cursor-pointer hover:bg-background"
-                    onClick={modalClickHandler}
-                  >
-                    <div className="rounded-full bg-primary text-white p-2">
-                      <Plus />
-                    </div>
-                    <p>Uppdatera modul</p>
-                  </div>
-                </div>
-              </aside>
-              {/* Aside right */}
-              <aside className="flex-1 bg-green">
-                {/* quick-menu */}
-                <div className="w-full p-2">
-                  {/* quick menu items */}
-                  <div
-                    className="flex items-center gap-2 bg-card p-4 rounded-lg hover:cursor-pointer hover:bg-background"
-                    onClick={modalClickHandler}
-                  >
-                    <div className="rounded-full bg-primary text-white p-2">
-                      <Plus />
-                    </div>
-                    <p>Lägg till deltagare</p>
-                  </div>
+                  {session?.user.role === "TEACHER" ? (
+                    <>
+                      <div
+                        className="flex items-center gap-2 bg-card p-4 rounded-lg hover:cursor-pointer hover:bg-background"
+                        onClick={modalClickHandler}
+                      >
+                        <div className="rounded-full bg-primary text-white p-2">
+                          <Plus />
+                        </div>
+                        <p>Lägg till modul</p>
+                      </div>
+                      <div
+                        className="flex items-center gap-2 bg-card p-4 rounded-lg hover:cursor-pointer hover:bg-background"
+                        onClick={modalClickHandler}
+                      >
+                        <div className="rounded-full bg-primary text-white p-2">
+                          <Plus />
+                        </div>
+                        <p>Uppdatera modul</p>
+                      </div>
+                      <div
+                        className="flex items-center gap-2 bg-card p-4 rounded-lg hover:cursor-pointer hover:bg-background"
+                        onClick={modalClickHandler}
+                      >
+                        <div className="rounded-full bg-primary text-white p-2">
+                          <Plus />
+                        </div>
+                        <p>Lägg till deltagare</p>
+                      </div>
+                    </>
+                  ) : (
+                    ""
+                  )}
                 </div>
               </aside>
             </section>

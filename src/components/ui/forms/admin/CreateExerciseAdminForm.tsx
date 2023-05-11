@@ -25,7 +25,7 @@ type Props = {
 };
 
 const CreateExerciseAdminForm = ({ showModal, setShowModal }: Props) => {
-  const [isOpen, setIsOpen] = useState(true);
+  // const [isOpen, setIsOpen] = useState(true);
 
   const {
     handleSubmit,
@@ -45,9 +45,11 @@ const CreateExerciseAdminForm = ({ showModal, setShowModal }: Props) => {
   const { quill, quillRef: refOne } = useQuill();
   const { quill: quillTwo, quillRef: refTwo } = useQuill();
   const { mutateAsync } = trpc.exercise_lib.create.useMutation();
+
   useEffect(() => {
     console.log(errors);
   }, [errors]);
+
   const onSubmit = useCallback(
     async (data: ExerciseLibInputSchema) => {
       try {
@@ -56,19 +58,6 @@ const CreateExerciseAdminForm = ({ showModal, setShowModal }: Props) => {
 
         data.description = String(quillTwo?.root.innerHTML);
         console.log(data);
-
-        // Check all fields are filled
-        /*   if (
-          !moduleLibData.title ||
-          !moduleLibData.description ||
-          !moduleLibData.content
-        ) {
-          console.log("need to fill in all fields");
-          console.log(moduleLibData);
-          return;
-        } else {
-          console.log(moduleLibData);
-        } */
         const result = await mutateAsync(data);
         if (result.success) {
           quill!.root.innerHTML = "";

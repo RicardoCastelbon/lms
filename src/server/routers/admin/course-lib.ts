@@ -1,4 +1,4 @@
-import { t } from "../../trpc";
+import { adminProcedure, t } from "../../trpc";
 import {
   createCourseLib,
   getAllCoursesLib,
@@ -20,7 +20,7 @@ import { courseOutputSchema } from "@/src/common/validation/course-end-user";
 
 export const courseLibRouter = t.router({
   // Create Course_Lib
-  create: t.procedure
+  create: adminProcedure
     .meta({
       openapi: {
         method: "POST",
@@ -54,7 +54,7 @@ export const courseLibRouter = t.router({
     .query(({ input, ctx }) => getOneCourseLib({ input, ctx })),
 
   //   // UPDATE COURSE_LIB
-  updateCourseLib: t.procedure
+  updateCourseLib: adminProcedure
     .meta({
       openapi: {
         method: "PUT",
@@ -71,7 +71,7 @@ export const courseLibRouter = t.router({
     ),
 
   //DELETE EDUCATION
-  delete: t.procedure
+  delete: adminProcedure
     .meta({
       openapi: {
         method: "DELETE",
