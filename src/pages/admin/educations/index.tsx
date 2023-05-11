@@ -1,14 +1,21 @@
+import { nextAuthOptions } from "@/src/common/auth";
 import { trpc } from "@/src/common/trpc";
 import { education } from "@/src/common/validation/education";
 import AdminCreateEduCards from "@/src/components/ui/cards/AdminCreateEduCards";
 import CreateEduAdminForm from "@/src/components/ui/forms/admin/CreateEduAdminForm";
 import Modal from "@/src/components/ui/modals/Modal";
 import UserLayout from "@/src/components/ui/UserLayout";
+import { serverRouter } from "@/src/server/routers";
 import { Education } from "@prisma/client";
+import { createServerSideHelpers } from "@trpc/react-query/server";
 import { Plus } from "lucide-react";
+import { GetServerSideProps } from "next";
+import { getServerSession } from "next-auth";
 import { useSession } from "next-auth/react";
 import React, { useState } from "react";
 import { IconContext } from "react-icons";
+import { createContext } from "@/src/server/context";
+import { educationId } from "@/src/common/validation/global";
 
 type Props = {
   sideBarClass: boolean;
@@ -104,5 +111,39 @@ const EducationPage = (props: Props) => {
 )
   
     };
+
+    /* getServerSideProps */
+export const getServerSideProps: GetServerSideProps = async (context: any) => {
+  const currentSession = await getServerSession(
+    context.req,
+    context.res,
+    nextAuthOptions
+    );
+    console.log("Current Session", currentSession)
+    //Set up a trpc helper, needed for serverSide fetching
+  const helpers = createServerSideHelpers({
+    router: serverRouter,
+    ctx: await createContext(context),
+  });
+
+
+  //Set up a trpc helper, needed for serverSide fetching
+  console.log("Fetching module library with id:", educationId);
+  //The actual fetching
+
+  //  const res = await helpers.education.getMany.fetch();
+   const res = await helpers.education.getAll.fetch();
+   console.log("Fetch result:", res);
+   console.log("Module library fetched:", res);
+  //Needed to serialize Date objects for createdAt + updatedAt otherwise error is thrown
+  const education = JSON.parse(JSON.stringify(res));
+  
+  return {
+    props: {
+      session: currentSession,
+      education: education?.education || null,
+    },
+};
+};
 
 export default EducationPage;
