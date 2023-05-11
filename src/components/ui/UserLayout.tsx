@@ -19,7 +19,7 @@ const UserLayout = ({ children, role }: Props) => {
   const { data: session } = useSession();
 
   //Fetch education info
-  const educationId = String(session?.user.educationId);
+  const educationId = String(session?.user?.educationId);
   const { data, error, isLoading } = trpc.education.getOne.useQuery({
     educationId,
   });
@@ -73,7 +73,7 @@ const UserLayout = ({ children, role }: Props) => {
         />
       </div>
       <main className="lg:flex-1 absolute top-[70px] lg:top-0 lg:relative bg-white rounded-lg w-full p-4">
-        {session?.user.role !== "ADMIN" && (
+        {session?.user?.role !== "ADMIN" && (
           <InnerMenu educationName={eduName} />
         )}
         {children}
