@@ -54,7 +54,7 @@ export const getAllExercisesLib = async ({ ctx }: { ctx: IContext }) => {
         success: false,
         code: 404,
         message: "No exercises found, please try again",
-        exercisesLib,
+        exerciseLib: null,
       };
     } else {
       return {
