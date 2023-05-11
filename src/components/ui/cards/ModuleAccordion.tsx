@@ -8,6 +8,7 @@ import {
 } from "@/src/components/ui/accordion";
 import { Check, ClipboardList, Plus } from "lucide-react";
 import parse from "html-react-parser";
+import { useModal } from "@/src/lib/hooks/modalHook";
 
 type Props = {
   module: Module;
@@ -15,7 +16,9 @@ type Props = {
 
 const ModuleAccordion = ({ module }: Props) => {
   const [desktopVersion, setdesktopVersion] = useState<boolean>(true);
+  const [showModalExercise, setShowModalExercise] = useState<boolean>();
   const [screenWidth, setScreenWidth] = useState<number>();
+  const { showModal } = useModal();
   useEffect(() => {
     if (window.innerWidth > 768) {
       setdesktopVersion(true);
@@ -63,7 +66,10 @@ const ModuleAccordion = ({ module }: Props) => {
               )}
               {desktopVersion && (
                 <li className="w-32">
-                  <div className="flex gap-2 p-2 rounded bg-primary hover:bg-indigo-400 text-white">
+                  <div
+                    onClick={() => setShowModalExercise(!showModalExercise)}
+                    className="flex gap-2 p-2 rounded bg-primary hover:bg-indigo-400 text-white"
+                  >
                     <Plus />
                     Uppgift
                   </div>

@@ -116,6 +116,7 @@ model Exercise {
   module      Module?  @relation(fields: [moduleId], references: [id], onDelete: Restrict, onUpdate: Cascade)
   moduleId    Int?
   title       String
+  slug        String
   description String   @db.LongText
   content     String   @db.LongText
   createdAt   DateTime @default(now())
