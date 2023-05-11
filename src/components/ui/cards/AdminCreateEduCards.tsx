@@ -1,7 +1,8 @@
 
+import { educationId } from "@/src/common/validation/global";
 import { Education } from "@prisma/client";
-import { log } from "console";
-import Link from "next/link";
+// import { log } from "console";
+// import Link from "next/link";
 import React from "react";
 import { FaHtml5, FaTrash } from "react-icons/fa";
 interface ICourse {
@@ -13,15 +14,17 @@ interface ICourse {
 
 type Props = {
   education: Education;
-  onDelete: (education: number) => void;
+  onDelete: (educationId: number) => void;
 
 };
 
-const AdminCreateEduCards = ({ education }: Props) => {
-  // console.log(course);
-  // const handleDelete = () => {
-  //   onDelete();
-  // };
+const AdminCreateEduCards = ({ education, onDelete }: Props) => {
+
+    const handleDelete = () => {
+        if (window.confirm("Are you sure")) {
+        onDelete(education.id)
+           }
+    }
 
   return (
     <div className="w-[232px] h-[338px] shadow-lg flex flex-col rounded-lg">
@@ -35,7 +38,7 @@ const AdminCreateEduCards = ({ education }: Props) => {
         <p>{education.name}</p>
         <button
           className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600"
-          // onClick={handleDelete}
+           onClick={handleDelete}
         >
           <FaTrash /> Delete
         </button>

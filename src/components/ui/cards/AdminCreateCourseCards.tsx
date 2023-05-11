@@ -1,6 +1,6 @@
 
 import { trpc } from "@/src/common/trpc";
-import { deleteCourseLib } from "@/src/server/controllers/course-lib.controller";
+// import { deleteCourseLib } from "@/src/server/controllers/course-lib.controller";
 import { Course_lib} from "@prisma/client";
 import Link from "next/link";
 import React from "react";

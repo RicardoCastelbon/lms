@@ -107,11 +107,8 @@ const EducationPage = (props: Props) => {
 <CreateEduAdminForm closeModal={() => setShowModal(false)} />
 </Modal>
     </>
-
-)
-  
+    )
     };
-
     /* getServerSideProps */
 export const getServerSideProps: GetServerSideProps = async (context: any) => {
   const currentSession = await getServerSession(

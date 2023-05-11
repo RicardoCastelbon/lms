@@ -18,18 +18,10 @@ const CreateEduAdminForm = ({ closeModal }: Props) => {
 
   const { handleSubmit, control, reset } = useForm<EducationInput>({
     defaultValues: {
-      // courseLib: {
         name: "",
-        // description: "",
-        // content: "",
-      
-      // },
     },
     resolver: zodResolver(educationInputSchema),
   });
-
-
-  // const { data: session } = useSession();
 
   const { quill, quillRef } = useQuill();
   const { mutateAsync } = trpc.education.create.useMutation();
