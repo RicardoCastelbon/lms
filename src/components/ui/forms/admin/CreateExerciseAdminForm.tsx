@@ -25,7 +25,7 @@ type Props = {
 };
 
 const CreateExerciseAdminForm = ({ showModal, setShowModal }: Props) => {
-  const [isOpen, setIsOpen] = useState(true);
+  // const [isOpen, setIsOpen] = useState(true);
 
   const {
     handleSubmit,
@@ -45,9 +45,11 @@ const CreateExerciseAdminForm = ({ showModal, setShowModal }: Props) => {
   const { quill, quillRef: refOne } = useQuill();
   const { quill: quillTwo, quillRef: refTwo } = useQuill();
   const { mutateAsync } = trpc.exercise_lib.create.useMutation();
+
   useEffect(() => {
     console.log(errors);
   }, [errors]);
+
   const onSubmit = useCallback(
     async (data: ExerciseLibInputSchema) => {
       try {

@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Controller, UseFormRegister } from "react-hook-form";
+import {
+  Controller,
+  ControllerRenderProps,
+  UseFormRegister,
+} from "react-hook-form";
 import { Color } from "@/src/lib/hooks/colorHook";
 import { useColor } from "@/src/lib/hooks/colorHook";
 /* const colors = [
@@ -43,20 +47,38 @@ import { useColor } from "@/src/lib/hooks/colorHook";
 } */
 
 type Props = {
-  field: any;
-  // colors: Color[];
-  // color: string;
-  // label: string;
+  value: string;
+  onChange?: () => void;
+  onBlur?: () => void;
+  setValue: any;
+  field?: ControllerRenderProps<
+    {
+      educationId: number;
+      color: string;
+      title: string;
+      icon: string;
+      content: string;
+      points: string;
+      published: boolean;
+    },
+    "points"
+  >;
   hasSubmitted: boolean;
-  setColor: React.Dispatch<React.SetStateAction<string>>;
+  // setColor: React.Dispatch<React.SetStateAction<string>>;
   // setIconName: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const ColorSelect = ({ field, setColor, hasSubmitted }: Props) => {
+const ColorSelect = ({
+  field,
+  // setColor,
+  hasSubmitted,
+  value,
+  onChange,
+  onBlur,
+  setValue,
+}: Props) => {
   const [selectedColor, setSelectedColor] = useState<string>("");
   const { colors, selectColor } = useColor();
-  // const [icon, setIcon] = useState<ReactNode>(null);
-  // const { selectIcon, icons } = useIcon();
 
   //If form has been submitted, reset selectedColor to = ""
   useEffect(() => {
@@ -64,52 +86,34 @@ const ColorSelect = ({ field, setColor, hasSubmitted }: Props) => {
       setSelectedColor("");
     }
   }, [hasSubmitted]);
-  //   console.log(icon);
 
   const handleColorSelect = (color: string) => {
-    // console.log(color);
     if (!color) return;
     const col = selectColor(color);
     setSelectedColor(col!);
-    setColor(color);
+    // setColor(color);
+    setValue("color", color);
   };
   return (
     <div className="py-8">
-      {/*  <div {...field} className="flex justify-between items-center">
-
-      </div> */}
       {/* Icon select wrapper */}
-      <div {...field} className="w-full flex flex-wrap items-center gap-2 mt-4">
-        {colors.map(
-          (col, index) => (
-            <div
-              key={index}
-              className={`w-[30px] h-[30px] rounded-full ${
-                col.value
-              } hover:cursor-pointer transition-all duration-200 ${
-                selectedColor === col.value ? "w-[48px]" : "w-[30px]"
-              }`}
-              onClick={() => {
-                handleColorSelect(col.value);
-              }}
-            ></div>
-          )
-          /*  selectedColor === col.value ? (
-            <div
-              key={index}
-              className={`w-[30px] h-[30px] rounded-full ${
-                col.value
-              } hover:cursor-pointer transition-all duration-200 ${
-                selectedColor === col.value ? "w-[48px]" : "w-[30px]"
-              }`}
-              onClick={() => {
-                handleColorSelect(col.value);
-              }}
-            ></div>
-          ) : (
-            ""
-          ) */
-        )}
+      <div className="w-full flex flex-wrap items-center gap-2 mt-4">
+        {colors.map((col, index) => (
+          <div
+            {...field}
+            onChange={onChange}
+            onBlur={onBlur}
+            key={index}
+            className={`w-[30px] h-[30px] rounded-full ${
+              col.value
+            } hover:cursor-pointer transition-all duration-200 ${
+              selectedColor === col.value ? "w-[48px]" : "w-[30px]"
+            }`}
+            onClick={() => {
+              handleColorSelect(col.value);
+            }}
+          ></div>
+        ))}
       </div>
     </div>
   );

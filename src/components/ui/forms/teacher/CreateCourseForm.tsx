@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   CourseInputSchema,
   courseInputSchema,
@@ -13,51 +13,66 @@ import RichText from "../../text-editor/RichText";
 import ColorSelect from "../../dropdowns/ColorSelect";
 import { trpc } from "@/src/common/trpc";
 import { useSession } from "next-auth/react";
-type Course = {
+/* type Course = {
   title: string;
   color: string;
   description: string;
   content: string;
+}; */
+type Props = {
+  educationId: number;
 };
-type Props = {};
 
-const CreateCourseForm = (props: Props) => {
+const CreateCourseForm = ({ educationId }: Props) => {
   const [iconName, setIconName] = useState<string>("");
   const [color, setColor] = useState<string>("");
   const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
-  const { handleSubmit, control, register, setValue, reset } =
-    useForm<CourseInputSchema>({
-      defaultValues: {
-        title: "",
-        icon: "",
-        // slug: "",
-        color: "",
-        content: "",
-        educationId: 0,
-        points: "",
-        published: false,
-      },
-      resolver: zodResolver(courseInputSchema),
-    });
+  const {
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors },
+    setValue,
+  } = useForm<CourseInputSchema>({
+    defaultValues: {
+      title: "",
+      icon: "",
+      // slug: "",
+      color: "",
+      content: "",
+      educationId: 0,
+      points: "",
+      published: false,
+    },
+    // resolver: zodResolver(courseInputSchema),
+  });
 
   // const { data: session } = useSession();
 
   const { quill, quillRef } = useQuill();
   const { mutateAsync } = trpc.course.create.useMutation();
 
+  useEffect(() => {
+    console.log(errors);
+  }, [errors]);
+
+  useEffect(() => {
+    console.log(color);
+  }, [color]);
+
   const onSubmit = useCallback(
     async (data: CourseInputSchema) => {
       try {
         // let selectedIcon = iconName;
         data.content = String(quill?.root.innerHTML);
-        data.educationId = 1;
+        data.educationId = educationId;
 
         //Both color and iconName comes from outside the scope of the form.
-        data.icon = iconName;
-        data.color = color;
+        // data.icon = iconName;
+        // data.color = color;
         data.published = false; // needed?
-        // console.log(data.color);
-        if (
+        console.log(data);
+        /*  if (
           !data.title ||
           !data.color ||
           !data.icon ||
@@ -78,7 +93,7 @@ const CreateCourseForm = (props: Props) => {
             setHasSubmitted(true);
             reset();
           }
-        }
+        } */
       } catch (err) {
         console.log(err);
         reset();
@@ -97,49 +112,80 @@ const CreateCourseForm = (props: Props) => {
         <Controller
           name="title"
           control={control}
-          rules={{ required: true }}
-          render={({ field }) => (
+          rules={{ required: "Ange ett namn på kursen" }}
+          render={({ field: { value, onChange, onBlur, name, ...field } }) => (
             <div className="w-full max-w-md flex flex-col mb-4">
               <label htmlFor="title">Kursnamn</label>
               <input
+                {...field}
+                value={value}
+                name={name}
+                onChange={onChange}
+                onBlur={onBlur}
                 id="title"
                 type="text"
                 placeholder="Skriv in kursnamn"
                 className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
-                {...field}
               />
+              <p className="text-xs text-red-500 mt-1">
+                {errors?.title?.message}
+              </p>
             </div>
           )}
         />
         <Controller
           name="points"
           control={control}
-          rules={{ required: true }}
-          render={({ field }) => (
+          rules={{ required: "Ange kursens totala poäng" }}
+          render={({ field: { value, onChange, onBlur, name, ...field } }) => (
             <div className="w-full max-w-md flex flex-col mb-4">
-              <label htmlFor="title">Kurspoäng</label>
+              <label htmlFor="course-points">Kurspoäng</label>
               <input
+                {...field}
+                value={value}
+                name={name}
+                onChange={onChange}
+                onBlur={onBlur}
                 id="course-points"
                 type="text"
                 placeholder="Ange antal kurspoäng"
                 className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
-                {...field}
               />
+              <p className="text-xs text-red-500 mt-1">
+                {errors?.points?.message}
+              </p>
             </div>
           )}
         />
         <Controller
           name="color"
           control={control}
-          render={({ field }) => (
+          rules={{
+            validate: {
+              hasColor: (value) => {
+                console.log(value);
+
+                return value.length > 0 || "Välj en färg";
+              },
+            },
+          }}
+          render={({ field: { value, onChange, onBlur, name, ...field } }) => (
             <div className="w-full max-w-md flex flex-col mb-4">
               <label htmlFor="color">Välj bakgrundsfärg</label>
               <ColorSelect
                 hasSubmitted={hasSubmitted}
-                field={field}
-                setColor={setColor}
+                {...field}
+                value={value}
+                // name={name}
+                setValue={setValue}
+                onChange={onChange}
+                onBlur={onBlur}
+                // setColor={setColor}
                 // {...register("color")}
               />
+              <p className="text-xs text-red-500 mt-1">
+                {errors?.color?.message}
+              </p>
             </div>
           )}
         />

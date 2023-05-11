@@ -128,7 +128,7 @@ const Dashboard = ({ courses, education }: Props) => {
           showModal={showModal}
           setShowModal={setShowModal}
         >
-          <CreateCourseForm />
+          <CreateCourseForm educationId={education?.id} />
         </Modal>
       </UserLayout>
     </IconContext.Provider>
