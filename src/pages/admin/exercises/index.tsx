@@ -1,7 +1,8 @@
 import UserLayout from "@/src/components/ui/UserLayout";
+import ExerciseLibCard from "@/src/components/ui/cards/admin/ExerciseLibCard";
 import CreateExerciseAdminForm from "@/src/components/ui/forms/admin/CreateExerciseAdminForm";
 import Modal from "@/src/components/ui/modals/Modal";
-import { Info, Plus } from "lucide-react";
+import { Info, Plus, FileText } from "lucide-react";
 import { useSession } from "next-auth/react";
 import React, { useState } from "react";
 import { FaReact } from "react-icons/fa";
@@ -47,19 +48,18 @@ const ExercisesPage = (props: Props) => {
           {/* Should render all if no search term is entered */}
           <section className="w-full flex flex-wrap justify-center md:justify-start gap-2 mt-10">
             {/* result cards */}
-            <div className="relative flex flex-col justify-center items-center gap-2 w-[200px] h-[200px] bg-primary rounded-md shadow-lg text-white">
-              <Info
-                className="absolute top-2 right-2 hover:cursor-pointer"
-                onClick={infoClickHandler}
-              />
-              <FaReact size={48} />
-              <h3>Titel på resourcen</h3>
-            </div>
-            <div className="relative flex flex-col justify-center items-center gap-2 w-[200px] h-[200px] bg-primary rounded-md shadow-lg text-white">
-              <Info className="absolute top-2 right-2" />
-              <FaReact size={48} />
-              <h3>Titel på resourcen</h3>
-            </div>
+            <ExerciseLibCard
+              title="useState i React"
+              infoClickHandler={infoClickHandler}
+            />
+            <ExerciseLibCard
+              title="useEffect i React"
+              infoClickHandler={infoClickHandler}
+            />
+            <ExerciseLibCard
+              title="useRef i React"
+              infoClickHandler={infoClickHandler}
+            />
           </section>
         </section>
         {/* aside */}
