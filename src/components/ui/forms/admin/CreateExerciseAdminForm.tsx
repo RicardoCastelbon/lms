@@ -26,6 +26,7 @@ const CreateModuleAdminForm = ({ showModal }: Props) => {
     reset,
     formState: { errors },
   } = useForm<ExerciseLibInputSchema>({
+    // mode: "onChange",
     defaultValues: {
       title: "",
       description: "",
@@ -34,9 +35,12 @@ const CreateModuleAdminForm = ({ showModal }: Props) => {
     // resolver: zodResolver(moduleLibInputSchema),
   });
 
-  const { quill, quillRef } = useQuill();
+  const { quill, quillRef: refOne } = useQuill();
+  const { quill: quillTwo, quillRef: refTwo } = useQuill();
   const { mutateAsync } = trpc.exercise_lib.create.useMutation();
-
+  useEffect(() => {
+    console.log(errors);
+  }, [errors]);
   const onSubmit = useCallback(
     async (data: ExerciseLibInputSchema) => {
       try {
@@ -45,6 +49,9 @@ const CreateModuleAdminForm = ({ showModal }: Props) => {
         //   content: String(quill?.root.innerHTML),
         // };
         data.content = String(quill?.root.innerHTML);
+        console.log(quillTwo?.root.innerHTML);
+
+        data.description = String(quillTwo?.root.innerHTML);
         console.log(data);
 
         // Check all fields are filled
@@ -104,20 +111,31 @@ const CreateModuleAdminForm = ({ showModal }: Props) => {
         <Controller
           name="description"
           control={control}
-          rules={{ required: "Ange en beskrivande text" }}
+          rules={{
+            // required: "Ange en beskrivande text av uppgiften",
+            validate: {
+              hasContent: (value) => {
+                value = String(quillTwo?.getText());
+                console.log(value.length);
+
+                return (
+                  value.length > 10 || "Ange en beskrivning med minst 10 tecken"
+                );
+              },
+            },
+          }}
           render={({ field: { value, onChange, onBlur, name, ...field } }) => (
             <div className="w-full max-w-md flex flex-col mb-4">
               <label htmlFor="description">Beskrivning</label>
-              <input
+              <RichText
+                id="description"
                 {...field}
-                value={value}
+                // field={field}
                 name={name}
+                value={value}
                 onChange={onChange}
                 onBlur={onBlur}
-                id="description"
-                type="text"
-                placeholder="Skriv in modulnamn"
-                className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
+                ref={refTwo}
               />
               <p className="text-xs text-red-500 mt-1">
                 {errors?.description?.message}
@@ -125,6 +143,7 @@ const CreateModuleAdminForm = ({ showModal }: Props) => {
             </div>
           )}
         />
+
         {/* <button
           type="submit"
           className="bg-indigo-500 text-white py-2 px-6 rounded-sm hover:bg-indigo-50 hover:text-foreground"
@@ -135,7 +154,7 @@ const CreateModuleAdminForm = ({ showModal }: Props) => {
       {/* Right side */}
       <section className="h-full flex-1">
         <div className="flex justify-between p-2 items-center">
-          <p>Övningsinformation</p>
+          <label htmlFor="content">Övningsinformation</label>
           <button
             type="submit"
             className="bg-indigo-500 text-white py-2 px-6 rounded-sm hover:bg-indigo-50 hover:text-foreground"
@@ -143,7 +162,50 @@ const CreateModuleAdminForm = ({ showModal }: Props) => {
             Spara
           </button>
         </div>
-        <RichText ref={quillRef} />
+        <Controller
+          name="content"
+          control={control}
+          rules={{
+            // required: "Ange en beskrivande text av uppgiften",
+            validate: {
+              hasContent: (value) => {
+                value = String(quill?.getText());
+                console.log(value.length);
+
+                return value.length > 10 || "Ange en text med minst 10 tecken";
+              },
+            },
+          }}
+          render={({ field: { value, onChange, onBlur, name, ...field } }) => (
+            <div className="w-full max-w-md flex flex-col mb-4">
+              {/* <input
+                {...field}
+                value={value}
+                name={name}
+                onChange={onChange}
+                onBlur={onBlur}
+                id="description"
+                type="text"
+                placeholder="Skriv in modulnamn"
+                className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
+              /> */}
+              <RichText
+                id="content"
+                {...field}
+                // field={field}
+                name={name}
+                value={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                ref={refOne}
+              />
+              <p className="text-xs text-red-500 mt-1">
+                {errors?.content?.message}
+              </p>
+            </div>
+          )}
+        />
+        {/* <RichText ref={refOne} /> */}
       </section>
     </form>
   );
