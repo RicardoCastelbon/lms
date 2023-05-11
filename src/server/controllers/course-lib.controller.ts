@@ -15,6 +15,8 @@ export const createCourseLib = async ({
   ctx: IContext;
 }) => {
   try {
+    console.log("Creating modules lib with input:", input);
+
     const course_lib: Course_lib = await ctx.prisma.course_lib.create({
       data: {
         title: input.title,
@@ -112,13 +114,14 @@ export const getOneCourseLib = async ({
 export const getAllCoursesLib = async ({ ctx }: { ctx: IContext }) => {
   try {
     const coursesLib: Course_lib[] = await ctx.prisma.course_lib.findMany();
+    console.log("Courses fetched from database:", coursesLib);
 
     if (coursesLib.length <= 0) {
       return {
         success: false,
         code: 404,
         message: "No courses found, please try again",
-        coursesLib,
+        coursesLib
       };
     } else {
       return {
@@ -137,6 +140,7 @@ export const getAllCoursesLib = async ({ ctx }: { ctx: IContext }) => {
         // optional: pass the original error to retain stack trace
         cause: error,
       }),
+      // coursesLib: null,
     };
   }
 };

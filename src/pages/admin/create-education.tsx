@@ -1,3 +1,6 @@
+import { trpc } from "@/src/common/trpc";
+
+
 import type { NextPage } from "next";
 import { useSession, signOut } from "next-auth/react";
 import { LogOutIcon, Settings } from "lucide-react";
@@ -13,7 +16,7 @@ import { useForm, Controller } from "react-hook-form";
 import { ChangeEvent, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/src/components/ui/button";
-import Sidebar from "../../components/Sidebar";
+// import Sidebar from "../../components/Sidebar";
 
 export const getServerSideProps = requireAuth(async (ctx) => {
   return { props: {} };
@@ -68,7 +71,7 @@ const createEducation: NextPage = () => {
   
       <div className="bg-purple-100 min-h-screen">
         <div className="flex flex-col-reverse sm:flex-row">
-          <Sidebar />
+          {/* <Sidebar /> */}
           <section className='bg-purple-100 min-h-screen flex items-center justify-center'>
             <div className='bg-white rounded-lg shadow-lg p-6 mx-4 sm:mx-0 sm:w-full md:w-2/3 lg:w-1/3'>
               <div className='flex items-center justify-between mb-8'>
