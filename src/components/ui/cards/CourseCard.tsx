@@ -12,9 +12,10 @@ interface ICourse {
 
 type Props = {
   course: Course;
+  role: string | null | undefined;
 };
 
-const CourseCard = ({ course }: Props) => {
+const CourseCard = ({ course, role }: Props) => {
   // console.log(course);
 
   return (
@@ -26,7 +27,15 @@ const CourseCard = ({ course }: Props) => {
       {/* card body */}
       <div className="flex flex-col gap-2 p-2 text-center">
         <h2 className="font-semibold text-lg mb-2">{course.title}</h2>
-        <p>Uppgifter</p>
+        {role && role === "TEACHER" ? (
+          course.published ? (
+            <p className="text-green-500">Publicerad</p>
+          ) : (
+            <p className="text-red-500">Ej publicerad</p>
+          )
+        ) : (
+          <p>Du är elev</p>
+        )}
         {/* <p>{course.exercises}</p> */}
         <Link
           href={`/dashboard/${course.slug}`}

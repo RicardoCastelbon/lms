@@ -93,7 +93,11 @@ const Dashboard = ({ courses }: Props) => {
           <div className="w-full h-full flex flex-wrap justify-center gap-4 md:justify-start md:w-3/6 lg:w-4/6">
             {courses &&
               courses?.map((course: Course) => (
-                <CourseCard key={course.id} course={course} />
+                <CourseCard
+                  key={course.id}
+                  course={course}
+                  role={session?.user.role}
+                />
               ))}
           </div>
           {/* Aside right */}
