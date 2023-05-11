@@ -80,7 +80,7 @@ const CreateModuleAdminForm = ({ showModal }: Props) => {
         <Controller
           name="title"
           control={control}
-          rules={{ required: true }}
+          rules={{ required: "Ange ett namn på uppgiften" }}
           render={({ field: { value, onChange, onBlur, name, ...field } }) => (
             <div className="w-full max-w-md flex flex-col mb-4">
               <label htmlFor="title">Namn på uppgift</label>
@@ -95,44 +95,53 @@ const CreateModuleAdminForm = ({ showModal }: Props) => {
                 placeholder="Ange namn på uppgift"
                 className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
               />
-
-              <Controller
-                name="description"
-                control={control}
-                rules={{ required: true }}
-                render={({
-                  field: { value, onChange, onBlur, name, ...field },
-                }) => (
-                  <div className="w-full max-w-md flex flex-col mb-4">
-                    <label htmlFor="description">Beskrivning</label>
-                    <input
-                      {...field}
-                      value={value}
-                      name={name}
-                      onChange={onChange}
-                      onBlur={onBlur}
-                      id="description"
-                      type="text"
-                      placeholder="Skriv in modulnamn"
-                      className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
-                    />
-                  </div>
-                )}
-              />
+              <p className="text-xs text-red-500 mt-1">
+                {errors?.title?.message}
+              </p>
             </div>
           )}
         />
-        <button
+        <Controller
+          name="description"
+          control={control}
+          rules={{ required: "Ange en beskrivande text" }}
+          render={({ field: { value, onChange, onBlur, name, ...field } }) => (
+            <div className="w-full max-w-md flex flex-col mb-4">
+              <label htmlFor="description">Beskrivning</label>
+              <input
+                {...field}
+                value={value}
+                name={name}
+                onChange={onChange}
+                onBlur={onBlur}
+                id="description"
+                type="text"
+                placeholder="Skriv in modulnamn"
+                className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
+              />
+              <p className="text-xs text-red-500 mt-1">
+                {errors?.description?.message}
+              </p>
+            </div>
+          )}
+        />
+        {/* <button
           type="submit"
           className="bg-indigo-500 text-white py-2 px-6 rounded-sm hover:bg-indigo-50 hover:text-foreground"
         >
           Spara
-        </button>
+        </button> */}
       </section>
       {/* Right side */}
       <section className="h-full flex-1">
         <div className="flex justify-between p-2 items-center">
-          <p>Modulinformation</p>
+          <p>Övningsinformation</p>
+          <button
+            type="submit"
+            className="bg-indigo-500 text-white py-2 px-6 rounded-sm hover:bg-indigo-50 hover:text-foreground"
+          >
+            Spara
+          </button>
         </div>
         <RichText ref={quillRef} />
       </section>
