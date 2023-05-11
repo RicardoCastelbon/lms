@@ -1,5 +1,12 @@
 "use client";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 import { useQuill } from "react-quilljs";
 import { Controller, useForm } from "react-hook-form";
@@ -13,11 +20,11 @@ import {
 } from "@/src/common/validation/exercise_lib";
 
 type Props = {
-  //closeModal: () => void; // New property
+  setShowModal: Dispatch<SetStateAction<boolean>>;
   showModal: boolean;
 };
 
-const CreateModuleAdminForm = ({ showModal }: Props) => {
+const CreateExerciseAdminForm = ({ showModal, setShowModal }: Props) => {
   const [isOpen, setIsOpen] = useState(true);
 
   const {
@@ -44,10 +51,6 @@ const CreateModuleAdminForm = ({ showModal }: Props) => {
   const onSubmit = useCallback(
     async (data: ExerciseLibInputSchema) => {
       try {
-        // const moduleLibData = {
-        //   ...data.moduleLib,
-        //   content: String(quill?.root.innerHTML),
-        // };
         data.content = String(quill?.root.innerHTML);
         console.log(quillTwo?.root.innerHTML);
 
@@ -65,13 +68,13 @@ const CreateModuleAdminForm = ({ showModal }: Props) => {
           return;
         } else {
           console.log(moduleLibData);
-          const result = await mutateAsync({ moduleLib: moduleLibData });
-          if (result.success) {
-            quill!.root.innerHTML = "";
-            reset();
-            closeModal();
-          }
         } */
+        const result = await mutateAsync(data);
+        if (result.success) {
+          quill!.root.innerHTML = "";
+          reset();
+          setShowModal(false);
+        }
       } catch (err) {
         console.error(err);
       }
@@ -116,7 +119,7 @@ const CreateModuleAdminForm = ({ showModal }: Props) => {
             validate: {
               hasContent: (value) => {
                 value = String(quillTwo?.getText());
-                console.log(value.length);
+                // console.log(value.length);
 
                 return (
                   value.length > 10 || "Ange en beskrivning med minst 10 tecken"
@@ -170,7 +173,7 @@ const CreateModuleAdminForm = ({ showModal }: Props) => {
             validate: {
               hasContent: (value) => {
                 value = String(quill?.getText());
-                console.log(value.length);
+                // console.log(value.length);
 
                 return value.length > 10 || "Ange en text med minst 10 tecken";
               },
@@ -211,4 +214,4 @@ const CreateModuleAdminForm = ({ showModal }: Props) => {
   );
 };
 
-export default CreateModuleAdminForm;
+export default CreateExerciseAdminForm;

@@ -90,7 +90,10 @@ const ExercisesPage = (props: Props) => {
             <h2>Här går resource beskrivningen in</h2>
           </article>
         ) : (
-          <CreateExerciseAdminForm showModal={showModal} />
+          <CreateExerciseAdminForm
+            setShowModal={setShowModal}
+            showModal={showModal}
+          />
         )}
       </Modal>
     </UserLayout>
