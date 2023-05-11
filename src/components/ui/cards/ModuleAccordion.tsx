@@ -8,6 +8,7 @@ import {
 } from "@/src/components/ui/accordion";
 import { Check, ClipboardList, Plus } from "lucide-react";
 import parse from "html-react-parser";
+import { useSession } from "next-auth/react";
 
 type Props = {
   module: Module;
@@ -16,6 +17,8 @@ type Props = {
 const ModuleAccordion = ({ module }: Props) => {
   const [desktopVersion, setdesktopVersion] = useState<boolean>(true);
   const [screenWidth, setScreenWidth] = useState<number>();
+  const { data: session } = useSession();
+
   useEffect(() => {
     if (window.innerWidth > 768) {
       setdesktopVersion(true);
@@ -28,7 +31,7 @@ const ModuleAccordion = ({ module }: Props) => {
   useEffect(() => {
     function getScreenSize() {
       if (typeof window !== "undefined") {
-        if (window.innerWidth > 768) {
+        if (window.innerWidth > 1024) {
           setdesktopVersion(true);
         } else {
           setdesktopVersion(false);
@@ -61,14 +64,17 @@ const ModuleAccordion = ({ module }: Props) => {
               {desktopVersion && (
                 <li className="w-32 text-left">"exercises completed"</li>
               )}
-              {desktopVersion && (
-                <li className="w-32">
-                  <div className="flex gap-2 p-2 rounded bg-primary hover:bg-indigo-400 text-white">
-                    <Plus />
-                    Uppgift
-                  </div>
-                </li>
-              )}
+              {desktopVersion &&
+                (session?.user.role === "TEACHER" ? (
+                  <li className="w-32">
+                    <div className="flex gap-2 p-2 rounded bg-primary hover:bg-indigo-400 text-white">
+                      <Plus />
+                      Uppgift
+                    </div>
+                  </li>
+                ) : (
+                  ""
+                ))}
             </ul>
           </div>
         </AccordionTrigger>

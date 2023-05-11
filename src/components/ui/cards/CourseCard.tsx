@@ -34,7 +34,7 @@ const CourseCard = ({ course, role }: Props) => {
             <p className="text-red-500">Ej publicerad</p>
           )
         ) : (
-          <p>Du är elev</p>
+          ""
         )}
         {/* <p>{course.exercises}</p> */}
         <Link

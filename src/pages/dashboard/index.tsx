@@ -15,12 +15,13 @@ import CreateCourseForm from "@/src/components/ui/forms/teacher/CreateCourseForm
 import Modal from "@/src/components/ui/modals/Modal";
 import { serverRouter } from "@/src/server/routers";
 import { IContext, createContext } from "@/src/server/context";
-import { Course } from "@prisma/client";
+import { Course, Education } from "@prisma/client";
 
 type Props = {
   courses: Course[];
+  education: Education;
 };
-const Dashboard = ({ courses }: Props) => {
+const Dashboard = ({ courses, education }: Props) => {
   const [sideBarClass, setSideBarClass] = useState<boolean>(false);
   const [screenWidth, setScreenWidth] = useState<number>();
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -103,17 +104,21 @@ const Dashboard = ({ courses }: Props) => {
           {/* Aside right */}
           <aside className="flex-1">
             {/* quick-menu */}
-            <div className="w-full p-2">
+            <div className="w-full flex flex-col gap-2 p-2">
               {/* quick menu items */}
-              <div
-                className="flex items-center gap-2 bg-card p-4 rounded-lg hover:cursor-pointer hover:bg-background"
-                onClick={modalClickHandler}
-              >
-                <div className="rounded-full bg-primary text-white p-2">
-                  <Plus />
+              {session?.user.role === "TEACHER" ? (
+                <div
+                  className="flex items-center gap-2 bg-card p-4 rounded-lg hover:cursor-pointer hover:bg-background"
+                  onClick={modalClickHandler}
+                >
+                  <div className="rounded-full bg-primary text-white p-2">
+                    <Plus />
+                  </div>
+                  <p>Lägg till kurs</p>
                 </div>
-                <p>Lägg till kurs</p>
-              </div>
+              ) : (
+                <p>Välkommen till {education?.name}</p>
+              )}
             </div>
           </aside>
         </div>
@@ -146,18 +151,23 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
   });
 
   //The actual fetching
+  const eduRes = await helpers.education.getOne.fetch({ educationId });
+  console.log("Education", eduRes);
+
   const res = await helpers.course.getManyByEducationId.fetch({
     educationId,
   });
 
   //Needed to serialize Date objects for createdAt + updatedAt otherwise error is thrown
   const courses = JSON.parse(JSON.stringify(res));
+  const education = JSON.parse(JSON.stringify(eduRes));
   // console.log(courses);
 
   return {
     props: {
       session: currentSession,
       courses: courses.course,
+      education: education.education,
     },
   };
 };
