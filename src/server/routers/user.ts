@@ -77,7 +77,7 @@ getManyByEducationId: t.procedure
 .meta({
   openapi: {
     method: "GET",
-    path: "/dashboard/course/students{educationId}",
+    path: "/users/getMany/{educationId}",
   },
 })
 .input( educationId )

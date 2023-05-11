@@ -12,7 +12,7 @@ import { trpc } from "@/src/common/trpc";
 import { getSession } from "next-auth/react";
 
 type Props = {
-  users?: User[];
+  users: User[];
 };
 
 const students = (props: Props) => {
@@ -21,6 +21,7 @@ const students = (props: Props) => {
   //   const [session] = useSession();
   //   const trcp = createClient(serverRouter)
   // }
+  console.log("propsUser", props.users)
   return (
 
     <UserLayout>
@@ -94,13 +95,12 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
   const res = await helpers.users.getManyByEducationId.fetch({
     educationId: educationId,
   });
-
-  const students = JSON.parse(JSON.stringify(res?.students)) || null;
-
+  
+  const students = JSON.parse(JSON.stringify(res.students));
   return {
     props: {
       session: educationId,
-      users: students?.students || null,
+      users: students || null,
     },
   };
 };

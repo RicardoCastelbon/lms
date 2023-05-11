@@ -231,13 +231,11 @@ export const getStudentsByEducationId = async ({
   
       const educationId = input.educationId; // Use the educationId from the input directly
   
-      console.log("Fetching students with educationId:", educationId);
   
       const users: User[] = await ctx.prisma.user.findMany({
         where: { educationId: Number(educationId) },
       });
   
-      console.log("Fetched students:", users);
   
       if (users.length <= 0) {
         console.log("No users found");
@@ -248,7 +246,6 @@ export const getStudentsByEducationId = async ({
           students: null,
         };
       } else {
-        console.log("Users found");
         return {
           success: true,
           code: 200,
