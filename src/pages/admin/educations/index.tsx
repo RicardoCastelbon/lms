@@ -51,7 +51,7 @@ const EducationPage = (props: Props) => {
   return (
     <>
       <UserLayout role={session?.user.role ?? ""}>
-        <div className="flex items-center mb-4">
+      <div className="flex items-center mb-4">
           <input
             type="text"
             placeholder="Sök kurser här..."
@@ -61,9 +61,11 @@ const EducationPage = (props: Props) => {
             Sök
           </button>
         </div>
-        <div className="flex flex-col md:flex-row gap-8">
-          <div className="flex-1">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+<div className="flex flex-col md:flex-row gap-8">
+  {/* Main content */}
+  <div className="flex-1 mx-auto md:mx-0">
+  <div className="flex justify-center">
+    <div className="grid grid-cols-1 justify-items-center md:grid-cols-2 lg:grid-cols-3 gap-4">
               {props.education &&
                 props.education.map((education: Education) => (
                   <AdminCreateEduCards
@@ -73,6 +75,7 @@ const EducationPage = (props: Props) => {
                   />
                 ))}
             </div>
+          </div>
           </div>
 
           <aside className="w-64">
