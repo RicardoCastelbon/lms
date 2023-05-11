@@ -1,3 +1,6 @@
+import { trpc } from "@/src/common/trpc";
+
+
 import type { NextPage } from "next";
 import { useSession, signOut } from "next-auth/react";
 import { LogOutIcon, Settings } from "lucide-react";

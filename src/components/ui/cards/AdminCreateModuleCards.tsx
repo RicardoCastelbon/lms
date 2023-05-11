@@ -36,11 +36,12 @@ const AdminCreateModuleCards = ({ moduleLib, onDelete }: Props) => {
 
         <p>{moduleLib.title}</p>
         <button
-          className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600"
-          onClick={handleDelete}
-          >
-          <FaTrash /> Delete
-        </button>
+          className="bg-red-400 text-white py-1 px-2 rounded-md hover:bg-red-600"
+           onClick={handleDelete}
+           
+        >
+          {/* <FaTrash className="m-1"/> Delete */}
+        Radera</button>
       </div>
     </div>
   );
