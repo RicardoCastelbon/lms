@@ -36,6 +36,12 @@ async function main() {
       data: user,
     });
   }
+
+  // for (let courseLib of coursesLib) {
+  //   await prisma.user.create({
+  //     data: courseLib,
+  //   });
+  // }
 }
 main()
   .catch((e) => {
