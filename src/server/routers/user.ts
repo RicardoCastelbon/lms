@@ -6,8 +6,14 @@ import { loginSchema, signUpSchema } from "../../common/validation/auth";
 import { TRPCError } from "@trpc/server";
 import { Education, Role } from "@prisma/client";
 import { log } from "console";
+import { studentOutputSchema,  } from "@/src/common/validation/student";
+import { educationId, noInput, EducationIdSchema } from "@/src/common/validation/global";
+import {  getStudentsByEducationId } from "../controllers/student.controller";
+import { z } from "zod";
+
 
 export const userRouter = t.router({
+
   signup: t.procedure.input(signUpSchema).mutation(async ({ input, ctx }) => {
     const { email, password, education, firstName, lastName } = input;
     try {
@@ -64,4 +70,16 @@ export const userRouter = t.router({
       console.log(error);
     }
   }),
+
+
+getManyByEducationId: t.procedure
+.meta({
+  openapi: {
+    method: "GET",
+    path: "/dashboard/{course}/students{educationId}",
+  },
+})
+.input(educationId)
+.output(studentOutputSchema)
+.query(({ input, ctx }) => getStudentsByEducationId({ input, ctx }))
 });

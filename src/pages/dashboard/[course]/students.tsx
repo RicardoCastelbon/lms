@@ -1,43 +1,24 @@
 import UserLayout from "@/src/components/ui/UserLayout";
+import { GetServerSideProps } from "next";
+import { getServerSession } from "next-auth";
+import { createContext } from "@/src/server/context";
+import { serverRouter } from "@/src/server/routers";
+import { nextAuthOptions } from "@/src/common/auth";
 import React from "react";
+import { createServerSideHelpers } from "@trpc/react-query/server";
+import { useSession } from "next-auth/react";
+import { User } from "@prisma/client";
 
-type Props = {};
+type Props = {
+  users?: User[];
+};
 
 const students = (props: Props) => {
 
-
-  const students = [
-    {
-      id: 1,
-      name: 'Niclas Doe',
-      avatar: 'https://via.placeholder.com/50x50.png?text=Avatar',
-      inlämningsuppgifter: '3/5',
-      exersices: '1/5',
-      final: 'A',
-      grade: 'A'
-    },
-
-    {
-      id: 1,
-      name: 'Ricardo Doe',
-      avatar: 'https://via.placeholder.com/50x50.png?text=Avatar',
-      inlämningsuppgifter: '3/5',
-      exersices: '1/5',
-      final: 'A',
-      grade: 'A'
-    },
-  
-    {
-      id: 1,
-      name: 'Niclas Doe',
-      avatar: 'https://via.placeholder.com/50x50.png?text=Avatar',
-      inlämningsuppgifter: '3/5',
-      exersices: '1/5',
-      final: 'A',
-      grade: 'A'
-    },
-  ];
-  
+  // const students = () => {
+  //   const [session] = useSession();
+  //   const trcp = createClient(serverRouter)
+  // }
   return (
 
     <UserLayout>
@@ -51,7 +32,13 @@ const students = (props: Props) => {
         <div className="w-full sm:w-1/4 mb-2 sm:mb-0 hidden sm:block">Betyg</div>
       </div>
       <div className="flex flex-col">
-        {students.map((student) => (
+      <div className="grid grid-cols-1 justify-items-center md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {props.users && 
+      props.users.map((user: User) => (
+        <p key={user.id}>{user.firstName}</p>
+        ))}
+    </div>
+        {/* {students.map((student) => (
           <div key={student.id} className="rounded-lg shadow-md p-4 bg-white mb-4 sm:mb-0 sm:shadow-none sm:bg-transparent">
             <div className="flex flex-col sm:flex-row items-center mb-4">
               <div className="w-full sm:w-1/4 flex items-center mb-2 sm:mb-0">
@@ -82,7 +69,7 @@ const students = (props: Props) => {
               </div>
             </div>
           </div>
-        ))}
+        ))} */}
       </div>
     </div>
   </UserLayout>
@@ -91,4 +78,30 @@ const students = (props: Props) => {
 
 };
 /* getServerSideProps */
+export const getServerSideProps: GetServerSideProps = async (context: any) => {
+  const currentSession = await getServerSession(
+    context.req,
+    context.res,
+    nextAuthOptions
+  );
+  
+  const helpers = createServerSideHelpers({
+    router: serverRouter,
+    ctx: await createContext(context),
+  });
+
+  const { educationId } = context.query;
+
+  const res = await helpers.users.getManyByEducationId.fetch({
+    educationId: String(educationId),
+  });  // const students = studentsResponse.data?.students || null;
+  const students = JSON.parse(JSON.stringify(res));
+
+  return {
+    props: {
+      session: currentSession,
+      users: students?.students || null,
+    },
+  };
+};
 export default students;
