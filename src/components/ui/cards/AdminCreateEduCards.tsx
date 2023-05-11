@@ -12,12 +12,12 @@ interface ICourse {
 }
 
 type Props = {
-//   educationLib: Education_lib;
-  // onDelete: () => void;
+  education: Education;
+  onDelete: (education: number) => void;
 
 };
 
-const AdminCreateEduCards = ({ educationLib }: Props) => {
+const AdminCreateEduCards = ({ education }: Props) => {
   // console.log(course);
   // const handleDelete = () => {
   //   onDelete();
@@ -32,7 +32,7 @@ const AdminCreateEduCards = ({ educationLib }: Props) => {
       {/* card body */}
       <div className="flex flex-col gap-2 p-2 text-center">
 
-        <p>{moduleLib.title}</p>
+        <p>{education.name}</p>
         <button
           className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600"
           // onClick={handleDelete}
@@ -44,4 +44,4 @@ const AdminCreateEduCards = ({ educationLib }: Props) => {
   );
 };
 
-export default AdminCreateModuleCards;
+export default AdminCreateEduCards;
