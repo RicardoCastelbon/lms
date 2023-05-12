@@ -13,6 +13,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { Course, Module } from "@prisma/client";
 import ModuleAccordion from "@/src/components/ui/cards/ModuleAccordion";
+import CreateExerciseForm from "@/src/components/ui/forms/teacher/CreateExerciseForm";
 
 type Props = {
   modules: Module[];
@@ -23,6 +24,7 @@ const CourseOverview = ({ modules, course }: Props) => {
   const [desktopVersion, setdesktopVersion] = useState<boolean>(true);
   const [screenWidth, setScreenWidth] = useState<number>();
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [showModalExercise, setShowModalExercise] = useState<boolean>(true);
   const { data: session } = useSession();
   const router = useRouter();
 
@@ -140,6 +142,14 @@ const CourseOverview = ({ modules, course }: Props) => {
         >
           <CreateModuleForm />
         </Modal>
+
+        <Modal
+          header={"Skapa en uppgift"}
+          showModal={showModalExercise}
+          setShowModal={setShowModalExercise}
+        >
+          <CreateExerciseForm />
+        </Modal>
       </UserLayout>
     </>
   );
@@ -165,8 +175,6 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
     courseSlug: slug,
   });
 
-  const courseId = String(course?.course.id);
-
   // fetch all the modules with with courseId
   const res = await helpers.module.getManyByCourseId.fetch({
     courseId: course?.course.id,
@@ -175,8 +183,6 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
   //Needed to serialize Date objects for createdAt + updatedAt otherwise error is thrown
   const modules = JSON.parse(JSON.stringify(res));
   const courseData = JSON.parse(JSON.stringify(course));
-
-  console.log(courseData);
 
   return {
     props: {

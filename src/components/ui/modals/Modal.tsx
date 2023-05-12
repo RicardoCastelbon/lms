@@ -17,7 +17,22 @@ type Props = {
   header: string;
 };
 
+/* 
+- The hook is setup-ish. It returns a state, a ref and a clickhandler (toggleModal).
+- Start off with going into Modal.tsx, and import the hook, destructuring it like:
+const {showModal, modalRef} = useHook()
+- change the current state of showModal to use the showModal from the hook (they have the same name, comment out the state in the Modal component so you don't geterrors.). Then apply the clickhandler from the hook on line 70. (the click event for the X icon)
+- comment out the ref declaration in Modal.tsx and apply the modalRef from the hook to the ref on line 62. (the div for the popup)
+-Comment out the useEffect controlling the ref on lines 24-42.
+SET UP THE PAGE TO USE THE HOOK:
+go to your intended page from where you want to toggle the modal and repeat the steps above.
+comment out the boolean state for controlling the modal and replace it with the boolean from the hook.
+comment out the useEffect listening on modalRef and showModal.
+apply the toggleModal to the clickhandler calling the modal popup.
+I'm not sure this works */
+
 const Modal = ({ showModal, setShowModal, header, children }: Props) => {
+  //const { showModal, modalRef } = useHook();
   //   const [showModal, setShowModal] = useState<boolean>(false);
   const modalRef = useRef(null);
   // handling click outside modal to close.
@@ -80,3 +95,6 @@ const Modal = ({ showModal, setShowModal, header, children }: Props) => {
 };
 
 export default Modal;
+function useHook(): { showModal: any; modalRef: any } {
+  throw new Error("Function not implemented.");
+}
