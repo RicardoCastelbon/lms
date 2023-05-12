@@ -9,14 +9,14 @@ import UserLayout from "@/src/components/ui/UserLayout";
 import { IconContext } from "react-icons";
 import { nextAuthOptions } from "@/src/common/auth";
 import CourseCard from "@/src/components/ui/cards/CourseCard";
-import { Plus, X } from "lucide-react";
+import { Plus, X, FileEdit } from "lucide-react";
 // import ColorSelect from "@/src/components/ui/dropdowns/ColorSelect";
 import CreateCourseForm from "@/src/components/ui/forms/teacher/CreateCourseForm";
 import Modal from "@/src/components/ui/modals/Modal";
 import { serverRouter } from "@/src/server/routers";
 import { IContext, createContext } from "@/src/server/context";
 import { Course, Education } from "@prisma/client";
-import { trpc } from "@/src/common/trpc";
+// import { trpc } from "@/src/common/trpc";
 
 type Props = {
   courses: Course[];
@@ -27,7 +27,8 @@ const Dashboard = ({ courses, education }: Props) => {
   const [screenWidth, setScreenWidth] = useState<number>();
   const [showModal, setShowModal] = useState<boolean>(false);
   const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
-  const [clientCourses, setClientCourses] = useState<Course[]>();
+  // const [clientCourses, setClientCourses] = useState<Course[]>();
+  const [action, setAction] = useState<string>("");
 
   const { data: session } = useSession();
   const router = useRouter();
@@ -144,15 +145,26 @@ const Dashboard = ({ courses, education }: Props) => {
             <div className="w-full flex flex-col gap-2 p-2">
               {/* quick menu items */}
               {session?.user.role === "TEACHER" ? (
-                <div
-                  className="flex items-center gap-2 bg-card p-4 rounded-lg hover:cursor-pointer hover:bg-background"
-                  onClick={modalClickHandler}
-                >
-                  <div className="rounded-full bg-primary text-white p-2">
-                    <Plus />
+                <>
+                  <div
+                    className="flex items-center gap-2 bg-card p-4 rounded-lg hover:cursor-pointer hover:bg-background"
+                    onClick={modalClickHandler}
+                  >
+                    <div className="rounded-full bg-primary text-white p-2">
+                      <Plus />
+                    </div>
+                    <p>Lägg till kurs</p>
                   </div>
-                  <p>Lägg till kurs</p>
-                </div>
+                  <div
+                    className="flex items-center gap-2 bg-card p-4 rounded-lg hover:cursor-pointer hover:bg-background"
+                    onClick={modalClickHandler}
+                  >
+                    <div className="rounded-full bg-primary text-white p-2">
+                      <FileEdit />
+                    </div>
+                    <p>Uppdatera kurser</p>
+                  </div>
+                </>
               ) : (
                 <p>Välkommen till {education?.name}</p>
               )}
@@ -194,7 +206,7 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
 
   //The actual fetching
   const eduRes = await helpers.education.getOne.fetch({ educationId });
-  console.log("Education", eduRes);
+  // console.log("Education", eduRes);
 
   const res = await helpers.course.getManyByEducationId.fetch({
     educationId,
