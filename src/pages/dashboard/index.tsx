@@ -15,23 +15,36 @@ import CreateCourseForm from "@/src/components/ui/forms/teacher/CreateCourseForm
 import Modal from "@/src/components/ui/modals/Modal";
 import { serverRouter } from "@/src/server/routers";
 import { IContext, createContext } from "@/src/server/context";
-import { Course } from "@prisma/client";
+import { Course, Education } from "@prisma/client";
+import { trpc } from "@/src/common/trpc";
 
 type Props = {
   courses: Course[];
+  education: Education;
 };
-const Dashboard = ({ courses }: Props) => {
+const Dashboard = ({ courses, education }: Props) => {
   const [sideBarClass, setSideBarClass] = useState<boolean>(false);
   const [screenWidth, setScreenWidth] = useState<number>();
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
+  const [clientCourses, setClientCourses] = useState<Course[]>();
+
   const { data: session } = useSession();
   const router = useRouter();
+  /* const { data, isLoading } = trpc.course.getManyByEducationId.useQuery({
+    educationId: String(session?.user.educationId),
+  }); */
 
   const modalRef = useRef(null);
+  // console.log(courses);
 
   useEffect(() => {
-    console.log(session);
-    console.log(courses);
+    console.log(hasSubmitted);
+  }, [hasSubmitted]);
+
+  useEffect(() => {
+    // console.log(session);
+    // console.log(courses);
 
     if (!session) {
       router.push("/401");
@@ -91,25 +104,58 @@ const Dashboard = ({ courses }: Props) => {
         <div className="w-full flex flex-col md:flex-row gap-8">
           {/* Main content */}
           <div className="w-full h-full flex flex-wrap justify-center gap-4 md:justify-start md:w-3/6 lg:w-4/6">
-            {courses &&
+            {courses !== null ? (
               courses?.map((course: Course) => (
-                <CourseCard key={course.id} course={course} />
-              ))}
+                <CourseCard
+                  key={course.id}
+                  course={course}
+                  role={session?.user.role}
+                />
+              ))
+            ) : (
+              <section className="w-full flex flex-col justify-center items-center gap-4">
+                <h2 className="text-2xl">Inga övningar finns</h2>
+                {/* <div className="flex justify-center items-center gap-6"> */}
+
+                {session?.user.role === "TEACHER" ? (
+                  <>
+                    <p className="">Skapa en nu!</p>
+
+                    <button
+                      className="bg-primary text-white px-4 py-2 rounded-md hover:bg-indigo-50 hover:text-primary"
+                      onClick={(e) => {
+                        // e.preventDefault();
+                        setShowModal(true);
+                      }}
+                    >
+                      Skapa en övning
+                    </button>
+                  </>
+                ) : (
+                  <p className="">Invänta info från din handledare</p>
+                )}
+                {/* </div> */}
+              </section>
+            )}
           </div>
           {/* Aside right */}
-          <aside className="flex-1 bg-green">
+          <aside className="flex-1">
             {/* quick-menu */}
-            <div className="w-full p-2">
+            <div className="w-full flex flex-col gap-2 p-2">
               {/* quick menu items */}
-              <div
-                className="flex items-center gap-2 bg-card p-4 rounded-lg hover:cursor-pointer hover:bg-background"
-                onClick={modalClickHandler}
-              >
-                <div className="rounded-full bg-primary text-white p-2">
-                  <Plus />
+              {session?.user.role === "TEACHER" ? (
+                <div
+                  className="flex items-center gap-2 bg-card p-4 rounded-lg hover:cursor-pointer hover:bg-background"
+                  onClick={modalClickHandler}
+                >
+                  <div className="rounded-full bg-primary text-white p-2">
+                    <Plus />
+                  </div>
+                  <p>Lägg till kurs</p>
                 </div>
-                <p>Lägg till kurs</p>
-              </div>
+              ) : (
+                <p>Välkommen till {education?.name}</p>
+              )}
             </div>
           </aside>
         </div>
@@ -119,7 +165,12 @@ const Dashboard = ({ courses }: Props) => {
           showModal={showModal}
           setShowModal={setShowModal}
         >
-          <CreateCourseForm />
+          <CreateCourseForm
+            hasSubmitted={hasSubmitted}
+            setHasSubmitted={setHasSubmitted}
+            educationId={education?.id}
+            setShowModal={setShowModal}
+          />
         </Modal>
       </UserLayout>
     </IconContext.Provider>
@@ -142,18 +193,23 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
   });
 
   //The actual fetching
+  const eduRes = await helpers.education.getOne.fetch({ educationId });
+  console.log("Education", eduRes);
+
   const res = await helpers.course.getManyByEducationId.fetch({
     educationId,
   });
 
   //Needed to serialize Date objects for createdAt + updatedAt otherwise error is thrown
   const courses = JSON.parse(JSON.stringify(res));
-  console.log(courses);
+  const education = JSON.parse(JSON.stringify(eduRes));
+  // console.log(courses);
 
   return {
     props: {
       session: currentSession,
-      courses: courses.course,
+      courses: courses.course || null,
+      education: education.education,
     },
   };
 };

@@ -130,7 +130,7 @@ export const getCoursesByEducationId = async ({
         success: false,
         code: 404,
         message: "No courses found, please try again",
-        courses,
+        courses: null,
       };
     } else {
       return {

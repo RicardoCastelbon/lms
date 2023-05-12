@@ -1,22 +1,48 @@
 import React, { ReactNode, useEffect, useState } from "react";
 import { useIcon } from "@/src/lib/hooks/iconHook";
 import { IconType } from "react-icons";
+import { ControllerRenderProps } from "react-hook-form";
 type Icon = {
   id: number;
   name: string;
   icon: ReactNode;
 };
 type Props = {
-  field: any;
   hasSubmitted: boolean;
+  value: string;
+  onChange?: () => void;
+  onBlur?: () => void;
+  setValue: any;
+  field?: ControllerRenderProps<
+    {
+      educationId: number;
+      color: string;
+      title: string;
+      icon: string;
+      content: string;
+      points: string;
+      published: boolean;
+    },
+    "icon"
+  >;
   setIconName: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const IconSelect = ({ field, setIconName, hasSubmitted }: Props) => {
+const IconSelect = ({
+  field,
+  value,
+  onBlur,
+  onChange,
+  setValue,
+  hasSubmitted,
+  setIconName,
+}: Props) => {
   const [icon, setIcon] = useState<ReactNode>(null);
   const { selectIcon, icons } = useIcon();
 
   useEffect(() => {
+    console.log("icon", hasSubmitted);
+
     if (hasSubmitted) {
       setIcon(null);
     }
@@ -29,6 +55,7 @@ const IconSelect = ({ field, setIconName, hasSubmitted }: Props) => {
     if (!iconName) return;
     setIcon(selectIcon(iconName));
     setIconName(iconName);
+    setValue("icon", iconName);
   };
   return (
     <div className="">
@@ -40,6 +67,9 @@ const IconSelect = ({ field, setIconName, hasSubmitted }: Props) => {
       <div className="w-full flex flex-wrap gap-2">
         {icons.map((icon, index) => (
           <div
+            {...field}
+            onChange={onChange}
+            onBlur={onBlur}
             key={index}
             className="hover:text-indigo-50"
             onClick={() => {
