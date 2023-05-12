@@ -6,6 +6,7 @@ import TopNavbar from "./navigation/TopNavbar";
 import { serverRouter } from "@/src/server/routers";
 import { trpc } from "@/src/common/trpc";
 import { getEducationById } from "@/src/lib/services/education";
+import { Education } from "@prisma/client";
 
 type Props = {
   children: ReactNode;
@@ -24,18 +25,23 @@ const UserLayout = ({ children, role }: Props) => {
     educationId,
   });
 
+  // console.log("eduId", educationId);
+
   useEffect(() => {
     //Do something if loading is true
     if (isLoading) {
-      console.log("query is loading");
+      // console.log("query is loading");
     } else {
       //check if an error has occured
       if (error) {
-        console.log(error);
+        // console.log(error);
       }
       //else check if data is present, if so do something with it.
       if (data) {
-        setEduName(data?.education?.name); //Why is education optional?
+        //HOW TO RESOLVE UNKOWN?!! Still works // Nic
+        const education = data.education as unknown as Education;
+
+        setEduName(education.name); //Why is education optional?
       }
     }
   }, [data, error, isLoading]);

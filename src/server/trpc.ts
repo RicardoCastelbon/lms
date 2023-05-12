@@ -1,8 +1,11 @@
 import { TRPCError, initTRPC } from "@trpc/server";
 import { IContext } from "./context";
 import { OpenApiMeta } from "trpc-openapi";
+import SuperJSON from "superjson";
 
-export const t = initTRPC.context<IContext>().meta<OpenApiMeta>().create();
+export const t = initTRPC.context<IContext>().meta<OpenApiMeta>().create({
+  // transformer: SuperJSON,
+});
 export const middleware = t.middleware;
 export const publicProcedure = t.procedure;
 export const router = t.router;

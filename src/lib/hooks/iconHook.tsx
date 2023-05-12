@@ -11,17 +11,17 @@ const icons: Icon[] = [
   {
     id: 1,
     name: "html",
-    icon: <FaHtml5 size={32} />,
+    icon: <FaHtml5 size={"4em"} />,
   },
   {
     id: 2,
     name: "css",
-    icon: <FaCss3Alt size={32} />,
+    icon: <FaCss3Alt size={"4em"} />,
   },
   {
     id: 3,
     name: "javascript",
-    icon: <FaJsSquare size={32} />,
+    icon: <FaJsSquare size={"4em"} />,
   },
 ];
 export const useIcon = () => {
