@@ -23,7 +23,7 @@ const AdminCreateCourseCards = ({ courseLib, title, infoClickHandler }: Props) =
   return (
     <div className="relative flex flex-col justify-center items-center gap-2 w-[200px] h-[200px] bg-primary text-white rounded-md shadow-md hover:shadow-xl hover:scale-105 duration-200">
       {/* card header */}
-      <Info
+      <FaTrash
         className="absolute top-2 right-2 hover:cursor-pointer"
         onClick={infoClickHandler}
       />
@@ -32,10 +32,8 @@ const AdminCreateCourseCards = ({ courseLib, title, infoClickHandler }: Props) =
         <button
           className="bg-green-500 text-white py-1 px-2 rounded-md hover:bg-red-600"
            onClick={infoClickHandler}
-           
         >
-          {/* <FaTrash className="m-1"/> Delete */}
-        Radera</button>
+         Info</button>
       </div>
   );
 };

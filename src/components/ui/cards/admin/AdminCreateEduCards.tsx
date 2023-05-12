@@ -1,0 +1,40 @@
+import { Education } from "@prisma/client";
+import { FileText, Info } from "lucide-react";
+import React from "react";
+import { FaHtml5, FaTrash } from "react-icons/fa";
+
+type Props = {
+  // education: Education;
+  // onDelete: (educationId: number) => void;
+  infoClickHandler: () => void;
+  name: string;
+};
+
+const AdminCreateEduCards = ({ infoClickHandler, name }: Props) => {
+  // const handleDelete = () => {
+  //     if (window.confirm("Are you sure")) {
+  //     onDelete(education.id)
+  //        }
+  // }
+
+  return (
+    <div className="relative flex flex-col justify-center items-center gap-2 w-[200px] h-[200px] bg-primary text-white rounded-md shadow-md hover:shadow-xl hover:scale-105 duration-200">
+      <Info
+        className="absolute top-2 right-2 hover:cursor-pointer"
+        onClick={infoClickHandler}
+      />
+
+      <FileText size={48} />
+      <h3>{name}</h3>
+      <button
+        className="bg-red-400 text-white py-2 px-2 rounded-md hover:bg-red-600"
+        onClick={infoClickHandler}
+      >
+        {/* <FaTrash className="m-1"/> Delete */}
+        Info
+      </button>
+    </div>
+  );
+};
+
+export default AdminCreateEduCards;

@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useState } from "react";
+import React, { Dispatch, SetStateAction, useCallback, useState } from "react";
 import { useQuill } from "react-quilljs";
 import { Controller, useForm } from "react-hook-form";
 // import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,10 +13,11 @@ import {
 import { Education } from "@prisma/client";
 
 type Props = {
-  closeModal: () => void;
-  // educations: Education[];
+  setShowModal: Dispatch<SetStateAction<boolean>>;
+  showModal: boolean;
+
 };
-const CreateEduAdminForm = ({ closeModal }: Props) => {
+const CreateEduAdminForm = ({ showModal, setShowModal  }: Props) => {
   const {
     handleSubmit,
     control,
@@ -55,14 +56,14 @@ const CreateEduAdminForm = ({ closeModal }: Props) => {
           if (result.success) {
             quill!.root.innerHTML = "";
             reset();
-            closeModal();
+            setShowModal(false);
           }
         }
       } catch (err) {
         console.error(err);
       }
     },
-    [mutateAsync, reset, quill, closeModal]
+    [mutateAsync, reset, quill]
   );
 
   return (

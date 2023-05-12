@@ -25,7 +25,7 @@ const AdminCreateModuleCards = ({ title,moduleLib, infoClickHandler }: Props) =>
   return (
     <div className="relative flex flex-col justify-center items-center gap-2 w-[200px] h-[200px] bg-primary text-white rounded-md shadow-md hover:shadow-xl hover:scale-105 duration-200">
       {/* card header */}
-      <Info
+      <FaTrash
         className="absolute top-2 right-2 hover:cursor-pointer"
         onClick={infoClickHandler}
       />
@@ -39,7 +39,7 @@ const AdminCreateModuleCards = ({ title,moduleLib, infoClickHandler }: Props) =>
            
         >
           {/* <FaTrash className="m-1"/> Delete */}
-        Se mer</button>
+        Info</button>
       {/* </div> */}
     </div>
   );

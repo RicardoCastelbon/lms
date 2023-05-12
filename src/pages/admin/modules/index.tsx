@@ -11,7 +11,7 @@ import { nextAuthOptions } from "@/src/common/auth";
 import { serverRouter } from "@/src/server/routers";
 import { createContext } from "@/src/server/context";
 import CreateModuleAdminForm from "@/src/components/ui/forms/admin/CreateModuleAdminForm";
-import AdminCreateModuleCards from "@/src/components/ui/cards/AdminCreateModuleCards";
+import AdminCreateModuleCards from "@/src/components/ui/cards/admin/AdminCreateModuleCards";
 import { trpc } from "@/src/common/trpc";
 import { modules } from "@/prisma/data/modules";
 import parse from "html-react-parser";

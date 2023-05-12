@@ -10,7 +10,7 @@ import UserSideNav from "@/src/components/ui/navigation/UserSideNav";
 import Link from "next/link";
 import UserLayout from "@/src/components/ui/UserLayout";
 import CourseCard from "@/src/components/ui/cards/CourseCard";
-import AdminCreateCards from "@/src/components/ui/cards/AdminCreateCards";
+import AdminCreateCards from "@/src/components/ui/cards/admin/AdminCreateCards";
 // import CalendarDemo from "@/src/components/ui/CalendarDemo";
 
 // type Props = {

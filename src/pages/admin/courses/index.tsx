@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 import CreateCourseAdminForm from "@/src/components/ui/forms/admin/CreateCourseAdminForm";
 // import { useQuill } from "react-quilljs";
-import AdminCreateCourseCards from "@/src/components/ui/cards/AdminCreateCourseCards";
+import AdminCreateCourseCards from "@/src/components/ui/cards/admin/AdminCreateCourseCards";
 import { Course_lib } from "@prisma/client";
 import { IconContext } from "react-icons";
 import { courseLibId } from "@/src/common/validation/course-lib";
@@ -15,11 +15,7 @@ import { getServerSession } from "next-auth";
 import { createServerSideHelpers } from "@trpc/react-query/server";
 import { createContext } from "@/src/server/context";
 import type { GetServerSideProps, NextPage } from "next";
-// import { deleteCourseLib } from "@/src/server/controllers/course-lib.controller";
 
-// import { useMutation } from 'react-query';
-
-// import { useRouter } from 'next/router';
 import { trpc } from "@/src/common/trpc";
 
 type Props = {
@@ -101,7 +97,7 @@ const CoursesPage = ({ courses }: Props) => {
             </div>
           </form>
           <section className="w-full flex flex-wrap justify-center md:justify-start gap-2 mt-10">
-          {courseLib !== null ? (
+          {courses !== null ? (
               <>
       {courseLib?.map((courseLib: Course_lib) => (
         <AdminCreateCourseCards
