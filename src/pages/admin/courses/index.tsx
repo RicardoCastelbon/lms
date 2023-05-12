@@ -61,6 +61,7 @@ const CoursesPage = ({ courses }: Props) => {
   };
 
   const { mutateAsync: deleteCourseLib } = trpc.courseLib.delete.useMutation();
+  
   // const handleDelete = async (courseLibId: number) => {
   //   // Optimistically remove the course from state
   //   setCourseLib(courseLib.filter(course => course.id !== courseLibId));
