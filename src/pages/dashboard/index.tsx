@@ -15,7 +15,7 @@ import CreateCourseForm from "@/src/components/ui/forms/teacher/CreateCourseForm
 import Modal from "@/src/components/ui/modals/Modal";
 import { serverRouter } from "@/src/server/routers";
 import { IContext, createContext } from "@/src/server/context";
-import { Course, Education } from "@prisma/client";
+import { Course, Education, Exercise, Module } from "@prisma/client";
 // import { trpc } from "@/src/common/trpc";
 
 type Props = {
@@ -206,7 +206,11 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
 
   //The actual fetching
   const eduRes = await helpers.education.getOne.fetch({ educationId });
-  // console.log("Education", eduRes);
+  type Resource = Course | Module | Exercise;
+  //filter result depending on the role of the logged in user
+  /*  const filterEducationByRole = (role: string, resource: Resource[] ): Resource[] => {
+    return null;
+  } */
 
   const res = await helpers.course.getManyByEducationId.fetch({
     educationId,
