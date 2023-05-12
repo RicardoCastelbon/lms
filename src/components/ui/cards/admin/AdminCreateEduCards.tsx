@@ -18,21 +18,20 @@ const AdminCreateEduCards = ({ infoClickHandler, name }: Props) => {
   // }
 
   return (
-    <div className="relative flex flex-col justify-center items-center gap-2 w-[200px] h-[200px] bg-primary text-white rounded-md shadow-md hover:shadow-xl hover:scale-105 duration-200">
+    <div className='relative flex flex-col justify-center items-center gap-2 w-[200px] h-[200px] bg-primary text-white rounded-md shadow-md hover:shadow-xl hover:scale-105 duration-200'>
       <Info
-        className="absolute top-2 right-2 hover:cursor-pointer"
+        className='absolute top-2 right-2 hover:cursor-pointer'
         onClick={infoClickHandler}
       />
 
       <FileText size={48} />
       <h3>{name}</h3>
-      <button
-        className="bg-red-400 text-white py-2 px-2 rounded-md hover:bg-red-600"
+      {/* <button
+        className='bg-green-400 text-white py-2 px-2 rounded-md hover:bg-green-600'
         onClick={infoClickHandler}
       >
-        {/* <FaTrash className="m-1"/> Delete */}
         Info
-      </button>
+      </button> */}
     </div>
   );
 };

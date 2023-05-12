@@ -18,18 +18,15 @@ import parse from "html-react-parser";
 import { education } from "@/src/common/validation/education";
 
 type Props = {
-  education: Education[];
+  educations: Education[];
 };
 
-const filterEducationById = (
-  id: number,
-  education: Education[]
-): Education => {
+const filterEducationById = (id: number, education: Education[]): Education => {
   const selectedEducation = education.filter((item) => item.id === id);
   console.log(selectedEducation);
   return selectedEducation[0];
 };
-const EducationPage = (props: Props) => {
+const EducationPage = ({ educations }: Props) => {
   const { data: session } = useSession();
   const [showModal, setShowModal] = useState<boolean>(false);
   const [isInfo, setIsInfo] = useState<boolean>(false);
@@ -73,20 +70,20 @@ const EducationPage = (props: Props) => {
 
   return (
     <UserLayout role={session?.user.role ?? ""}>
-      <div className="w-full flex flex-col md:flex-row gap-8">
+      <div className='w-full flex flex-col md:flex-row gap-8'>
         {/* main content */}
-        <section className="w-full h-full flex flex-wrap justify-center gap-4 md:justify-start md:w-3/6 lg:w-4/6">
-          <form className="flex flex-col items-center gap-6">
-            <h1 className="text-2xl font-semibold">Kursbibliotek</h1>
-            <div className="flex items-center mb-4">
+        <section className='w-full h-full flex flex-wrap justify-center gap-4 md:justify-start md:w-3/6 lg:w-4/6'>
+          <form className='flex flex-col items-center gap-6'>
+            <h1 className='text-2xl font-semibold'>Utbildningsbibliotek</h1>
+            <div className='flex items-center mb-4'>
               <input
-                type="text"
-                placeholder="Sök kurser här..."
-                className="border border-gray-300 rounded-md py-2 px-3 w-80 mr-2 flex-grow"
+                type='text'
+                placeholder='Sök en utbildning här...'
+                className='border border-gray-300 rounded-md py-2 px-3 w-80 mr-2 flex-grow'
               />
               <button
-                className="bg-primary text-white px-4 py-2 rounded-md hover:bg-indigo-50 hover:text-primary"
-                type="submit"
+                className='bg-primary text-white px-4 py-2 rounded-md hover:bg-indigo-50 hover:text-primary'
+                type='submit'
               >
                 Sök
               </button>
@@ -94,30 +91,30 @@ const EducationPage = (props: Props) => {
           </form>
           {/* Search results */}
           {/* Should render all if no search term is entered */}
-          <section className="w-full flex flex-wrap justify-center md:justify-start gap-2 mt-10">
-              {education !== null ? (
-                 <>
-                {props.education?.map((education: Education) => (
+          <section className='w-full flex flex-wrap justify-center md:justify-start gap-2 mt-10'>
+            {education !== null ? (
+              <>
+                {educations?.map((education: Education) => (
                   <AdminCreateEduCards
                     key={education.id}
-                    name= {education.name}
+                    name={education.name}
                     infoClickHandler={() => {
                       setCurrentEducation(
-                        filterEducationById(education.id, props.education)
-                        );
+                        filterEducationById(education.id, educations)
+                      );
                       infoClickHandler();
                     }}
                     // education={education}
                     // onDelete={handleDelete}
                   />
                 ))}
-                </>
+              </>
             ) : (
-              <section className="w-full flex flex-col justify-center items-center gap-4">
-                <h2 className="text-2xl">Inga övningar finns</h2>
-                <p className="">Skapa en nu!</p>
+              <section className='w-full flex flex-col justify-center items-center gap-4'>
+                <h2 className='text-2xl'>Inga övningar finns</h2>
+                <p className=''>Skapa en nu!</p>
                 <button
-                  className="bg-primary text-white px-4 py-2 rounded-md hover:bg-indigo-50 hover:text-primary"
+                  className='bg-primary text-white px-4 py-2 rounded-md hover:bg-indigo-50 hover:text-primary'
                   onClick={(e) => {
                     // e.preventDefault();
                     formClickHandler();
@@ -125,49 +122,46 @@ const EducationPage = (props: Props) => {
                 >
                   Skapa en övning
                 </button>
-                </section>
-    )}
-    </section>
-    </section>
+              </section>
+            )}
+          </section>
+        </section>
 
-          <aside className="w-64">
-            <div className="w-full p-2">
-              <div
-                className="flex items-center gap-2 bg-card p-4 rounded-lg hover:cursor-pointer hover:bg-background"
-                onClick={formClickHandler}
-              >
-                <div className="rounded-full bg-primary text-white p-2">
-                  <Plus />
-                </div>
-                <p>Lägg till en utbildning</p>
+        <aside className='w-64'>
+          <div className='w-full p-2'>
+            <div
+              className='flex items-center gap-2 bg-card p-4 rounded-lg hover:cursor-pointer hover:bg-background'
+              onClick={formClickHandler}
+            >
+              <div className='rounded-full bg-primary text-white p-2'>
+                <Plus />
               </div>
+              <p>Lägg till en utbildning</p>
             </div>
-          </aside>
-        </div>
+          </div>
+        </aside>
+      </div>
 
       <Modal
-      header={"Skapa en kurs"}
-      showModal={showModal}
-      setShowModal={setShowModal}
+        header={"Skapa en utbildning"}
+        showModal={showModal}
+        setShowModal={setShowModal}
       >
-{/* 
-      {isInfo ? (
-          <article className="w-full h-full">
-            {/* <h2>Här går resource beskrivningen in</h2> */}
-            {/* {currentEducation && <div>{parse(currentEducation.content)}</div>}
+        {isInfo ? (
+          <article className='w-full h-full'>
+            {/* <h2>Här går resource beskrivningen in</h2>  */}
+            {currentEducation && <div>{parse(currentEducation.content)}</div>}
           </article>
-        ) : (  */}
-
-        <CreateEduAdminForm
+        ) : (
+          <CreateEduAdminForm
             setShowModal={setShowModal}
-            showModal={showModal} 
-            />
-            {/* )}      */}
+            showModal={showModal}
+          />
+        )}
       </Modal>
     </UserLayout>
   );
 };
-
 
 export const getServerSideProps: GetServerSideProps = async (context: any) => {
   const currentSession = await getServerSession(
@@ -195,7 +189,7 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
   return {
     props: {
       session: currentSession,
-      education: education?.education || null,
+      educations: education?.education || null,
     },
   };
 };

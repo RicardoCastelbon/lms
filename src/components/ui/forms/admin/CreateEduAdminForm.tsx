@@ -15,9 +15,8 @@ import { Education } from "@prisma/client";
 type Props = {
   setShowModal: Dispatch<SetStateAction<boolean>>;
   showModal: boolean;
-
 };
-const CreateEduAdminForm = ({ showModal, setShowModal  }: Props) => {
+const CreateEduAdminForm = ({ showModal, setShowModal }: Props) => {
   const {
     handleSubmit,
     control,
@@ -68,32 +67,30 @@ const CreateEduAdminForm = ({ showModal, setShowModal  }: Props) => {
 
   return (
     <form
-      className="flex flex-col gap-4 md:flex-row"
+      className='flex flex-col gap-4 md:flex-row'
       onSubmit={handleSubmit(onSubmit)}
     >
       {/* left side */}
-      <section className="flex-1 flex flex-col gap-4">
+      <section className='flex-1 flex flex-col gap-4'>
         {/* form group */}
         <Controller
-          name="name"
+          name='name'
           control={control}
           rules={{ required: "Skriv in ett namn för denna utbildning" }}
-          render={({ 
-            field:  { value, onChange, onBlur, name, ...field },
-          }) => (
-            <div className="w-full max-w-md flex flex-col mb-4">
-              <label htmlFor="name">Utbildnings namn</label>
+          render={({ field: { value, onChange, onBlur, name, ...field } }) => (
+            <div className='w-full max-w-md flex flex-col mb-4'>
+              <label htmlFor='name'>Utbildnings namn</label>
               <input
                 {...field}
-                id="name"
-                type="text"
-                placeholder="Lägg till ett utbildnings namn"
-                className="input h-[40px] bg-muted input-bordered w-full mt-2 rounded-md"
+                id='name'
+                type='text'
+                placeholder='Lägg till ett utbildnings namn'
+                className='input h-[40px] bg-muted input-bordered w-full mt-2 rounded-md'
                 onChange={onChange}
                 onBlur={onBlur}
                 value={value}
               />
-              <p className="text-xs text-red-500 mt-1">
+              <p className='text-xs text-red-500 mt-1'>
                 {errors.name?.message}
               </p>
             </div>
@@ -101,18 +98,18 @@ const CreateEduAdminForm = ({ showModal, setShowModal  }: Props) => {
         />
 
         <button
-          type="submit"
-          className="bg-indigo-500 text-white py-2 px-6 rounded-sm hover:bg-indigo-50 hover:text-foreground"
+          type='submit'
+          className='bg-indigo-500 text-white py-2 px-6 rounded-sm hover:bg-indigo-50 hover:text-foreground'
         >
           Spara
         </button>
       </section>
       {/* Right side */}
-      <section className="h-full flex-1">
-        <div className="flex justify-between p-2 items-center">
-          <p>Utbildningsinformation</p>
+      <section className='h-full flex-1'>
+        <div className='flex justify-between p-2 items-center'>
+          {/* <p>Utbildningsinformation</p> */}
         </div>
-        <RichText ref={quillRef} />
+        {/* <RichText ref={quillRef} /> */}
       </section>
     </form>
   );
