@@ -4,6 +4,7 @@ import { log } from "console";
 import Link from "next/link";
 import React from "react";
 import { FaHtml5, FaTrash } from "react-icons/fa";
+import { FileText, Info } from "lucide-react";
 
 type Props = {
    moduleLib: Module_lib;
@@ -13,7 +14,7 @@ type Props = {
 // /making a comment
 };
 
-const AdminCreateModuleCards = ({ moduleLib, infoClickHandler }: Props) => {
+const AdminCreateModuleCards = ({ title,moduleLib, infoClickHandler }: Props) => {
  
 //   const handleDelete = () => {
 //     if (window.confirm("Are you sure")) {
@@ -22,23 +23,24 @@ const AdminCreateModuleCards = ({ moduleLib, infoClickHandler }: Props) => {
 // }
  
   return (
-    <div className="w-[232px] h-[338px] shadow-lg flex flex-col rounded-lg">
+    <div className="relative flex flex-col justify-center items-center gap-2 w-[200px] h-[200px] bg-primary text-white rounded-md shadow-md hover:shadow-xl hover:scale-105 duration-200">
       {/* card header */}
-      <div className="flex flex-1 justify-center items-center bg-card rounded-t-lg">
-        <FaHtml5 size="4em" />
-      </div>
+      <Info
+        className="absolute top-2 right-2 hover:cursor-pointer"
+        onClick={infoClickHandler}
+      />
       {/* card body */}
-      <div className="flex flex-col gap-2 p-2 text-center">
-
-        <p>{moduleLib.title}</p>
+      {/* <div className="flex flex-col gap-2 p-2 text-center"> */}
+      <FileText size={48} />
+      <h3>{title}</h3>
         <button
-          className="bg-red-400 text-white py-1 px-2 rounded-md hover:bg-red-600"
+          className="bg-green-400 text-white py-1 px-2 rounded-md hover:bg-red-600"
            onClick={infoClickHandler}
            
         >
           {/* <FaTrash className="m-1"/> Delete */}
-        Radera</button>
-      </div>
+        Se mer</button>
+      {/* </div> */}
     </div>
   );
 };

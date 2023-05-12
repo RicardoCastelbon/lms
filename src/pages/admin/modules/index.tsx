@@ -2,10 +2,7 @@ import Modal from "@/src/components/ui/modals/Modal";
 import UserLayout from "@/src/components/ui/UserLayout";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
-
 import { Plus } from "lucide-react";
-import { useQuill } from "react-quilljs";
-import { IconContext } from "react-icons";
 import { getServerSession } from "next-auth";
 import {   Module_lib } from "@prisma/client";
 import { createServerSideHelpers } from "@trpc/react-query/server";
@@ -13,7 +10,6 @@ import type { GetServerSideProps, NextPage } from "next";
 import { nextAuthOptions } from "@/src/common/auth";
 import { serverRouter } from "@/src/server/routers";
 import { createContext } from "@/src/server/context";
-import { moduleLibId } from "@/src/common/validation/module-lib";
 import CreateModuleAdminForm from "@/src/components/ui/forms/admin/CreateModuleAdminForm";
 import AdminCreateModuleCards from "@/src/components/ui/cards/AdminCreateModuleCards";
 import { trpc } from "@/src/common/trpc";
@@ -21,7 +17,6 @@ import { modules } from "@/prisma/data/modules";
 import parse from "html-react-parser";
 
 type Props = {
-
   modulesLibs: Module_lib[];
 
 };
@@ -35,16 +30,16 @@ const filterModuleById = (
   return selectedModule[0];
 };
 
-const ModulesPage = (props: Props) => {
+const ModulesPage = ({modulesLibs}: Props) => {
   const { data: session } = useSession();
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [moduleLib, setModuleLib] = useState<Module_lib[]>(props.modulesLibs || []);
+  const [moduleLib, setModuleLib] = useState<Module_lib[]>(modulesLibs || []);
   const [isInfo, setIsInfo] = useState<boolean>(false);
   const [currentModule, setCurrentModule] = useState<Module_lib>();
 
-  const modalClickHandler = () => {
-    setShowModal((prev) => !prev);
-  };
+  // const modalClickHandler = () => {
+  //   setShowModal((prev) => !prev);
+  // };
 
   useEffect(() => {
     console.log(modules)
@@ -99,9 +94,9 @@ const ModulesPage = (props: Props) => {
             </div>
           </form>
           <section className="w-full flex flex-wrap justify-center md:justify-start gap-2 mt-10">
-          {props.modulesLibs !== null ? (
+          {modulesLibs !== null ? (
             <>
-          {props.modulesLibs?.map((moduleLib: Module_lib) => (
+          {modulesLibs?.map((moduleLib: Module_lib) => (
               <AdminCreateModuleCards
                 key={moduleLib.id}
                 title={moduleLib.title}
@@ -109,7 +104,7 @@ const ModulesPage = (props: Props) => {
                 // onDelete={handleDelete}
                 infoClickHandler={() => {
                   setCurrentModule(
-                    filterModuleById(moduleLib.id, modules)
+                    filterModuleById(moduleLib.id, modulesLibs)
                   );
                   infoClickHandler();
                 }}
