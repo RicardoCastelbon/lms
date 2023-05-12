@@ -1,4 +1,5 @@
 import { trpc } from "@/src/common/trpc";
+import { useIcon } from "@/src/lib/hooks/iconHook";
 import { Course } from "@prisma/client";
 import { log } from "console";
 import Link from "next/link";
@@ -19,6 +20,8 @@ type Props = {
 const CourseCard = ({ course, role }: Props) => {
   // console.log(course);
   const { mutateAsync } = trpc.course.updateCourse.useMutation();
+
+  const { selectIcon } = useIcon();
   const publishClickHandler = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     course: Course
@@ -46,7 +49,7 @@ const CourseCard = ({ course, role }: Props) => {
           course.color !== "" ? course.color : "bg-card"
         } rounded-t-lg`}
       >
-        <FaHtml5 size="4em" />
+        {selectIcon(course.icon)}
       </div>
       {/* card body */}
       <div className="flex flex-col gap-2 p-2 text-center">
