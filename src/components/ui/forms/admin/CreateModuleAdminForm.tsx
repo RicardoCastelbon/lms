@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from "react";
 import { useQuill } from "react-quilljs";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,14 +12,16 @@ import {
 
 type Props = {
   closeModal: () => void;
+  setShowModal: Dispatch<SetStateAction<boolean>>;
+  showModal: boolean;
 };
 
-const CreateModuleAdminForm = ({ closeModal }: Props) => {
+const CreateModuleAdminForm = ({ showModal,setShowModal }: Props) => {
   const {
     handleSubmit,
     control,
     reset,
-    formState: { errors, isValid, isDirty },
+    formState: { errors },
   } = useForm<ModuleLibInputSchema>({
     defaultValues: {
           title: "",
@@ -30,41 +32,31 @@ const CreateModuleAdminForm = ({ closeModal }: Props) => {
     // resolver: zodResolver(moduleLibInputSchema),
   });
 
-  const { quill, quillRef } = useQuill();
-  const { mutateAsync } = trpc.moduleLib.create.useMutation();
+
+  const { quill, quillRef: refOne } = useQuill();
+  const { quill: quillTwo, quillRef: refTwo } = useQuill();
+    const { mutateAsync } = trpc.moduleLib.create.useMutation();
 
   const onSubmit = useCallback(
     async (data: ModuleLibInputSchema) => {
-      try {
-        const moduleLibData = {
-          ...data,
-          content: String(quill?.root.innerHTML),
-        };
-
-        // Check all fields are filled
-        if (
-          !moduleLibData.title ||
-          !moduleLibData.description ||
-          !moduleLibData.content
-        ) {
-          // console.log("need to fill in all fields");
-          // console.log(moduleLibData);
-          return;
-        } else {
-          console.log(moduleLibData);
-          const result = await mutateAsync(moduleLibData );
+        try {
+          data.content = String(quill?.root.innerHTML);
+          console.log(quillTwo?.root.innerHTML);
+  
+          data.description = String(quillTwo?.root.innerHTML);
+          console.log(data);
+          const result = await mutateAsync(data);
           if (result.success) {
             quill!.root.innerHTML = "";
             reset();
-            closeModal();
+            setShowModal(false);
           }
+        } catch (err) {
+          console.error(err);
         }
-      } catch (err) {
-        console.error(err);
-      }
-    },
-    [mutateAsync, reset, quill, closeModal]
-  );
+      },
+      [mutateAsync, reset, quill, showModal]
+    );
 
   return (
     <form className="md:flex gap-4 block" onSubmit={handleSubmit(onSubmit)}>
@@ -74,71 +66,115 @@ const CreateModuleAdminForm = ({ closeModal }: Props) => {
         <Controller
           name="title"
           control={control}
-          rules={{ required: "Lägg till en title för denna modal" }}
-          render={({
-             field: { value, onChange, onBlur, name, ...field } }) => (
+          rules={{ required: "Ange ett namn på modalen" }}
+          render={({ field: { value, onChange, onBlur, name, ...field } }) => (
             <div className="w-full max-w-md flex flex-col mb-4">
-              <label htmlFor=".title">Modalnamn</label>
+              <label htmlFor="title">Namn på modalen</label>
               <input
                 {...field}
-                id="title"
-                type="text"
-                 placeholder="Lägg till modalnamn"
-                className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
+                value={value}
+                name={name}
                 onChange={onChange}
                 onBlur={onBlur}
-                 value={value}
+                id="title"
+                type="text"
+                placeholder="Ange namn på modalen"
+                className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
               />
-              {/* {errors?.title && ( */}
-                <p className="text-xs text-red-500 mt-1">
-                  {errors?.title?.message}
-                </p>
-              {/* )} */}
+              <p className="text-xs text-red-500 mt-1">
+                {errors?.title?.message}
+              </p>
             </div>
           )}
         />
         <Controller
           name="description"
           control={control}
-          rules={{ required: "Lägg till en beskrivning på denna modal" }}
+          rules={{
+            // required: "Ange en beskrivande text av uppgiften",
+            validate: {
+              hasContent: (value) => {
+                value = String(quillTwo?.getText());
+                // console.log(value.length);
+
+                return (
+                  value.length > 10 || "Ange en beskrivning med minst 10 tecken"
+                );
+              },
+            },
+          }}
           render={({ field: { value, onChange, onBlur, name, ...field } }) => (
             <div className="w-full max-w-md flex flex-col mb-4">
               <label htmlFor="description">Beskrivning</label>
-              <input
-                {...field}
+              <RichText
                 id="description"
-                type="text"
-                placeholder="Lägg till en beskrivning"
-                onChange={onChange}
-                onBlur={onBlur}
+                {...field}
+                // field={field}
                 name={name}
                 value={value}
-                className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
+                onChange={onChange}
+                onBlur={onBlur}
+                ref={refTwo}
               />
-              {errors?.description && (
-                <p className="text-xs text-red-500 mt-1">
-                  {errors.description?.message}
-                </p>
-              )}
+              <p className="text-xs text-red-500 mt-1">
+                {errors?.description?.message}
+              </p>
             </div>
           )}
         />
-        <button
+        {/* <button
           type="submit"
           className="bg-indigo-500 text-white py-2 px-6 rounded-sm hover:bg-indigo-50 hover:text-foreground"
         >
           Spara
-        </button>
+        </button> */}
       </section>
       {/* Right side */}
       <section className="h-full flex-1">
         <div className="flex justify-between p-2 items-center">
-          <p>Modalinformation</p>
+          <label htmlFor="content">Modalinformation</label>
+          <button
+            type="submit"
+            className="bg-indigo-500 text-white py-2 px-6 rounded-sm hover:bg-indigo-50 hover:text-foreground"
+          >
+            Spara
+          </button>
         </div>
-        <RichText ref={quillRef} />
+        <Controller
+          name="content"
+          control={control}
+          rules={{
+            // required: "Ange en beskrivande text av uppgiften",
+            validate: {
+              hasContent: (value) => {
+                value = String(quill?.getText());
+
+                return value.length > 10 || "Ange en text med minst 10 tecken";
+              },
+            },
+          }}
+          render={({ field: { value, onChange, onBlur, name, ...field } }) => (
+            <div className="w-full max-w-md flex flex-col mb-4">
+
+              <RichText
+                id="content"
+                {...field}
+                name={name}
+                value={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                ref={refOne}
+              />
+              <p className="text-xs text-red-500 mt-1">
+                {errors?.content?.message}
+              </p>
+            </div>
+          )}
+        />
       </section>
     </form>
   );
 };
+
 
 export default CreateModuleAdminForm;
