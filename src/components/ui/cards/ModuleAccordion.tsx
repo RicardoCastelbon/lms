@@ -8,6 +8,7 @@ import {
 } from "@/src/components/ui/accordion";
 import { Check, ClipboardList, Plus } from "lucide-react";
 import parse from "html-react-parser";
+import { useModal } from "@/src/lib/hooks/modalHook";
 import { useSession } from "next-auth/react";
 
 type Props = {
@@ -16,7 +17,9 @@ type Props = {
 
 const ModuleAccordion = ({ module }: Props) => {
   const [desktopVersion, setdesktopVersion] = useState<boolean>(true);
+  const [showModalExercise, setShowModalExercise] = useState<boolean>();
   const [screenWidth, setScreenWidth] = useState<number>();
+  const { showModal } = useModal();
   const { data: session } = useSession();
 
   useEffect(() => {
