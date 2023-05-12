@@ -211,7 +211,6 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
     educationId,
   });
 
-  // type Resource = Course;
   type UserRole = string | undefined | null;
   //filter result depending on the role of the logged in user
   const filterCoursesByRole = (role: UserRole, resource: Course[]) => {
@@ -231,14 +230,13 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
   };
 
   const courses: Course[] = JSON.parse(JSON.stringify(res.course));
-  // const courses = res.course as Course[];
+
   const userRole = currentSession && (currentSession.user.role as string);
 
   const filteredCourses = filterCoursesByRole(userRole, courses);
 
   //Needed to serialize Date objects for createdAt + updatedAt otherwise error is thrown
   const education = JSON.parse(JSON.stringify(eduRes));
-  // console.log(courses);
 
   return {
     props: {
