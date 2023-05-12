@@ -1,10 +1,8 @@
-// import { Button } from "@/src/components/ui/button";
-// import Layout from "@/src/components/ui/Layout";
 import Modal from "@/src/components/ui/modals/Modal";
 import UserLayout from "@/src/components/ui/UserLayout";
 import {  Plus } from "lucide-react";
 import { useSession } from "next-auth/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CreateCourseAdminForm from "@/src/components/ui/forms/admin/CreateCourseAdminForm";
 // import { useQuill } from "react-quilljs";
 import AdminCreateCourseCards from "@/src/components/ui/cards/AdminCreateCourseCards";
@@ -25,81 +23,128 @@ import type { GetServerSideProps, NextPage } from "next";
 import { trpc } from "@/src/common/trpc";
 
 type Props = {
-  sideBarClass: boolean;
-  role?: string | null;
-  admin?: string| null;
-  coursesLib?: Course_lib[];
-
+  courses: Course_lib[];
+};
+const filterExerciseById = (
+  id: number,
+  courses: Course_lib[]
+): Course_lib => {
+  const selectedCourse = courses.filter((item) => item.id === id);
+  console.log(selectedCourse);
+  return selectedCourse[0];
 };
 
-const CoursesPage = (props: Props) => {
+const CoursesPage = ({ courses }: Props) => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const { data: session } = useSession(); 
-  const [courseLib, setCourseLib] = useState<Course_lib[]>(props.coursesLib || []);
-  const modalClickHandler = () => {
+  const [isInfo, setIsInfo] = useState<boolean>(false);
+  const [currentCourse, setCurrentCourse] = useState<Course_lib>();
+  const [courseLib, setCourseLib] = useState<Course_lib[]>(courses || []);
+
+  // const modalClickHandler = () => {
+  //   setShowModal((prev) => !prev);
+  // };
+
+  useEffect(() => {
+    console.log(courses);
+  }, [courses]);courses
+
+  useEffect(() => {
+    console.log(currentCourse);
+  }, [currentCourse]);
+
+  const infoClickHandler = () => {
     setShowModal((prev) => !prev);
+    setIsInfo(true);
   };
 
+  const formClickHandler = () => {
+    setShowModal((prev) => !prev);
+    setIsInfo(false);
+  };
 
   const { mutateAsync: deleteCourseLib } = trpc.courseLib.delete.useMutation();
-  const handleDelete = async (courseLibId: number) => {
-    // Optimistically remove the course from state
-    setCourseLib(courseLib.filter(course => course.id !== courseLibId));
+  // const handleDelete = async (courseLibId: number) => {
+  //   // Optimistically remove the course from state
+  //   setCourseLib(courseLib.filter(course => course.id !== courseLibId));
   
-    try {
-      await deleteCourseLib({ courseLibId: String(courseLibId) });
-    } catch (error) {
-      console.error('Failed to delete course: ', error);
-      // If the deletion fails, reset the state
-      setCourseLib(props.coursesLib || []);
-    }
-  };
+  //   try {
+  //     await deleteCourseLib({ courseLibId: String(courseLibId) });
+  //   } catch (error) {
+  //     console.error('Failed to delete course: ', error);
+  //     // If the deletion fails, reset the state
+  //     setCourseLib(courses || []);
+  //   }
+  // };
   
 
   return (
-    <IconContext.Provider
-  value={{
-    className:
-      "text-primary hover:text-indigo-50 hover:bg-primary hover:cursor-pointer rounded-sm",
-  }}
->
+
   <UserLayout role={session?.user.role ?? ""}>
-  <div className="flex items-center mb-4">
-          <input
-            type="text"
-            placeholder="Sök kurser här..."
-            className="border border-gray-300 rounded-md py-2 px-3 w-80 mr-2 flex-grow"
-          />
-          <button className="bg-primary text-white px-4 py-2 rounded-md hover:bg-indigo-50 hover:text-primary">
-            Sök
-          </button>
-        </div>
-<div className="flex flex-col md:flex-row gap-8">
-  {/* Main content */}
-  <div className="flex-1 mx-auto md:mx-0">
-  <div className="flex justify-center">
-    <div className="grid grid-cols-1 justify-items-center md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {/* For courses */}
-      {props.coursesLib && 
-      props.coursesLib.map((courseLib: Course_lib) => (
+       <div className="w-full flex flex-col md:flex-row gap-8">
+        {/* main content */}
+        <section className="w-full h-full flex flex-wrap justify-center gap-4 md:justify-start md:w-3/6 lg:w-4/6">
+          <form className="flex flex-col items-center gap-6">
+            <h1 className="text-2xl font-semibold">Övningsbibliotek</h1>
+            <div className="flex items-center mb-4">
+              <input
+                type="text"
+                placeholder="Sök kurser här..."
+                className="border border-gray-300 rounded-md py-2 px-3 w-80 mr-2 flex-grow"
+              />
+              <button
+                className="bg-primary text-white px-4 py-2 rounded-md hover:bg-indigo-50 hover:text-primary"
+                type="submit"
+              >
+                Sök
+              </button>
+            </div>
+          </form>
+          <section className="w-full flex flex-wrap justify-center md:justify-start gap-2 mt-10">
+          {courseLib !== null ? (
+              <>
+      {courseLib?.map((courseLib: Course_lib) => (
         <AdminCreateCourseCards
           key={courseLib.id}
-          courseLib={courseLib}
-          onDelete={handleDelete}
+           courseLib={courseLib}
+          title={courseLib.title}
+          infoClickHandler={() => {
+            setCurrentCourse (
+              filterExerciseById(courseLib.id, courses)
+            );
+            infoClickHandler();
+          }}
         />
+          // onDelete={handleDelete}
+      
       ))}
-    </div>
-  </div>
-</div>
+         </>
+        ) : (
 
-
+          <section className="w-full flex flex-col justify-center items-center gap-4">
+          <h2 className="text-2xl">Inga kurser finns</h2>
+          <p className="">Skapa en nu!</p>
+          <button
+                  className="bg-primary text-white px-4 py-2 rounded-md hover:bg-indigo-50 hover:text-primary"
+                  onClick={(e) => {
+                    // e.preventDefault();
+                    formClickHandler();
+                  }}
+                >
+                  Skapa en kurs
+                </button>
+                {/* </div> */}
+              </section>
+            )}
+          </section>
+        </section>
   <aside className="w-64">
     {/* quick-menu */}
     <div className="w-full p-2">
       {/* quick menu items */}
       <div
         className="flex items-center gap-2 bg-card p-4 rounded-lg hover:cursor-pointer hover:bg-background"
-        onClick={modalClickHandler}
+        onClick={formClickHandler}
       >
         <div className="rounded-full bg-primary text-white p-2">
           <Plus />
@@ -109,15 +154,17 @@ const CoursesPage = (props: Props) => {
     </div>
   </aside>
 </div>
-  </UserLayout>
   <Modal
     header={"Skapa en kurs"}
     showModal={showModal}
     setShowModal={setShowModal}
-  >
-  <CreateCourseAdminForm closeModal={() => setShowModal(false)} />
-  </Modal>
-</IconContext.Provider>
+    >
+  <CreateCourseAdminForm
+           setShowModal={setShowModal}
+           showModal={showModal}
+           />
+           </Modal>
+           </UserLayout>
 
   );
 };
@@ -150,7 +197,7 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
   return {
     props: {
       session: currentSession,
-      coursesLib: courseLib?.courseLib || null,
+      courses: courseLib?.courseLib || null,
     },
 };
 };
