@@ -1,13 +1,8 @@
 import Modal from "@/src/components/ui/modals/Modal";
 import UserLayout from "@/src/components/ui/UserLayout";
 import { useSession } from "next-auth/react";
-import React, { useState } from "react";
-
-import UserSideNav from "@/src/components/ui/navigation/UserSideNav";
-import { CalendarIcon, Plus, PlusIcon } from "lucide-react";
-import RichText from "@/src/components/ui/text-editor/RichText";
-import { useQuill } from "react-quilljs";
-import { IconContext } from "react-icons";
+import React, { useEffect, useState } from "react";
+import { Plus } from "lucide-react";
 import { getServerSession } from "next-auth";
 import {   Module_lib } from "@prisma/client";
 import { createServerSideHelpers } from "@trpc/react-query/server";
@@ -15,106 +10,164 @@ import type { GetServerSideProps, NextPage } from "next";
 import { nextAuthOptions } from "@/src/common/auth";
 import { serverRouter } from "@/src/server/routers";
 import { createContext } from "@/src/server/context";
-import { moduleLibId } from "@/src/common/validation/module-lib";
 import CreateModuleAdminForm from "@/src/components/ui/forms/admin/CreateModuleAdminForm";
-import AdminCreateModuleCards from "@/src/components/ui/cards/AdminCreateModuleCards";
+import AdminCreateModuleCards from "@/src/components/ui/cards/admin/AdminCreateModuleCards";
 import { trpc } from "@/src/common/trpc";
+import { modules } from "@/prisma/data/modules";
+import parse from "html-react-parser";
+
 type Props = {
-  sideBarClass: boolean;
-  role?: string | null;
-  admin?: string | null;
-  modulesLibs?: Module_lib[];
-  // courses?: Course_lib[];
-  // entity?: any
+  modulesLibs: Module_lib[];
 
 };
 
-const ModulesPage = (props: Props) => {
+const filterModuleById = (
+  id: number,
+  modules: Module_lib[]
+): Module_lib => {
+  const selectedModule = modules.filter((item) => item.id === id);
+  console.log(selectedModule);
+  return selectedModule[0];
+};
+
+const ModulesPage = ({modulesLibs}: Props) => {
   const { data: session } = useSession();
-  const { quill, quillRef } = useQuill();
-
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [moduleLib, setModuleLib] = useState<Module_lib[]>(props.modulesLibs || []);
+  const [moduleLib, setModuleLib] = useState<Module_lib[]>(modulesLibs || []);
+  const [isInfo, setIsInfo] = useState<boolean>(false);
+  const [currentModule, setCurrentModule] = useState<Module_lib>();
 
-  const modalClickHandler = () => {
+  // const modalClickHandler = () => {
+  //   setShowModal((prev) => !prev);
+  // };
+
+  useEffect(() => {
+    console.log(modules)
+  }, [modules])
+
+  useEffect(() => {
+    console.log(modules)
+  }, [currentModule])
+
+  const infoClickHandler = () => {
     setShowModal((prev) => !prev);
+    setIsInfo(true);
+  };
+
+  const formClickHandler = () => {
+    setShowModal((prev) => !prev);
+    setIsInfo(false);
   };
 
   const { mutateAsync: deleteModuleLib } = trpc.moduleLib.delete.useMutation();
   
-  const handleDelete = async (moduleLibId: number) => {
-    // Optimistically remove the course from state
-    setModuleLib(moduleLib.filter(course => course.id !== moduleLibId));
+  // const handleDelete = async (moduleLibId: number) => {
+  //   // Optimistically remove the course from state
+  //   setModuleLib(moduleLib.filter(course => course.id !== moduleLibId));
   
-    try {
-      await deleteModuleLib({ moduleLibId: String(moduleLibId) });
-    } catch (error) {
-      console.error('Failed to delete course: ', error);
-      // If the deletion fails, reset the state
-      setModuleLib(props.modulesLibs || []);
-    }
-  };
+  //   try {
+  //     await deleteModuleLib({ moduleLibId: String(moduleLibId) });
+  //   } catch (error) {
+  //     console.error('Failed to delete course: ', error);
+  //     // If the deletion fails, reset the state
+  //     setModuleLib(props.modulesLibs || []);
+  //   }
+  // };
   return (
-    <IconContext.Provider
-  value={{
-    className:
-      "text-primary hover:text-indigo-50 hover:bg-primary hover:cursor-pointer rounded-sm",
-  }}
->
 <UserLayout role={session?.user.role ?? ""}>
-    <div className="flex items-center mb-4">
-      <input
-        type="text"
-        placeholder="Sök kurser här..."
-        className="border border-gray-300 rounded-md py-2 px-3 w-80 mr-2 flex-grow"
-      />
-      <button className="bg-primary text-white px-4 py-2 rounded-md hover:bg-indigo-50 hover:text-primary">
-        Sök
-      </button>
-    </div>
-    <div className="flex flex-col md:flex-row gap-8">
-      {/* Main content */}
-      <div className="flex-1">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {/* For modules */}
-          {props.modulesLibs &&
-            props.modulesLibs.map((moduleLib: Module_lib) => (
+<div className="w-full flex flex-col md:flex-row gap-8">
+<section className="w-full h-full flex flex-wrap justify-center gap-4 md:justify-start md:w-3/6 lg:w-4/6">
+          <form className="flex flex-col items-center gap-6">
+            <h1 className="text-2xl font-semibold">Modalbibliotek</h1>
+            <div className="flex items-center mb-4">
+              <input
+                type="text"
+                placeholder="Sök kurser här..."
+                className="border border-gray-300 rounded-md py-2 px-3 w-80 mr-2 flex-grow"
+              />
+              <button
+                className="bg-primary text-white px-4 py-2 rounded-md hover:bg-indigo-50 hover:text-primary"
+                type="submit"
+              >
+                Sök
+              </button>
+            </div>
+          </form>
+          <section className="w-full flex flex-wrap justify-center md:justify-start gap-2 mt-10">
+          {modulesLibs !== null ? (
+            <>
+          {modulesLibs?.map((moduleLib: Module_lib) => (
               <AdminCreateModuleCards
                 key={moduleLib.id}
+                title={moduleLib.title}
                 moduleLib={moduleLib}
-                onDelete={handleDelete}
+                // onDelete={handleDelete}
+                infoClickHandler={() => {
+                  setCurrentModule(
+                    filterModuleById(moduleLib.id, modulesLibs)
+                  );
+                  infoClickHandler();
+                }}
 
                 />
             ))}
-        </div>
-      </div>
 
-      <aside className="w-64">
-        {/* quick-menu */}
-        <div className="w-full p-2">
-          {/* quick menu items */}
-          <div
-            className="flex items-center gap-2 bg-card p-4 rounded-lg hover:cursor-pointer hover:bg-background"
-            onClick={modalClickHandler}
-          >
-            <div className="rounded-full bg-primary text-white p-2">
-              <Plus />
-            </div>
-            <p>Lägg till Modal</p>
+            </>
+   ) : (
+    <section className="w-full flex flex-col justify-center items-center gap-4">
+    <h2 className="text-2xl">Inga övningar finns</h2>
+    {/* <div className="flex justify-center items-center gap-6"> */}
+    <p className="">Skapa en nu!</p>
+    <button
+      className="bg-primary text-white px-4 py-2 rounded-md hover:bg-indigo-50 hover:text-primary"
+      onClick={(e) => {
+        // e.preventDefault();
+        formClickHandler();
+      }}
+    >
+      Skapa en övning
+    </button>
+    {/* </div> */}
+  </section>
+)}
+</section>
+</section>
+
+<aside className="flex-1 flex flex-col">
+          {/* quick-menu */}
+          <div className="w-full max-w-[400px] px-2 self-center md:self-end">
+            {/* quick menu items */}
+            <div
+              className="flex items-center gap-2 bg-card p-4 rounded-lg hover:cursor-pointer hover:bg-background"
+              onClick={formClickHandler}
+            >
+              <div className="rounded-full bg-primary text-white p-2">
+                <Plus />
+              </div>
+              <p>Lägg till modal</p>
           </div>
         </div>
       </aside>
     </div>
-  </UserLayout>
+
   <Modal
     header={"Skapa en modal"}
     showModal={showModal}
     setShowModal={setShowModal}
-  >
-  <CreateModuleAdminForm closeModal={() => setShowModal(false)} />
+    >
+              {isInfo ? (
+          <article className="w-full h-full">
+            {/* <h2>Här går resource beskrivningen in</h2> */}
+            {currentModule && <div>{parse(currentModule.content)}</div>}
+          </article>
+        ) : (
+  <CreateModuleAdminForm 
+     setShowModal={setShowModal}
+     showModal={showModal}
+     />
+     )}
   </Modal>
-</IconContext.Provider>
-
+     </UserLayout>
   );
 };
 
@@ -125,28 +178,24 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
     context.res,
     nextAuthOptions
     );
-    console.log("Current Session", currentSession)
+
     //Set up a trpc helper, needed for serverSide fetching
   const helpers = createServerSideHelpers({
     router: serverRouter,
     ctx: await createContext(context),
   });
 
-
-  //Set up a trpc helper, needed for serverSide fetching
-  console.log("Fetching module library with id:", moduleLibId);
   //The actual fetching
 
    const res = await helpers.moduleLib.getMany.fetch();
-   console.log("res", res)
-   console.log("Module library fetched:", res);
+
   //Needed to serialize Date objects for createdAt + updatedAt otherwise error is thrown
   const moduleLib = JSON.parse(JSON.stringify(res));
   
   return {
     props: {
       session: currentSession,
-      modulesLibs: moduleLib?.moduleLib || null,
+      modulesLibs: moduleLib.moduleLib || null,
     },
   };
 };

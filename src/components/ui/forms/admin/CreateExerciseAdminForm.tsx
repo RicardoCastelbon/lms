@@ -11,7 +11,6 @@ import React, {
 import { useQuill } from "react-quilljs";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
 import RichText from "../../text-editor/RichText";
 import { trpc } from "@/src/common/trpc";
 import {

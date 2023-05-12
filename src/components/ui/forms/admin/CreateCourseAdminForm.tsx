@@ -1,29 +1,36 @@
 "use client";
-import React, { useCallback, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+
 import { useQuill } from "react-quilljs";
 import { Controller, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import IconSelect from "../../dropdowns/IconSelect";
 import RichText from "../../text-editor/RichText";
-import ColorSelect from "../../dropdowns/ColorSelect";
 import { trpc } from "@/src/common/trpc";
-import { useSession } from "next-auth/react";
 import {
   courseLibInputSchema,
   CourseLibInputSchema,
 } from "@/src/common/validation/course-lib";
 
 type Props = {
-  closeModal: () => void;
+  // closeModal: () => void;
+  setShowModal: Dispatch<SetStateAction<boolean>>;
+  showModal: boolean;
 };
-const CreateCourseAdminForm = ({ closeModal }: Props) => {
-  const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
+const CreateCourseAdminForm = ( { showModal, setShowModal }: Props) => {
+
+  // const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
 
   const {
     handleSubmit,
     control,
     reset,
-    formState: { errors, isValid, isDirty },
+    formState: { errors },
   } = useForm<CourseLibInputSchema>({
     defaultValues: {
       title: "",
@@ -33,122 +40,155 @@ const CreateCourseAdminForm = ({ closeModal }: Props) => {
     // resolver: zodResolver(courseLibInputSchema),
   });
 
-  const { quill, quillRef } = useQuill();
+  const { quill, quillRef: refOne } = useQuill();
+  const { quill: quillTwo, quillRef: refTwo } = useQuill();
   const { mutateAsync } = trpc.courseLib.create.useMutation();
+
+
+  useEffect(() => {
+    console.log(errors);
+  }, [errors]);
 
   const onSubmit = useCallback(
     async (data: CourseLibInputSchema) => {
       try {
-        const courseLibData = {
-          ...data,
-          content: String(quill?.root.innerHTML),
-        };
-
-        // Check all fields are filled
-        if (
-          !courseLibData.title ||
-          !courseLibData.description ||
-          !courseLibData.content
-        ) {
-          console.log("need to fill in all fields");
-          console.log(courseLibData);
-          return;
-        } else {
-          console.log(courseLibData);
-          const result = await mutateAsync(courseLibData);
-          console.log("result", result);
+          data.content = String(quill?.root.innerHTML);
+          console.log(quillTwo?.root.innerHTML);
+  
+          data.description = String(quillTwo?.root.innerHTML);
+          console.log(data);
+          const result = await mutateAsync(data);
           if (result.success) {
             quill!.root.innerHTML = "";
             reset();
-            closeModal();
+            setShowModal(false);
           }
+        } catch (err) {
+          console.error(err);
         }
-      } catch (err) {
-        console.error(err);
-      }
-    },
-    [mutateAsync, reset, quill, closeModal]
-  );
+      },
+      [mutateAsync, reset, quill, showModal]
 
-  console.log("on SUBMIT", onSubmit);
+  )
 
   return (
-    <form
-      className="flex flex-col gap-4 md:flex-row"
-      onSubmit={handleSubmit(onSubmit)}
-    >
+    <form className="md:flex gap-4 block" onSubmit={handleSubmit(onSubmit)}>
+    
       {/* left side */}
       <section className="flex-1 flex flex-col gap-4">
         {/* form group */}
-
-
         <Controller
-              name="title"
-              control={control}
-              rules={{ required: "Lägg till ett namn på denna kurs" }}
-              render={({
-                field: { value, onChange, onBlur, name, ...field },
-              }) => (
-                <div className="w-full max-w-md flex flex-col mb-4">
-              <label htmlFor="title">Kursnamn</label>
-                  <input
-                    {...field}
-                    className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
-                    id="education"
-                    onChange={onChange}
-                    placeholder="Lägg till en en kurs titel"
+          name="title"
+          control={control}
+          rules={{ required: "Ange ett namn på kursen" }}
+          render={({ field: { value, onChange, onBlur, name, ...field } }) => (
+            <div className="w-full max-w-md flex flex-col mb-4">
+              <label htmlFor="title">Namn på kurs</label>
+              <input
+                {...field}
+                value={value}
+                name={name}
+                onChange={onChange}
+                onBlur={onBlur}
+                id="title"
+                type="text"
+                placeholder="Ange namn på kurs"
+                className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
+              />
+              <p className="text-xs text-red-500 mt-1">
+                {errors?.title?.message}
+              </p>
+            </div>
+          )}
+        />
+        <Controller
+          name="description"
+          control={control}
+          rules={{
+            // required: "Ange en beskrivande text av uppgiften",
+            validate: {
+              hasContent: (value) => {
+                value = String(quillTwo?.getText());
+                // console.log(value.length);
 
-                    onBlur={onBlur}
-                    name={name}
-                    value={value}
-                  />
-                  <p className="text-xs text-red-500">
-                    {errors.title?.message}
-                  </p>
-                </div>
-              )}
-            />
-            <Controller
-              name="description"
-              control={control}
-              rules={{ required: "Lägg till en beskrivning" }}
-              render={({
-                field: { value, onChange, onBlur, name, ...field },
-              }) => (
-                <div className="w-full max-w-md flex flex-col mb-4">
-                  <label htmlFor="description">Beskrivning</label>
-                  <input
-                    {...field}
-                    onChange={onChange}
-                    onBlur={onBlur}
-                    name={name}
-                    value={value}
-                    id="description"
-                    placeholder="Lägg till en kursbeskrivning"
-                    className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
-                  />
-                  {errors?.description && (
-                    <p className="text-xs text-red-500 mt-1">
-                      {errors?.description?.message}
-                    </p>
-                  )}
-                </div>
-              )}
-            />
-            <button
+                return (
+                  value.length > 10 || "Ange en beskrivning med minst 10 tecken"
+                );
+              },
+            },
+          }}
+          render={({ field: { value, onChange, onBlur, name, ...field } }) => (
+            <div className="w-full max-w-md flex flex-col mb-4">
+              <label htmlFor="description">Beskrivning</label>
+              <RichText
+                id="description"
+                {...field}
+                // field={field}
+                name={name}
+                value={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                ref={refTwo}
+              />
+              <p className="text-xs text-red-500 mt-1">
+                {errors?.description?.message}
+              </p>
+            </div>
+          )}
+        />
+            {/* <button
               type="submit"
               className="bg-indigo-500 text-white py-2 px-6 rounded-sm hover:bg-indigo-50 hover:text-foreground"
             >
               Spara
-            </button>
+            </button> */}
           </section>
-          {/* Right side */}
-          <section className="h-full flex-1">
-            <div className="flex justify-between p-2 items-center">
-              <p>Kursinformation</p>
+      {/* Right side */}
+      <section className="h-full flex-1">
+        <div className="flex justify-between p-2 items-center">
+          <label htmlFor="content">Kursinformation</label>
+          <button
+            type="submit"
+            className="bg-indigo-500 text-white py-2 px-6 rounded-sm hover:bg-indigo-50 hover:text-foreground"
+          >
+            Spara
+          </button>
+        </div>
+        <Controller
+          name="content"
+          control={control}
+          rules={{
+            // required: "Ange en beskrivande text av uppgiften",
+            validate: {
+              hasContent: (value) => {
+                value = String(quill?.getText());
+                // console.log(value.length);
+
+                return value.length > 10 || "Ange en text med minst 10 tecken";
+              },
+            },
+          }}
+          render={({ field: { value, onChange, onBlur, name, ...field } }) => (
+            <div className="w-full max-w-md flex flex-col mb-4">
+            
+              <RichText
+                id="content"
+                {...field}
+                // field={field}
+                name={name}
+                value={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                ref={refOne}
+              />
+              <p className="text-xs text-red-500 mt-1">
+                {errors?.content?.message}
+              </p>
             </div>
-            <RichText ref={quillRef} />
-          </section>
+          )}
+        />
+        {/* <RichText ref={refOne} /> */}
+      </section>
     </form>
   );
 };
