@@ -206,25 +206,44 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
 
   //The actual fetching
   const eduRes = await helpers.education.getOne.fetch({ educationId });
-  type Resource = Course | Module | Exercise;
-  //filter result depending on the role of the logged in user
-  /*  const filterEducationByRole = (role: string, resource: Resource[] ): Resource[] => {
-    return null;
-  } */
 
   const res = await helpers.course.getManyByEducationId.fetch({
     educationId,
   });
 
+  // type Resource = Course;
+  type UserRole = string | undefined | null;
+  //filter result depending on the role of the logged in user
+  const filterCoursesByRole = (role: UserRole, resource: Course[]) => {
+    console.log(role);
+    //if parameters are nullish return null
+    if (!role || !resource) return null;
+
+    //filter resource to only return resources that are published.
+    if (resource && role === "STUDENT") {
+      const publishedResources = resource.filter(
+        (item) => item?.published === true
+      );
+      return publishedResources;
+    }
+    // else return all resources
+    return resource;
+  };
+
+  const courses: Course[] = JSON.parse(JSON.stringify(res.course));
+  // const courses = res.course as Course[];
+  const userRole = currentSession && (currentSession.user.role as string);
+
+  const filteredCourses = filterCoursesByRole(userRole, courses);
+
   //Needed to serialize Date objects for createdAt + updatedAt otherwise error is thrown
-  const courses = JSON.parse(JSON.stringify(res));
   const education = JSON.parse(JSON.stringify(eduRes));
   // console.log(courses);
 
   return {
     props: {
       session: currentSession,
-      courses: courses.course || null,
+      courses: filteredCourses,
       education: education.education,
     },
   };
