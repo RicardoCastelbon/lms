@@ -16,72 +16,40 @@ export const createModuleLibController = async ({
   ctx: IContext;
 }) => {
   try {
-    console.log("Creating modules lib with input:", input);
+    console.log("Creating module lib with input:", input);
     const moduleLib: Module_lib = await ctx.prisma.module_lib.create({
-            data: {
-              title: input.moduleLib.title,
-              description: input.moduleLib.description,
-              content: input.moduleLib.content,
-            },
-          })
-      
-          return {
-            success: true,
-            code: 201,
-            message: "Resource created",
-            moduleLib,
-          };
-        } catch (error) {
-          console.log(error);
-      
-          if (error instanceof Prisma.PrismaClientKnownRequestError) {
-            if (error.code === "P2015") {
-              return {
-                success: false,
-                error: {
-                  code: error.code,
-                  message: error.message,
-                  meta: { ...error.meta },
-                },
-              };
-            }
-            if (error.code === "P2025") {
-              return {
-                success: false,
-                error: {
-                  code: error.code,
-                  message: error.message,
-                  meta: { ...error.meta },
-                },
-              };
-            }
-          }
-          return {
-            success: false,
-            error: new TRPCError({
-              code: "INTERNAL_SERVER_ERROR",
-              message: "An unexpected error occurred, please try again later.",
-              // optional: pass the original error to retain stack trace
-              cause: error,
-            }),
-          };
-        }
-      };
+      data: {
+        title: input.title,
+        description: input.description,
+        content: input.content,
+      },
+    });
+
+    return {
+      success: true,
+      code: 201,
+      message: "Module library created successfully.",
+      moduleLib,
+    };
+  } catch (error) {
+    console.log("Error creating module lib:", error);
+    throw new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+      message: "Failed to create module library",
+    });
+  }
+};
 
 export const getAllModulesLib = async ({ ctx }: { ctx: IContext }) => {
-  console.log("first, getAllModulesLib", getAllModulesLib)
   try {
-    const modulesLib: Module_lib[] =
-      await ctx.prisma.module_lib.findMany();
-
-    console.log("Modules fetched from database:", modulesLib);
+    const modulesLib: Module_lib[] = await ctx.prisma.module_lib.findMany();
 
     if (modulesLib.length <= 0) {
       return {
         success: false,
         code: 404,
         message: "No modules found, please try again",
-        modulesLib,
+        moduleLib: null,
       };
     } else {
       return {
@@ -97,7 +65,6 @@ export const getAllModulesLib = async ({ ctx }: { ctx: IContext }) => {
       error: new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "An unexpected error occurred, please try again later.",
-        // optional: pass the original error to retain stack trace
         cause: error,
       }),
     };
@@ -112,14 +79,11 @@ export const getOneModuleLib = async ({
   ctx: IContext;
 }) => {
   try {
-    console.log("getOneModuleLib input:", input);
-    const moduleLib: Module_lib | null =
-      await ctx.prisma.module_lib.findFirst({
-        where: { id: Number(input.moduleLibId) },
-      });
+    const moduleLib: Module_lib | null = await ctx.prisma.module_lib.findFirst({
+      where: { id: Number(input.moduleLibId) },
+    });
 
     if (moduleLib === null) {
-      console.log("modulelib" , moduleLib)
       return {
         success: false,
         code: 404,
@@ -140,7 +104,6 @@ export const getOneModuleLib = async ({
       error: new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "An unexpected error occurred, please try again later.",
-        // optional: pass the original error to retain stack trace
         cause: error,
       }),
     };
