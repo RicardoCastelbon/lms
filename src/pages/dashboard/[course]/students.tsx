@@ -14,29 +14,33 @@ type Props = {
 const students = (props: Props) => {
   return (
     <UserLayout>
-    <div className="flex flex-col">
-      <h1 className="text-2xl font-bold mb-4">Student översikt</h1>
-      <div className="flex flex-col sm:flex-row items-center font-bold text-lg mb-4">
-        <div className="w-full sm:w-1/4 mb-2 sm:mb-0">Deltagare</div>
-        <div className="w-full sm:w-1/4 mb-2 sm:mb-0 hidden sm:block">Inlämningsuppgifter</div>
-        <div className="w-full sm:w-1/4 mb-2 sm:mb-0 hidden sm:block">Övningar</div>
-        <div className="w-full sm:w-1/4 mb-2 sm:mb-0 hidden sm:block">Slutprov</div>
-        <div className="w-full sm:w-1/4 mb-2 sm:mb-0 hidden sm:block">Betyg</div>
-      </div>
       <div className="flex flex-col">
-      <div className="grid grid-cols-1 justify-items-center md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {props.users && 
-      props.users.map((user: User) => (
-        <p key={user.id}>{user.firstName}</p>
-        
-        ))}
-    </div>
-      </div>
-    </div>
-  </UserLayout>
-);
+        <h1 className="text-2xl font-bold mb-4">Student översikt</h1>
+        <div className="flex flex-col sm:flex-row items-center font-bold text-lg mb-4">
+          <div className="w-full sm:w-1/4 mb-2 sm:mb-0">Deltagare</div>
+          <div className="w-full sm:w-1/4 mb-2 sm:mb-0 hidden sm:block">Inlämningsuppgifter</div>
+          <div className="w-full sm:w-1/4 mb-2 sm:mb-0 hidden sm:block">Övningar</div>
+          <div className="w-full sm:w-1/4 mb-2 sm:mb-0 hidden sm:block">Slutprov</div>
+          <div className="w-full sm:w-1/4 mb-2 sm:mb-0 hidden sm:block">Betyg</div>
+        </div>
+        <div className="grid grid-cols-1 justify-items-start md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="text-left mb-2 sm:mb-0">
+  {props.users &&
+    props.users.map((user: User) => (
+      <p key={user.id} className="mb-2">
+        {user.firstName} <strong>{user.lastName}</strong>
+      </p>
+    ))}
+</div>
 
+
+        </div>
+      </div>
+    </UserLayout>
+  );
 };
+
+
 /* getServerSideProps */
 
 export const getServerSideProps: GetServerSideProps = async (context: any) => {
