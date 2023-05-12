@@ -75,18 +75,18 @@ export const createModuleController = async ({
 };
 
 export const updateModuleController = async ({
-  moduleId,
+  // moduleId,
   input,
   ctx,
 }: {
-  moduleId: ModuleIdSchema;
-  input: UpdateModuleInputSchema["body"];
+  // moduleId: ModuleIdSchema;
+  input: UpdateModuleInputSchema;
   ctx: IContext;
 }) => {
   try {
     const module: Module = await ctx.prisma.module.update({
-      where: { id: Number(moduleId.moduleId) },
-      data: input,
+      where: { id: Number(input.moduleId) },
+      data: input.body,
     });
 
     return {
