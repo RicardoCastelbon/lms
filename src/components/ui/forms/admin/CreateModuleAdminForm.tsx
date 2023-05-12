@@ -11,7 +11,6 @@ import {
 } from "@/src/common/validation/module-lib";
 
 type Props = {
-  closeModal: () => void;
   setShowModal: Dispatch<SetStateAction<boolean>>;
   showModal: boolean;
 };

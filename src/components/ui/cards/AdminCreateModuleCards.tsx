@@ -4,26 +4,22 @@ import { log } from "console";
 import Link from "next/link";
 import React from "react";
 import { FaHtml5, FaTrash } from "react-icons/fa";
-interface ICourse {
-  id: number;
-  name: string;
-  title: string;
-  slug: string;
-}
 
 type Props = {
-  moduleLib: Module_lib;
-  onDelete: (moduleLibId: number) => void;
+   moduleLib: Module_lib;
+    // onDelete: (moduleLibId: number) => void;
+   infoClickHandler: () => void;
+   title: string;
 // /making a comment
 };
 
-const AdminCreateModuleCards = ({ moduleLib, onDelete }: Props) => {
+const AdminCreateModuleCards = ({ moduleLib, infoClickHandler }: Props) => {
  
-  const handleDelete = () => {
-    if (window.confirm("Are you sure")) {
-    onDelete(moduleLib.id)
-       }
-}
+//   const handleDelete = () => {
+//     if (window.confirm("Are you sure")) {
+//     onDelete(moduleLib.id)
+//        }
+// }
  
   return (
     <div className="w-[232px] h-[338px] shadow-lg flex flex-col rounded-lg">
@@ -37,7 +33,7 @@ const AdminCreateModuleCards = ({ moduleLib, onDelete }: Props) => {
         <p>{moduleLib.title}</p>
         <button
           className="bg-red-400 text-white py-1 px-2 rounded-md hover:bg-red-600"
-           onClick={handleDelete}
+           onClick={infoClickHandler}
            
         >
           {/* <FaTrash className="m-1"/> Delete */}
