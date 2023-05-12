@@ -25,16 +25,16 @@ const UserLayout = ({ children, role }: Props) => {
     educationId,
   });
 
-  console.log("eduId", educationId);
+  // console.log("eduId", educationId);
 
   useEffect(() => {
     //Do something if loading is true
     if (isLoading) {
-      console.log("query is loading");
+      // console.log("query is loading");
     } else {
       //check if an error has occured
       if (error) {
-        console.log(error);
+        // console.log(error);
       }
       //else check if data is present, if so do something with it.
       if (data) {

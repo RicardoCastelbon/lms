@@ -64,9 +64,9 @@ const CreateCourseForm = ({
   const { quill, quillRef } = useQuill();
   const { mutateAsync } = trpc.course.create.useMutation();
 
-  useEffect(() => {
+  /*   useEffect(() => {
     console.log(errors);
-  }, [errors]);
+  }, [errors]); */
 
   const onSubmit = useCallback(
     async (data: CourseInputSchema) => {
@@ -170,7 +170,7 @@ const CreateCourseForm = ({
               <label htmlFor="color">Välj bakgrundsfärg</label>
               <ColorSelect
                 hasSubmitted={hasSubmitted}
-                {...field}
+                // {...field}
                 value={value}
                 setValue={setValue}
                 onChange={onChange}
@@ -200,7 +200,7 @@ const CreateCourseForm = ({
               <label htmlFor="icon">Välj en kursikon</label>
               <IconSelect
                 hasSubmitted={hasSubmitted}
-                {...field}
+                // {...field}
                 value={value}
                 // name={name}
                 setValue={setValue}
