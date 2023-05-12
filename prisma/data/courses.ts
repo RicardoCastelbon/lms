@@ -49,7 +49,7 @@ export const courses = [
     slug: "php-33c4d04f-eeed-4e2c-bb13-15c1386f05d1",
     points: "60 poäng",
     icon: "some-icon",
-    color: "red",
+    color: "bg-red-100",
     content:
       "<h1>Backendutveckling, 60 yhp</h1><p><br></p><h2>Kursens huvudsakliga innehåll</h2><p><br></p><ul><li>PHP</li><li>OOP i PHP</li><li>Säkerhet i PHP</li><li>MVC-ramverk</li><li>Wordpress</li><li>Hierarkiska databaser</li><li>Relationsdatabaser</li><li>SQL och ER-modellering</li><li>OAuth i backend</li><li>HTTP-protokollet</li><li>cURL</li><li>REST</li><li>XML och andra dataformat</li><li>Webbservrar</li><li>Använda befintliga API:er</li><li>Bygga egna enklare REST-API:er</li></ul><p><br></p><p>&nbsp;</p><h2>Syfte och mål</h2><p>Kursen ger den studerande kunskaper om och färdigheter i backendutveckling med PHP och databaser. Den studerande lär sig att utveckla med objektorienterad PHP samt att hantera, skapa och jobba med databaser. Den studerande lär sig också grunderna om webbservrar och får insikt i både MVC-ramverk, Wordpress och renodlad PHPutveckling. Vidare lär sig den studerande att både använda befintliga API:er i backend samt skapa egna REST-API:er.&nbsp;</p><p><br></p><p>Genom kursen uppnås följande utbildningsmål:</p><ul><li>Kunskap 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 (delvis)</li><li>Färdighet 4, 5 delvis 2, 6</li><li>Kompetens 1 (delvis)</li></ul><p><br></p>",
     published: true,
