@@ -15,6 +15,7 @@ import { getServerSession } from "next-auth";
 import { createServerSideHelpers } from "@trpc/react-query/server";
 import { createContext } from "@/src/server/context";
 import type { GetServerSideProps, NextPage } from "next";
+import parse from "html-react-parser";
 
 import { trpc } from "@/src/common/trpc";
 
@@ -155,10 +156,18 @@ const CoursesPage = ({ courses }: Props) => {
     showModal={showModal}
     setShowModal={setShowModal}
     >
+  {isInfo ? (
+          <article className="w-full h-full">
+            {/* <h2>Här går resource beskrivningen in</h2> */}
+            {currentCourse && <div>{parse(currentCourse.content)}</div>}
+          </article>
+        ) : (
+
   <CreateCourseAdminForm
            setShowModal={setShowModal}
            showModal={showModal}
            />
+           )}
            </Modal>
            </UserLayout>
 
