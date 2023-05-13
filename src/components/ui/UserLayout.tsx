@@ -41,7 +41,7 @@ const UserLayout = ({ children, role }: Props) => {
         //HOW TO RESOLVE UNKOWN?!! Still works // Nic
         const education = data.education as unknown as Education;
 
-        setEduName(education.name); //Why is education optional?
+        setEduName(education?.name); //Why is education optional?
       }
     }
   }, [data, error, isLoading]);
@@ -67,10 +67,10 @@ const UserLayout = ({ children, role }: Props) => {
     };
   }, [screenWidth]);
   return (
-    <div className="w-full flex flex-col lg:flex-row lg:p-4 bg-layout font-mont">
+    <div className='w-full flex flex-col lg:flex-row lg:p-4 bg-layout font-mont'>
       <TopNavbar session={session} setSideBarClass={setSideBarClass} />
       {/* sidenav */}
-      <div className="h-[calc(100vh-2rem)] w-2/6 max-w-[364px] lg:w-1/6">
+      <div className='h-[calc(100vh-2rem)] w-2/6 max-w-[364px] lg:w-1/6'>
         {/* Pass the role prop to the UserSideNav component */}
         <UserSideNav
           sideBarClass={sideBarClass}
@@ -78,7 +78,7 @@ const UserLayout = ({ children, role }: Props) => {
           education={eduName}
         />
       </div>
-      <main className="lg:flex-1 absolute top-[70px] lg:top-0 lg:relative bg-white rounded-lg w-full p-4">
+      <main className='lg:flex-1 absolute top-[70px] lg:top-0 lg:relative bg-white rounded-lg w-full p-4'>
         {session?.user?.role !== "ADMIN" && (
           <InnerMenu educationName={eduName} />
         )}
