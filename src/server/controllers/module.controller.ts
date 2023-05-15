@@ -175,26 +175,26 @@ export const findAllModulesController = async ({
     const limit = filterQuery.limit || 10;
     const skip = (page - 1) * limit;
 
-    const modules: Module[] = await ctx.prisma.module.findMany({
+    const userModules: Module[] = await ctx.prisma.module.findMany({
       skip,
       take: limit,
       include: {
         exercises: true,
       },
     });
-    if (modules.length <= 0) {
+    if (userModules.length <= 0) {
       return {
         success: false,
         code: 404,
         message: "No modules found, please try again",
-        modules,
+        userModules,
       };
     } else {
       return {
         success: true,
         code: 200,
         message: "Resource found",
-        module: modules,
+        module: userModules,
       };
     }
   } catch (error) {
