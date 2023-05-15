@@ -1,16 +1,16 @@
 "use client";
 import React, { Dispatch, SetStateAction, useCallback, useState } from "react";
-import { useQuill } from "react-quilljs";
+// import { useQuill } from "react-quilljs";
 import { Controller, useForm } from "react-hook-form";
 // import { zodResolver } from "@hookform/resolvers/zod";
-import RichText from "../../text-editor/RichText";
+// import RichText from "../../text-editor/RichText";
 import { trpc } from "@/src/common/trpc";
 // import { useSession } from "next-auth/react";
 import {
-  educationInputSchema,
+  // educationInputSchema,
   EducationInput,
 } from "@/src/common/validation/education";
-import { Education } from "@prisma/client";
+// import { Education } from "@prisma/client";
 
 type Props = {
   setShowModal: Dispatch<SetStateAction<boolean>>;
@@ -28,7 +28,7 @@ const CreateEduAdminForm = ({ showModal, setShowModal }: Props) => {
     },
     // resolver: zodResolver(signUpSchema),
   });
-  const { quill, quillRef } = useQuill();
+  // const { quill, quillRef } = useQuill();
   const { mutateAsync } = trpc.education.create.useMutation();
 
   const onSubmit = useCallback(
@@ -36,7 +36,7 @@ const CreateEduAdminForm = ({ showModal, setShowModal }: Props) => {
       try {
         const educationData = {
           ...data,
-          content: String(quill?.root.innerHTML),
+          // content: String(quill?.root.innerHTML),
         };
         //Check if value is a string, if true, cast to number
         if (typeof data.name === "string") {
@@ -52,17 +52,17 @@ const CreateEduAdminForm = ({ showModal, setShowModal }: Props) => {
           console.log(educationData);
           const result = await mutateAsync(educationData);
           console.log("result", result);
-          if (result.success) {
-            quill!.root.innerHTML = "";
-            reset();
-            setShowModal(false);
-          }
+          // if (result.success) {
+          //   quill!.root.innerHTML = "";
+          //   reset();
+             setShowModal(false);
+          // }
         }
       } catch (err) {
         console.error(err);
       }
     },
-    [mutateAsync, reset, quill]
+    [mutateAsync, reset]
   );
 
   return (

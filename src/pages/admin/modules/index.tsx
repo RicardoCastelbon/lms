@@ -61,18 +61,18 @@ const ModulesPage = ({modulesLibs}: Props) => {
 
   const { mutateAsync: deleteModuleLib } = trpc.moduleLib.delete.useMutation();
   
-  // const handleDelete = async (moduleLibId: number) => {
-  //   // Optimistically remove the course from state
-  //   setModuleLib(moduleLib.filter(course => course.id !== moduleLibId));
+  const handleDelete = async (moduleLibId: number) => {
+    // Optimistically remove the course from state
+    setModuleLib(moduleLib.filter(course => course.id !== moduleLibId));
   
-  //   try {
-  //     await deleteModuleLib({ moduleLibId: String(moduleLibId) });
-  //   } catch (error) {
-  //     console.error('Failed to delete course: ', error);
-  //     // If the deletion fails, reset the state
-  //     setModuleLib(props.modulesLibs || []);
-  //   }
-  // };
+    try {
+      await deleteModuleLib({ moduleLibId: String(moduleLibId) });
+    } catch (error) {
+      console.error('Failed to delete course: ', error);
+      // If the deletion fails, reset the state
+      setModuleLib(modulesLibs || []);
+    }
+  };
   return (
 <UserLayout role={session?.user.role ?? ""}>
 <div className="w-full flex flex-col md:flex-row gap-8">
@@ -101,7 +101,7 @@ const ModulesPage = ({modulesLibs}: Props) => {
                 key={moduleLib.id}
                 title={moduleLib.title}
                 moduleLib={moduleLib}
-                // onDelete={handleDelete}
+                onDelete={handleDelete}
                 infoClickHandler={() => {
                   setCurrentModule(
                     filterModuleById(moduleLib.id, modulesLibs)
