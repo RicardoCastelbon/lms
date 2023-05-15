@@ -1,5 +1,7 @@
 import { Module } from "@prisma/client";
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
+
 import {
   Accordion,
   AccordionContent,
@@ -16,9 +18,11 @@ import { createServerSideHelpers } from "@trpc/react-query/server";
 import { serverRouter } from "@/src/server/routers";
 import { createContext } from "@/src/server/context";
 import { Action } from "@/src/lib/enums/actionEnums";
+import { ModuleRenderSchema } from "@/src/common/validation/module-end-user";
+import { useRouter } from "next/router";
 
 type Props = {
-  module: Module;
+  module: ModuleRenderSchema;
   modalClickHandler: (action: Action) => void;
 };
 
@@ -26,6 +30,9 @@ const ModuleAccordion = ({ module, modalClickHandler }: Props) => {
   const [desktopVersion, setdesktopVersion] = useState<boolean>(true);
   const [screenWidth, setScreenWidth] = useState<number>();
   const { data: session } = useSession();
+
+  const router = useRouter();
+  console.log(router.asPath);
 
   useEffect(() => {
     if (window.innerWidth > 768) {
@@ -102,18 +109,25 @@ const ModuleAccordion = ({ module, modalClickHandler }: Props) => {
                 </div>
               </AccordionTrigger>
               <AccordionContent>
-                <button className="flex justify-between w-full bg-accent text-white text-left p-4 hover:bg-blue-400">
-                  <div className="flex">
-                    <span className=" mr-4">
-                      <ClipboardList />
-                    </span>
-                    <span>Skapa ett React-projekt</span>
-                  </div>
-                  <span className="">
-                    <Check />
-                  </span>
-                </button>
-                <button className="flex justify-between w-full bg-accent text-white text-left p-4 hover:bg-blue-400">
+                {module.exercises &&
+                  module.exercises.map((exercise, index) => (
+                    <Link
+                      href={`/${router.asPath}/exercise/${exercise.slug}`}
+                      key={index}
+                      className="flex justify-between w-full bg-accent text-white text-left p-4 hover:bg-blue-400"
+                    >
+                      <div className="flex">
+                        <span className=" mr-4">
+                          <ClipboardList />
+                        </span>
+                        <span>{exercise.title}</span>
+                      </div>
+                      <span className="">
+                        <Check />
+                      </span>
+                    </Link>
+                  ))}
+                {/*  <button className="flex justify-between w-full bg-accent text-white text-left p-4 hover:bg-blue-400">
                   <div className="flex">
                     <span className=" mr-4">
                       <ClipboardList />
@@ -123,8 +137,8 @@ const ModuleAccordion = ({ module, modalClickHandler }: Props) => {
                   <span className="">
                     <Check />
                   </span>
-                </button>
-                <button className="flex justify-between w-full bg-accent text-white text-left p-4 hover:bg-blue-400">
+                </button> */}
+                {/*  <button className="flex justify-between w-full bg-accent text-white text-left p-4 hover:bg-blue-400">
                   <div className="flex">
                     <span className=" mr-4">
                       <ClipboardList />
@@ -134,7 +148,7 @@ const ModuleAccordion = ({ module, modalClickHandler }: Props) => {
                   <span className="">
                     <Check />
                   </span>
-                </button>
+                </button> */}
               </AccordionContent>
             </AccordionItem>
           </Accordion>

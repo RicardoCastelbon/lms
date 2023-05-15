@@ -15,9 +15,10 @@ import { Course, Module } from "@prisma/client";
 import ModuleAccordion from "@/src/components/ui/cards/ModuleAccordion";
 import CreateExerciseForm from "@/src/components/ui/forms/teacher/CreateExerciseForm";
 import { Action } from "@/src/lib/enums/actionEnums";
+import { ModuleRenderSchema } from "@/src/common/validation/module-end-user";
 
 type Props = {
-  modules: Module[];
+  modules: ModuleRenderSchema[];
   course: Course;
 };
 
@@ -112,7 +113,7 @@ const CourseOverview = ({ modules, course }: Props) => {
                 </ul>
               </div>
               {modules &&
-                modules?.map((module: Module) => (
+                modules?.map((module: ModuleRenderSchema) => (
                   <ModuleAccordion
                     key={module.id}
                     module={module}
@@ -203,7 +204,7 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
   const res = await helpers.module.getManyByCourseId.fetch({
     courseId: course?.course.id,
   });
-  console.log(res);
+  // console.log(res);
 
   //fetch all the exercises
   /*  const exercises = await helpers.exercise.getManyByModuleId.fetch({
@@ -211,13 +212,15 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
   });  */
 
   //Needed to serialize Date objects for createdAt + updatedAt otherwise error is thrown
-  const modules = JSON.parse(JSON.stringify(res));
+  const modules = JSON.parse(JSON.stringify(res.module));
+  // console.log(...modules);
+
   const courseData = JSON.parse(JSON.stringify(course));
 
   return {
     props: {
       session: currentSession,
-      modules: modules.module,
+      modules: [...modules],
       course: courseData.course,
     },
   };
