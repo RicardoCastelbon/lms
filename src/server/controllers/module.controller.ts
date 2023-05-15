@@ -217,6 +217,9 @@ export const findAllModulesByCourseIdController = async ({
   try {
     const modules: Module[] = await ctx.prisma.module.findMany({
       where: { courseId: Number(input.courseId) },
+      include: {
+        exercises: true,
+      },
     });
 
     if (modules.length <= 0) {
