@@ -7,16 +7,11 @@ import { modules } from "./data/modules";
 import { courseLibs } from "./data/course-libs";
 import { moduleLibs } from "./data/module-lib-";
 import { exerciseLibs } from "./data/exercise-lib";
+import { courseId } from "@/src/common/validation/course-end-user";
 
 const prisma = new PrismaClient();
 
 async function main() {
-  for (let exercise of exercises) {
-    await prisma.exercise.create({
-      data: exercise,
-    });
-  }
-
   for (let education of educations) {
     await prisma.education.create({
       data: education,
@@ -28,9 +23,24 @@ async function main() {
       data: course,
     });
   }
+
+  for (let exercise of exercises) {
+    await prisma.exercise.create({
+      data: exercise,
+    });
+  }
+
   for (let module of modules) {
     await prisma.module.create({
-      data: module,
+      data: {
+        exercises: {
+          connect: [{ id: 1 }, { id: 2 }, { id: 3 }],
+        },
+        course: {
+          connect: { id: module.courseId },
+        },
+        ...module,
+      },
     });
   }
 

@@ -19,7 +19,6 @@ const CreateExerciseForm = (props: Props) => {
   const { handleSubmit, control, reset } = useForm<ExerciseInputSchema>({
     defaultValues: {
       title: "",
-      description: "",
       content: "",
       moduleId: 0,
     },
@@ -27,7 +26,7 @@ const CreateExerciseForm = (props: Props) => {
   });
 
   const { quill, quillRef } = useQuill();
-  //const { mutateAsync } = trpc.module.create.useMutation();
+  const { mutateAsync } = trpc.exercise.create.useMutation();
 
   const onSubmit = useCallback(
     async (data: ExerciseInputSchema) => {
@@ -35,28 +34,23 @@ const CreateExerciseForm = (props: Props) => {
         data.content = String(quill?.root.innerHTML);
         data.moduleId = 1;
 
-        if (
-          !data.title ||
-          !data.content ||
-          !data.description ||
-          !data.moduleId
-        ) {
+        if (!data.title || !data.content || !data.moduleId) {
           console.log("need to fill in all fields");
           console.log(data);
           return;
         } else {
           console.log(data);
-          /*  const result = await mutateAsync(data);
+          const result = await mutateAsync(data);
           if (result.success) {
             quill!.root.innerHTML = "";
             reset();
-          } */
+          }
         }
       } catch (err) {
         console.error(err);
       }
     },
-    [/* mutateAsync, */ reset, quill]
+    [mutateAsync, reset, quill]
   );
 
   useEffect(() => {}, []);
@@ -83,23 +77,7 @@ const CreateExerciseForm = (props: Props) => {
             </div>
           )}
         />
-        <Controller
-          name="description"
-          control={control}
-          rules={{ required: true }}
-          render={({ field }) => (
-            <div className="w-full max-w-md flex flex-col mb-4">
-              <label htmlFor="title">Beskrivning</label>
-              <input
-                id="description"
-                type="text"
-                placeholder="Skriv in beskrivning"
-                className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
-                {...field}
-              />
-            </div>
-          )}
-        />
+
         <button
           type="submit"
           className="bg-indigo-500 text-white py-2 px-6 rounded-sm hover:bg-indigo-50 hover:text-foreground"

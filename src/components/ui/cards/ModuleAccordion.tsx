@@ -8,18 +8,23 @@ import {
 } from "@/src/components/ui/accordion";
 import { Check, ClipboardList, Plus } from "lucide-react";
 import parse from "html-react-parser";
-import { useModal } from "@/src/lib/hooks/modalHook";
 import { useSession } from "next-auth/react";
+import { GetServerSideProps } from "next";
+import { getServerSession } from "next-auth";
+import { nextAuthOptions } from "@/src/common/auth";
+import { createServerSideHelpers } from "@trpc/react-query/server";
+import { serverRouter } from "@/src/server/routers";
+import { createContext } from "@/src/server/context";
+import { Action } from "@/src/lib/enums/actionEnums";
 
 type Props = {
   module: Module;
+  modalClickHandler: (action: Action) => void;
 };
 
-const ModuleAccordion = ({ module }: Props) => {
+const ModuleAccordion = ({ module, modalClickHandler }: Props) => {
   const [desktopVersion, setdesktopVersion] = useState<boolean>(true);
-  const [showModalExercise, setShowModalExercise] = useState<boolean>();
   const [screenWidth, setScreenWidth] = useState<number>();
-  const { showModal } = useModal();
   const { data: session } = useSession();
 
   useEffect(() => {
@@ -70,7 +75,10 @@ const ModuleAccordion = ({ module }: Props) => {
               {desktopVersion &&
                 (session?.user.role === "TEACHER" ? (
                   <li className="w-32">
-                    <div className="flex gap-2 p-2 rounded bg-primary hover:bg-indigo-400 text-white">
+                    <div
+                      onClick={() => modalClickHandler(Action.CREATEEXERCISE)}
+                      className="flex gap-2 p-2 rounded bg-primary hover:bg-indigo-400 text-white"
+                    >
                       <Plus />
                       Uppgift
                     </div>
