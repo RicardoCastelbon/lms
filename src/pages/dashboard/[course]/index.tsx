@@ -14,6 +14,7 @@ import { useRouter } from "next/router";
 import { Course, Module } from "@prisma/client";
 import ModuleAccordion from "@/src/components/ui/cards/ModuleAccordion";
 import CreateExerciseForm from "@/src/components/ui/forms/teacher/CreateExerciseForm";
+import { Action } from "@/src/lib/enums/actionEnums";
 
 type Props = {
   modules: Module[];
@@ -24,7 +25,8 @@ const CourseOverview = ({ modules, course }: Props) => {
   const [desktopVersion, setdesktopVersion] = useState<boolean>(true);
   const [screenWidth, setScreenWidth] = useState<number>();
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [showModalExercise, setShowModalExercise] = useState<boolean>(true);
+  const [action, setAction] = useState<Action>();
+  const [modalHeader, setModalHeader] = useState<string>("");
   const { data: session } = useSession();
   const router = useRouter();
 
@@ -36,10 +38,6 @@ const CourseOverview = ({ modules, course }: Props) => {
       router.push("/401");
     }
   }, [router, session, modules]);
-
-  const modalClickHandler = () => {
-    setShowModal((prev) => !prev);
-  };
 
   useEffect(() => {
     if (window.innerWidth > 768) {
@@ -67,6 +65,35 @@ const CourseOverview = ({ modules, course }: Props) => {
     };
   }, [screenWidth]);
 
+  useEffect(() => {
+    getModalHeader(action);
+  }, [action]);
+
+  const modalClickHandler = (action: Action) => {
+    setAction(action);
+    setShowModal((prev) => !prev);
+  };
+
+  const getModalHeader = (action: Action | undefined) => {
+    switch (action) {
+      case Action.CREATEEXERCISE:
+        setModalHeader("Skapa en uppgift");
+        break;
+      case Action.CREATEMODULE:
+        setModalHeader("Skapa en modul");
+        break;
+      case Action.UPDATEMODULE:
+        setModalHeader("Updatera en modul");
+        break;
+      case Action.CREATESTUDENT:
+        setModalHeader("Skapa en student");
+        break;
+
+      default:
+        break;
+    }
+  };
+
   return (
     <>
       <UserLayout role={session?.user.role}>
@@ -86,7 +113,11 @@ const CourseOverview = ({ modules, course }: Props) => {
               </div>
               {modules &&
                 modules?.map((module: Module) => (
-                  <ModuleAccordion key={module.id} module={module} />
+                  <ModuleAccordion
+                    key={module.id}
+                    module={module}
+                    modalClickHandler={modalClickHandler}
+                  />
                 ))}
             </section>
           </section>
@@ -101,7 +132,7 @@ const CourseOverview = ({ modules, course }: Props) => {
                     <>
                       <div
                         className="flex items-center gap-2 bg-card p-4 rounded-lg hover:cursor-pointer hover:bg-background"
-                        onClick={modalClickHandler}
+                        onClick={() => modalClickHandler(Action.CREATEMODULE)}
                       >
                         <div className="rounded-full bg-primary text-white p-2">
                           <Plus />
@@ -110,7 +141,7 @@ const CourseOverview = ({ modules, course }: Props) => {
                       </div>
                       <div
                         className="flex items-center gap-2 bg-card p-4 rounded-lg hover:cursor-pointer hover:bg-background"
-                        onClick={modalClickHandler}
+                        onClick={() => modalClickHandler(Action.UPDATEMODULE)}
                       >
                         <div className="rounded-full bg-primary text-white p-2">
                           <Plus />
@@ -119,7 +150,7 @@ const CourseOverview = ({ modules, course }: Props) => {
                       </div>
                       <div
                         className="flex items-center gap-2 bg-card p-4 rounded-lg hover:cursor-pointer hover:bg-background"
-                        onClick={modalClickHandler}
+                        onClick={() => modalClickHandler(Action.CREATESTUDENT)}
                       >
                         <div className="rounded-full bg-primary text-white p-2">
                           <Plus />
@@ -136,19 +167,12 @@ const CourseOverview = ({ modules, course }: Props) => {
           )}
         </div>
         <Modal
-          header={"Skapa en modul"}
+          header={modalHeader}
           showModal={showModal}
           setShowModal={setShowModal}
         >
-          <CreateModuleForm />
-        </Modal>
-
-        <Modal
-          header={"Skapa en uppgift"}
-          showModal={showModalExercise}
-          setShowModal={setShowModalExercise}
-        >
-          <CreateExerciseForm />
+          {action === Action.CREATEMODULE && <CreateModuleForm />}
+          {action === Action.CREATEEXERCISE && <CreateExerciseForm />}
         </Modal>
       </UserLayout>
     </>
@@ -179,6 +203,12 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
   const res = await helpers.module.getManyByCourseId.fetch({
     courseId: course?.course.id,
   });
+  console.log(res);
+
+  //fetch all the exercises
+  /*  const exercises = await helpers.exercise.getManyByModuleId.fetch({
+    modu
+  });  */
 
   //Needed to serialize Date objects for createdAt + updatedAt otherwise error is thrown
   const modules = JSON.parse(JSON.stringify(res));

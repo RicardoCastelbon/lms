@@ -1,0 +1,6 @@
+export enum Action {
+  CREATEMODULE,
+  UPDATEMODULE,
+  CREATESTUDENT,
+  CREATEEXERCISE,
+}

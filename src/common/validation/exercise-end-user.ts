@@ -6,7 +6,6 @@ const exercise = z
     id: z.number(),
     title: z.string(),
     slug: z.string(),
-    description: z.string(),
     content: z.string(),
     moduleId: z.number(),
   })
@@ -16,7 +15,6 @@ const exercise = z
         id: z.number(),
         title: z.string(),
         slug: z.string(),
-        description: z.string(),
         content: z.string(),
         moduleId: z.number(),
       })
@@ -39,7 +37,6 @@ const error = z
 //Default resourse input schema, used for creating a resource
 export const exerciseInputSchema = z.object({
   title: z.string(),
-  description: z.string(),
   content: z.string(),
   moduleId: z.number(),
 });
@@ -59,7 +56,6 @@ export const updateExerciseInputSchema = z.object({
   body: z
     .object({
       title: z.string(),
-      description: z.string(),
       content: z.string(),
       moduleId: z.number(),
     })
