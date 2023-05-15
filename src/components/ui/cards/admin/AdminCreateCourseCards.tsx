@@ -5,7 +5,7 @@ import { FaHtml5, FaTrash } from "react-icons/fa";
 
 type Props = {
   courseLib: Course_lib;
-  // onDelete: (courseLibId: number) => void;
+  onDelete: (courseLibId: number) => void;
   infoClickHandler: () => void;
   title: string;
 };
@@ -14,24 +14,25 @@ const AdminCreateCourseCards = ({
   courseLib,
   title,
   infoClickHandler,
+  onDelete,
 }: Props) => {
-  // const handleDelete = () => {
-  //     if (window.confirm("Are you sure")) {
-  //     onDelete(courseLib.id)
-  //        }
-  // }
+  const handleDelete = () => {
+    if (window.confirm("Are you sure you want to delete this resource?")) {
+      onDelete(courseLib.id);
+    }
+  };
 
   return (
-    <div className='relative flex flex-col justify-center items-center gap-2 w-[200px] h-[200px] bg-primary text-white rounded-md shadow-md hover:shadow-xl hover:scale-105 duration-200'>
+    <div className="relative flex flex-col justify-center items-center gap-2 w-[200px] h-[200px] bg-primary text-white rounded-md shadow-md hover:shadow-xl hover:scale-105 duration-200">
       {/* card header */}
       <FaTrash
-        className='absolute top-2 right-2 hover:cursor-pointer'
-        onClick={infoClickHandler}
+        className="absolute top-2 right-2 hover:cursor-pointer"
+        onClick={handleDelete}
       />
       <FileText size={48} />
       <h3>{title}</h3>
       <button
-        className='bg-green-500 text-white py-1 px-2 rounded-md hover:bg-green-600'
+        className="bg-green-500 text-white py-1 px-2 rounded-md hover:bg-green-600"
         onClick={infoClickHandler}
       >
         Info

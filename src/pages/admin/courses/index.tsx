@@ -60,18 +60,18 @@ const CoursesPage = ({ courses }: Props) => {
 
   const { mutateAsync: deleteCourseLib } = trpc.courseLib.delete.useMutation();
 
-  // const handleDelete = async (courseLibId: number) => {
-  //   // Optimistically remove the course from state
-  //   setCourseLib(courseLib.filter(course => course.id !== courseLibId));
+  const handleDelete = async (courseLibId: number) => {
+    // Optimistically remove the course from state
+    setCourseLib(courseLib.filter(course => course.id !== courseLibId));
 
-  //   try {
-  //     await deleteCourseLib({ courseLibId: String(courseLibId) });
-  //   } catch (error) {
-  //     console.error('Failed to delete course: ', error);
-  //     // If the deletion fails, reset the state
-  //     setCourseLib(courses || []);
-  //   }
-  // };
+    try {
+      await deleteCourseLib({ courseLibId: String(courseLibId) });
+    } catch (error) {
+      console.error('Failed to delete course: ', error);
+      // If the deletion fails, reset the state
+      setCourseLib(courses || []);
+    }
+  };
 
   return (
     <UserLayout role={session?.user.role ?? ""}>
@@ -107,9 +107,9 @@ const CoursesPage = ({ courses }: Props) => {
                         filterExerciseById(courseLib.id, courses)
                       );
                       infoClickHandler();
-                    }}
-                  />
-                  // onDelete={handleDelete}
+                    } }
+                    onDelete={handleDelete}            
+                        />
                 ))}
               </>
             ) : (
