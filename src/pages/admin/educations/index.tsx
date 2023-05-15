@@ -31,6 +31,7 @@ const EducationPage = ({ educations }: Props) => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [isInfo, setIsInfo] = useState<boolean>(false);
   const [currentEducation, setCurrentEducation] = useState<Education>();
+  const [education, setEducation] = useState<Education[]>(educations || []);
 
   // const modalClickHandler = () => {
   //   setShowModal((prev) => !prev);
@@ -38,18 +39,18 @@ const EducationPage = ({ educations }: Props) => {
 
   const { mutateAsync: deleteEducation } = trpc.education.delete.useMutation();
 
-  // const handleDelete = async (educationId: number) => {
-  //   // Optimistically remove the course from state
-  //   setEducation(education.filter((education) => educationId !== educationId));
+  const handleDelete = async (educationId: number) => {
+    // Optimistically remove the course from state
+    setEducation(education.filter(education => educationId !== educationId));
 
-  //   try {
-  //     await deleteEducation({ educationId: String(educationId) });
-  //   } catch (error) {
-  //     console.error("Failed to delete course: ", error);
-  //     // If the deletion fails, reset the state
-  //     setEducation(props.education || []);
-  //   }
-  // };
+    try {
+      await deleteEducation({ educationId: String(educationId) });
+    } catch (error) {
+      console.error("Failed to delete course: ", error);
+      // If the deletion fails, reset the state
+      setEducation(education || []);
+    }
+  };
 
   useEffect(() => {
     console.log(education);
@@ -104,8 +105,8 @@ const EducationPage = ({ educations }: Props) => {
                       );
                       infoClickHandler();
                     }}
-                    // education={education}
-                    // onDelete={handleDelete}
+                     education={education}
+                     onDelete={handleDelete}
                   />
                 ))}
               </>
@@ -147,17 +148,17 @@ const EducationPage = ({ educations }: Props) => {
         showModal={showModal}
         setShowModal={setShowModal}
       >
-        {isInfo ? (
+        {/* {isInfo ? (
           <article className='w-full h-full'>
             {/* <h2>Här går resource beskrivningen in</h2>  */}
-            {currentEducation && <div>{parse(currentEducation.content)}</div>}
-          </article>
-        ) : (
+            {/* {currentEducation && <div>{parse(currentEducation.content)}</div>}
+          </article> */}
+        {/* ) : (  */}
           <CreateEduAdminForm
             setShowModal={setShowModal}
             showModal={showModal}
           />
-        )}
+         {/* )} */}
       </Modal>
     </UserLayout>
   );
