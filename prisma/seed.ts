@@ -29,19 +29,24 @@ async function main() {
       data: exercise,
     });
   }
-
-  for (let module of modules) {
+  let num = 1;
+  for (let userModule of modules) {
+    const courseId = userModule.courseId;
     await prisma.module.create({
       data: {
+        title: userModule.title,
+        startDate: userModule.startDate,
+        endDate: userModule.endDate,
+        content: userModule.content,
         exercises: {
-          connect: [{ id: 1 }, { id: 2 }, { id: 3 }],
+          connect: [{ id: num }],
         },
         course: {
-          connect: { id: module.courseId },
+          connect: { id: courseId },
         },
-        ...module,
       },
     });
+    num++;
   }
 
   for (let user of users) {
