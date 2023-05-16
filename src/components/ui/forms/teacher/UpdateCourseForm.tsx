@@ -83,13 +83,31 @@ const UpdateCourseForm = ({
       try {
         // let selectedIcon = iconName;
         data.content = String(quill?.root.innerHTML);
+
         // data.educationId = educationId;
 
+        // if (role !== "TEACHER") return;
+
+        const result = await mutateAsync({
+          courseId: String(course.id),
+          body: {
+            ...data,
+            // published: course.published ? false : true,
+          },
+        });
+
+        if (result.success) {
+          setHasSubmitted(true);
+          quill!.root.innerHTML = "";
+          reset();
+          setShowModal(false);
+        }
+
+        // console.log(result);
         //Both color and iconName comes from outside the scope of the form.
         // data.icon = iconName;
         // data.color = color;
         //data.published = false; // needed?
-        console.log(data);
         /*  setHasSubmitted((prev) => !prev);
         // console.log(hasSubmitted);
 

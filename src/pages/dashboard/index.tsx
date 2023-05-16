@@ -47,13 +47,12 @@ const Dashboard = ({ courses, education }: Props) => {
   // console.log(courses);
 
   useEffect(() => {
-    console.log(hasSubmitted);
-  }, [hasSubmitted]);
+    if (!showModal) {
+      setCourseToUpdate(null);
+    }
+  }, [showModal]);
 
   useEffect(() => {
-    // console.log(session);
-    // console.log(courses);
-
     if (!session) {
       router.push("/401");
     }
@@ -238,6 +237,7 @@ const Dashboard = ({ courses, education }: Props) => {
             <>
               {!courseToUpdate ? (
                 <ResourceSelection
+                  role={session?.user.role}
                   setResourceId={setResourceId}
                   resource={courses}
                 />
