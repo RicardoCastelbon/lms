@@ -1,3 +1,6 @@
+import { ModuleInputSchema } from "@/src/common/validation/module-end-user";
+import { Module } from "@prisma/client";
+
 export const modules = [
   {
     courseId: 1,

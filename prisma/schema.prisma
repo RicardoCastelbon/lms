@@ -59,9 +59,6 @@ model Course_lib {
 
 model Module_lib {
   id          Int      @id @default(autoincrement())
-  // courseLib   Course_lib     @relation(fields: [courseLibId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-  // courseLibId Int
-  // exercises   Exercise_lib[]
   title       String
   description String   @db.LongText
   content     String   @db.LongText
@@ -71,7 +68,6 @@ model Module_lib {
 
 model Exercise_lib {
   id          Int      @id @default(autoincrement())
-  // module      Module_lib? @relation(fields: [moduleId], references: [id], onDelete: Restrict, onUpdate: Cascade)
   moduleId    Int?
   title       String
   description String   @db.LongText
@@ -82,8 +78,8 @@ model Exercise_lib {
 
 model Course {
   id          Int        @id @default(autoincrement())
-  education   Education? @relation(fields: [educationId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-  educationId Int
+  education   Education? @relation(fields: [educationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  educationId Int?
   modules     Module[]
   title       String
   slug        String
@@ -98,25 +94,25 @@ model Course {
 
 model Module {
   id        Int        @id @default(autoincrement())
-  course    Course?    @relation(fields: [courseId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  course    Course?    @relation(fields: [courseId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   courseId  Int?
   exercises Exercise[]
   title     String
   startDate String
   endDate   String
   content   String     @db.LongText
-  //description String     @db.LongText
+  published Boolean    @default(false)
   createdAt DateTime   @default(now())
   updatedAt DateTime   @default(now()) @updatedAt
 }
 
 model Exercise {
   id        Int      @id @default(autoincrement())
-  module    Module?  @relation(fields: [moduleId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  module    Module?  @relation(fields: [moduleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   moduleId  Int?
   title     String
   slug      String
-  //description String   @db.LongText
+  published Boolean  @default(false)
   content   String   @db.LongText
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt

@@ -19,7 +19,7 @@ export const createModuleController = async ({
   ctx: IContext;
 }) => {
   try {
-    const module: Module = await ctx.prisma.module.create({
+    const userModule: Module = await ctx.prisma.module.create({
       data: {
         title: input.title,
         startDate: input.startDate,
@@ -35,7 +35,7 @@ export const createModuleController = async ({
       success: true,
       code: 201,
       message: "Resource created",
-      module,
+      userModule,
     };
   } catch (error) {
     console.log(error);
@@ -84,7 +84,7 @@ export const updateModuleController = async ({
   ctx: IContext;
 }) => {
   try {
-    const module: Module = await ctx.prisma.module.update({
+    const userModule: Module = await ctx.prisma.module.update({
       where: { id: Number(input.moduleId) },
       data: input.body,
     });
@@ -93,7 +93,7 @@ export const updateModuleController = async ({
       success: true,
       code: 200,
       message: "Resource found",
-      module,
+      userModule,
     };
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -131,7 +131,7 @@ export const findModuleController = async ({
   ctx: IContext;
 }) => {
   try {
-    const module: Module | null = await ctx.prisma.module.findFirst({
+    const userModule: Module | null = await ctx.prisma.module.findFirst({
       where: { id: Number(input.moduleId) },
     });
 
@@ -140,14 +140,14 @@ export const findModuleController = async ({
         success: false,
         code: 404,
         message: "Module not found, please try again.",
-        module,
+        userModule,
       };
     } else {
       return {
         success: true,
         code: 200,
         message: "Resource found",
-        module,
+        userModule,
       };
     }
   } catch (error) {
@@ -175,23 +175,26 @@ export const findAllModulesController = async ({
     const limit = filterQuery.limit || 10;
     const skip = (page - 1) * limit;
 
-    const modules: Module[] = await ctx.prisma.module.findMany({
+    const userModules: Module[] = await ctx.prisma.module.findMany({
       skip,
       take: limit,
+      include: {
+        exercises: true,
+      },
     });
-    if (modules.length <= 0) {
+    if (userModules.length <= 0) {
       return {
         success: false,
         code: 404,
         message: "No modules found, please try again",
-        modules,
+        userModules,
       };
     } else {
       return {
         success: true,
         code: 200,
         message: "Resource found",
-        module: modules,
+        module: userModules,
       };
     }
   } catch (error) {
@@ -215,26 +218,28 @@ export const findAllModulesByCourseIdController = async ({
   ctx: IContext;
 }) => {
   try {
-    const modules: Module[] = await ctx.prisma.module.findMany({
+    const userModules = await ctx.prisma.module.findMany({
       where: { courseId: Number(input.courseId) },
       include: {
         exercises: true,
       },
     });
+    // const foundResources = [...userModules];
+    // console.log(...userModules);
 
-    if (modules.length <= 0) {
+    if (userModules.length <= 0) {
       return {
         success: false,
         code: 404,
         message: "No modules found, please try again",
-        module: modules,
+        module: userModules,
       };
     } else {
       return {
         success: true,
         code: 200,
         message: "Resource found",
-        module: modules,
+        module: userModules,
       };
     }
   } catch (error) {
@@ -258,14 +263,14 @@ export const deleteModuleController = async ({
   ctx: Context;
 }) => {
   try {
-    const module: Module = await ctx.prisma.module.delete({
+    const userModule: Module = await ctx.prisma.module.delete({
       where: { id: Number(input.moduleId) },
     });
     return {
       success: true,
       code: 200,
       message: "Resource found",
-      module,
+      userModule,
     };
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
