@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React,  {Dispatch,SetStateAction, useCallback, useEffect, useRef, useState } from "react";
 
 import { useQuill } from "react-quilljs";
 import { Controller, useForm } from "react-hook-form";
@@ -12,16 +12,35 @@ import {
 } from "@/src/common/validation/module-end-user";
 import { trpc } from "@/src/common/trpc";
 
-type Props = {};
+type Props = {
+  userModuleId: number;
+  setHasSubmitted: Dispatch<SetStateAction<boolean>>;
+  setShowModal: Dispatch<SetStateAction<boolean>>;
+  hasSubmitted: boolean
+};
 
-const CreateModuleForm = (props: Props) => {
-  const { handleSubmit, control, reset } = useForm<ModuleInputSchema>({
+const CreateModuleForm = ({
+  
+  userModuleId,
+    hasSubmitted,
+    setHasSubmitted,
+    setShowModal,
+
+}: Props) => {
+  const {
+    handleSubmit, 
+    control, 
+    reset,
+    formState: { errors },
+    setValue,} = useForm<ModuleInputSchema>({
     defaultValues: {
       title: "",
       startDate: "",
       endDate: "",
       courseId: 0,
       content: "",
+      published: false,
+
     },
     resolver: zodResolver(moduleInputSchema),
   });
@@ -35,6 +54,7 @@ const CreateModuleForm = (props: Props) => {
         // let selectedIcon = iconName;
         data.content = String(quill?.root.innerHTML);
         data.courseId = 1;
+        data.published = false; // needed?
 
         // console.log(iconName);
         if (!data.title || !data.startDate || !data.endDate || !data.courseId) {

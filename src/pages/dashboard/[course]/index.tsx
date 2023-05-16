@@ -158,6 +158,16 @@ const CourseOverview = ({ modules, course }: Props) => {
                         </div>
                         <p>Lägg till deltagare</p>
                       </div>
+
+                      <div
+                        className="flex items-center gap-2 bg-card p-4 rounded-lg hover:cursor-pointer hover:bg-background"
+                        onClick={() => modalClickHandler(Action.CREATEEXERCISE)}
+                      >
+                        <div className="rounded-full bg-primary text-white p-2">
+                          <Plus />
+                        </div>
+                        <p>Lägg till uppgift</p>
+                      </div>
                     </>
                   ) : (
                     ""
@@ -200,12 +210,12 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
     courseSlug: slug,
   });
 
+  
   // fetch all the modules with with courseId
   const res = await helpers.module.getManyByCourseId.fetch({
-    courseId: course?.course.id,
+    courseId: course?.course?.id,
   });
   // console.log(res);
-
   //fetch all the exercises
   /*  const exercises = await helpers.exercise.getManyByModuleId.fetch({
     modu
