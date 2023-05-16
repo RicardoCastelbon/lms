@@ -41,12 +41,8 @@ const Dashboard = ({ courses, education }: Props) => {
 
   const { data: session } = useSession();
   const router = useRouter();
-  /* const { data, isLoading } = trpc.course.getManyByEducationId.useQuery({
-    educationId: String(session?.user.educationId),
-  }); */
 
   const modalRef = useRef(null);
-  // console.log(courses);
 
   useEffect(() => {
     if (!showModal) {
@@ -104,14 +100,8 @@ const Dashboard = ({ courses, education }: Props) => {
 
   //Selects the course by id with the given resourceId whenever resourceId is updated within ResrouceSelection.
   useEffect(() => {
-    // console.log(resourceId);
     setCourseToUpdate(getCourseToUpdate(resourceId, courses));
   }, [resourceId]);
-
-  /* useEffect(() => {
-    console.log(courseToUpdate);
-    
-  }, [courseToUpdate]); */
 
   //Function to run whenever a resource is clicked in the resource list in component ResourceSelection when clicking update course button
   const getCourseToUpdate = (courseId: number, courses: Course[]) => {
@@ -135,9 +125,6 @@ const Dashboard = ({ courses, education }: Props) => {
       case CourseAction.UPDATECOURSE:
         setModalHeader("Uppdatera kurs");
         break;
-      /* case CourseAction.DELETECOURSE:
-        setModalHeader("Updatera en modul");
-        break; */
 
       default:
         break;
@@ -165,7 +152,6 @@ const Dashboard = ({ courses, education }: Props) => {
             ) : (
               <section className="w-full flex flex-col justify-center items-center gap-4">
                 <h2 className="text-2xl">Inga övningar finns</h2>
-                {/* <div className="flex justify-center items-center gap-6"> */}
 
                 {session?.user.role === "TEACHER" ? (
                   <>
@@ -174,7 +160,6 @@ const Dashboard = ({ courses, education }: Props) => {
                     <button
                       className="bg-primary text-white px-4 py-2 rounded-md hover:bg-indigo-50 hover:text-primary"
                       onClick={(e) => {
-                        // e.preventDefault();
                         setShowModal(true);
                       }}
                     >
