@@ -76,8 +76,7 @@ export const moduleRouter = t.router({
     .output(moduleOutputSchema)
     .mutation(({ input, ctx }) =>
       updateModuleController({
-        moduleId: input,
-        input: input.body,
+        input,
         ctx,
       })
     ),
