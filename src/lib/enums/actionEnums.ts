@@ -4,3 +4,9 @@ export enum Action {
   CREATESTUDENT,
   CREATEEXERCISE,
 }
+
+export enum CourseAction {
+  CREATECOURSE,
+  UPDATECOURSE,
+  DELETECOURSE,
+}

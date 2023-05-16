@@ -16,6 +16,10 @@ import Modal from "@/src/components/ui/modals/Modal";
 import { serverRouter } from "@/src/server/routers";
 import { IContext, createContext } from "@/src/server/context";
 import { Course, Education, Exercise, Module } from "@prisma/client";
+import { CourseAction } from "@/src/lib/enums/actionEnums";
+import UpdateCourseForm from "@/src/components/ui/forms/teacher/UpdateCourseForm";
+import ResourceSelection from "@/src/components/ui/ResourceSelection";
+import UpdateResource from "@/src/components/ui/ResourceSelection";
 // import { trpc } from "@/src/common/trpc";
 
 type Props = {
@@ -28,25 +32,25 @@ const Dashboard = ({ courses, education }: Props) => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
   // const [clientCourses, setClientCourses] = useState<Course[]>();
-  const [action, setAction] = useState<string>("");
+  const [action, setAction] = useState<CourseAction>();
+  const [modalHeader, setModalHeader] = useState<string>("");
+  //To be set within the ResourceSelect component whenever a list item is clicked.
+  const [resourceId, setResourceId] = useState<number>(0);
+  //To be selected course from when resourceId is set ResourceSelection, always reset this to NULL.
+  const [courseToUpdate, setCourseToUpdate] = useState<Course | null>(null);
 
   const { data: session } = useSession();
   const router = useRouter();
-  /* const { data, isLoading } = trpc.course.getManyByEducationId.useQuery({
-    educationId: String(session?.user.educationId),
-  }); */
 
   const modalRef = useRef(null);
-  // console.log(courses);
 
   useEffect(() => {
-    console.log(hasSubmitted);
-  }, [hasSubmitted]);
+    if (!showModal) {
+      setCourseToUpdate(null);
+    }
+  }, [showModal]);
 
   useEffect(() => {
-    // console.log(session);
-    // console.log(courses);
-
     if (!session) {
       router.push("/401");
     }
@@ -90,15 +94,47 @@ const Dashboard = ({ courses, education }: Props) => {
     };
   }, [modalRef, showModal]);
 
-  const modalClickHandler = () => {
+  useEffect(() => {
+    getModalHeader(action);
+  }, [action]);
+
+  //Selects the course by id with the given resourceId whenever resourceId is updated within ResrouceSelection.
+  useEffect(() => {
+    setCourseToUpdate(getCourseToUpdate(resourceId, courses));
+  }, [resourceId]);
+
+  //Function to run whenever a resource is clicked in the resource list in component ResourceSelection when clicking update course button
+  const getCourseToUpdate = (courseId: number, courses: Course[]) => {
+    if (courses.length <= 0) return null;
+
+    const filteredCourse = courses.filter((course) => course.id === courseId);
+
+    return filteredCourse.length <= 0 ? null : filteredCourse[0];
+  };
+
+  const modalClickHandler = (action: CourseAction) => {
+    setAction(action);
     setShowModal((prev) => !prev);
+  };
+
+  const getModalHeader = (action: CourseAction | undefined) => {
+    switch (action) {
+      case CourseAction.CREATECOURSE:
+        setModalHeader("Skapa en kurs");
+        break;
+      case CourseAction.UPDATECOURSE:
+        setModalHeader("Uppdatera kurs");
+        break;
+
+      default:
+        break;
+    }
   };
 
   return (
     <IconContext.Provider
       value={{
-        className:
-          "text-primary hover:text-indigo-50 hover:bg-primary hover:cursor-pointer rounded-sm",
+        className: "text-primary-font hover:bg-primary-font rounded-sm",
       }}
     >
       <UserLayout role={session?.user.role}>
@@ -116,7 +152,6 @@ const Dashboard = ({ courses, education }: Props) => {
             ) : (
               <section className="w-full flex flex-col justify-center items-center gap-4">
                 <h2 className="text-2xl">Inga övningar finns</h2>
-                {/* <div className="flex justify-center items-center gap-6"> */}
 
                 {session?.user.role === "TEACHER" ? (
                   <>
@@ -125,7 +160,6 @@ const Dashboard = ({ courses, education }: Props) => {
                     <button
                       className="bg-primary text-white px-4 py-2 rounded-md hover:bg-indigo-50 hover:text-primary"
                       onClick={(e) => {
-                        // e.preventDefault();
                         setShowModal(true);
                       }}
                     >
@@ -148,7 +182,7 @@ const Dashboard = ({ courses, education }: Props) => {
                 <>
                   <div
                     className="flex items-center gap-2 bg-card p-4 rounded-lg hover:cursor-pointer hover:bg-background"
-                    onClick={modalClickHandler}
+                    onClick={() => modalClickHandler(CourseAction.CREATECOURSE)}
                   >
                     <div className="rounded-full bg-primary text-white p-2">
                       <Plus />
@@ -157,7 +191,7 @@ const Dashboard = ({ courses, education }: Props) => {
                   </div>
                   <div
                     className="flex items-center gap-2 bg-card p-4 rounded-lg hover:cursor-pointer hover:bg-background"
-                    onClick={modalClickHandler}
+                    onClick={() => modalClickHandler(CourseAction.UPDATECOURSE)}
                   >
                     <div className="rounded-full bg-primary text-white p-2">
                       <FileEdit />
@@ -173,16 +207,41 @@ const Dashboard = ({ courses, education }: Props) => {
         </div>
 
         <Modal
-          header={"Skapa en kurs"}
+          header={modalHeader}
           showModal={showModal}
           setShowModal={setShowModal}
         >
-          <CreateCourseForm
-            hasSubmitted={hasSubmitted}
-            setHasSubmitted={setHasSubmitted}
-            educationId={education?.id}
-            setShowModal={setShowModal}
-          />
+          {action === CourseAction.CREATECOURSE && (
+            <CreateCourseForm
+              hasSubmitted={hasSubmitted}
+              setHasSubmitted={setHasSubmitted}
+              educationId={education?.id}
+              setShowModal={setShowModal}
+            />
+          )}
+          {action === CourseAction.UPDATECOURSE && (
+            <>
+              {!courseToUpdate ? (
+                <ResourceSelection
+                  role={session?.user.role}
+                  setResourceId={setResourceId}
+                  resource={courses}
+                />
+              ) : (
+                <div>
+                  <button onClick={() => setCourseToUpdate(null)}>
+                    Tillbaka
+                  </button>
+                  <UpdateCourseForm
+                    course={courseToUpdate}
+                    hasSubmitted={hasSubmitted}
+                    setHasSubmitted={setHasSubmitted}
+                    setShowModal={setShowModal}
+                  />
+                </div>
+              )}
+            </>
+          )}
         </Modal>
       </UserLayout>
     </IconContext.Provider>

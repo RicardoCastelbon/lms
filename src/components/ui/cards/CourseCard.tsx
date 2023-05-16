@@ -19,10 +19,10 @@ type Props = {
 
 const CourseCard = ({ course, role }: Props) => {
   // console.log(course);
-  const { mutateAsync } = trpc.course.updateCourse.useMutation();
+  // const { mutateAsync } = trpc.course.updateCourse.useMutation();
 
   const { selectIcon } = useIcon();
-  const publishClickHandler = async (
+  /*  const publishClickHandler = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     course: Course
   ) => {
@@ -39,7 +39,7 @@ const CourseCard = ({ course, role }: Props) => {
     });
 
     console.log(result);
-  };
+  }; */
 
   return (
     <div className="w-[232px] h-[338px] shadow-lg flex flex-col rounded-lg">
@@ -54,7 +54,7 @@ const CourseCard = ({ course, role }: Props) => {
       {/* card body */}
       <div className="flex flex-col gap-2 p-2 text-center">
         <h2 className="font-semibold text-lg mb-2">{course.title}</h2>
-        {role && role === "TEACHER" ? (
+        {/*    {role && role === "TEACHER" ? (
           course.published ? (
             <>
               <p className="text-green-500">Publicerad</p>
@@ -78,7 +78,7 @@ const CourseCard = ({ course, role }: Props) => {
           )
         ) : (
           ""
-        )}
+        )} */}
         {/* <p>{course.exercises}</p> */}
         <Link
           href={`/dashboard/${course.slug}`}

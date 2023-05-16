@@ -44,7 +44,9 @@ const RichText = forwardRef<HTMLDivElement, Props>(function Editor(props, ref) {
       ["clean"],
     ],
   }; */
-
+  useEffect(() => {
+    console.log(props.value);
+  }, []);
   return (
     <>
       {props.name && props.name === "content" ? (
