@@ -42,7 +42,10 @@ const IconSelect = ({
 
   useEffect(() => {
     // console.log("icon", hasSubmitted);
-
+    console.log(value);
+    if (value.length > 0) {
+      setIcon(selectIcon(value));
+    }
     if (hasSubmitted) {
       setIcon(null);
     }

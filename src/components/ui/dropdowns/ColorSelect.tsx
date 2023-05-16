@@ -83,6 +83,11 @@ const ColorSelect = ({
 
   //If form has been submitted, reset selectedColor to = ""
   useEffect(() => {
+    //if value is provided by the update form set SelectedColor to its value
+    if (value.length > 0) {
+      setSelectedColor(value);
+    }
+
     console.log("color", hasSubmitted);
     if (hasSubmitted) {
       setSelectedColor("");
