@@ -34,7 +34,9 @@ const Dashboard = ({ courses, education }: Props) => {
   // const [clientCourses, setClientCourses] = useState<Course[]>();
   const [action, setAction] = useState<CourseAction>();
   const [modalHeader, setModalHeader] = useState<string>("");
+  //To be set within the ResourceSelect component whenever a list item is clicked.
   const [resourceId, setResourceId] = useState<number>(0);
+  //To be selected course from when resourceId is set ResourceSelection, always reset this to NULL.
   const [courseToUpdate, setCourseToUpdate] = useState<Course | null>(null);
 
   const { data: session } = useSession();
@@ -100,18 +102,18 @@ const Dashboard = ({ courses, education }: Props) => {
     getModalHeader(action);
   }, [action]);
 
+  //Selects the course by id with the given resourceId whenever resourceId is updated within ResrouceSelection.
   useEffect(() => {
     // console.log(resourceId);
     setCourseToUpdate(getCourseToUpdate(resourceId, courses));
   }, [resourceId]);
 
-  useEffect(() => {
+  /* useEffect(() => {
     console.log(courseToUpdate);
-    /* if (courseToUpdate !== null) {
-    } */
-  }, [courseToUpdate]);
+    
+  }, [courseToUpdate]); */
 
-  //Function to run whenever a resource is clicked in the resource list when clicking update course button
+  //Function to run whenever a resource is clicked in the resource list in component ResourceSelection when clicking update course button
   const getCourseToUpdate = (courseId: number, courses: Course[]) => {
     if (courses.length <= 0) return null;
 
@@ -145,8 +147,7 @@ const Dashboard = ({ courses, education }: Props) => {
   return (
     <IconContext.Provider
       value={{
-        className:
-          "text-primary-font hover:text-indigo-50 hover:bg-primary hover:cursor-pointer rounded-sm",
+        className: "text-primary-font hover:bg-primary-font rounded-sm",
       }}
     >
       <UserLayout role={session?.user.role}>
