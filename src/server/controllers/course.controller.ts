@@ -247,8 +247,10 @@ export const updateCourse = async ({
       where: { id: Number(input.courseId) },
       data: input.body,
     });
-
-    const courses = await ctx.prisma.course.findMany();
+    const educationId = ctx.session?.user.educationId as unknown as number;
+    const courses = await ctx.prisma.course.findMany({
+      where: { educationId: educationId },
+    });
 
     return {
       success: true,
