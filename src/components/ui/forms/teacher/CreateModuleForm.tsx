@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React,  {Dispatch,SetStateAction, useCallback, useEffect, useRef, useState } from "react";
 
 import { useQuill } from "react-quilljs";
 import { Controller, useForm } from "react-hook-form";
@@ -30,6 +30,8 @@ const CreateModuleForm = ({ courseId }: Props) => {
       endDate: "",
       courseId: 0,
       content: "",
+      published: false,
+
     },
   });
 
@@ -41,6 +43,7 @@ const CreateModuleForm = ({ courseId }: Props) => {
       try {
         // let selectedIcon = iconName;
         data.content = String(quill?.root.innerHTML);
+        data.published = false; // needed?
         data.courseId = courseId;
 
         console.log(data);

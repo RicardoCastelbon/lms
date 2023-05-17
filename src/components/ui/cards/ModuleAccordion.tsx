@@ -20,20 +20,40 @@ import { createContext } from "@/src/server/context";
 import { Action } from "@/src/lib/enums/actionEnums";
 import { ModuleRenderSchema } from "@/src/common/validation/module-end-user";
 import { useRouter } from "next/router";
+import { trpc } from "@/src/common/trpc";
+
+// type Props = {
+//   module: ModuleRenderSchema;
+//   modalClickHandler: (action: Action) => void;
+// };
 
 type Props = {
-  module: ModuleRenderSchema;
+  userModule: ModuleRenderSchema;
   modalClickHandler: (action: Action) => void;
+  role: string | null | undefined;
   getModuleId: (moduleId: number) => void;
 };
 
-const ModuleAccordion = ({ module, modalClickHandler, getModuleId }: Props) => {
+const ModuleAccordion = ({
+  userModule,
+  modalClickHandler,
+  getModuleId,
+  role,
+}: Props) => {
   const [desktopVersion, setdesktopVersion] = useState<boolean>(true);
   const [screenWidth, setScreenWidth] = useState<number>();
   const { data: session } = useSession();
+  const [isPublished, setIsPublished] = useState<boolean>(false);
+  const { mutateAsync } = trpc.module.update.useMutation();
 
   const router = useRouter();
-  //console.log(router.asPath);
+  // console.log(typeof router.query.course);
+  useEffect(() => {
+    if (userModule) {
+      // setIsPublished(userModule.published);
+    }
+    // console.log("usermodule", userModule);
+  }, [userModule]);
 
   useEffect(() => {
     if (window.innerWidth > 768) {
@@ -60,6 +80,25 @@ const ModuleAccordion = ({ module, modalClickHandler, getModuleId }: Props) => {
       window.removeEventListener("resize", getScreenSize);
     };
   }, [screenWidth]);
+
+  const publishClickHandler = async (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    userModule: ModuleRenderSchema
+  ) => {
+    e.preventDefault();
+    if (role !== "TEACHER") return;
+
+    const result = await mutateAsync({
+      moduleId: String(userModule.id),
+      body: {
+        ...userModule,
+        published: userModule.published ? false : true,
+      },
+    });
+    if (result) {
+      setIsPublished(!isPublished);
+    }
+  };
   return (
     <Accordion type="single" collapsible>
       <AccordionItem value="item-1">
@@ -69,39 +108,58 @@ const ModuleAccordion = ({ module, modalClickHandler, getModuleId }: Props) => {
               <li className="w-16 text-left">
                 <ClipboardList />
               </li>
-              <li className="w-32 text-left">{module.title}</li>
+              <li className="w-32 text-left">
+                {userModule && userModule.title}
+              </li>
               {desktopVersion && (
-                <li className="w-32 text-left">{module.startDate}</li>
+                <li className="w-32 text-left">
+                  {userModule && userModule.startDate}
+                </li>
               )}
               {desktopVersion && (
-                <li className="w-32 text-left">{module.endDate}</li>
+                <li className="w-32 text-left">
+                  {userModule && userModule.endDate}
+                </li>
               )}
-              {desktopVersion && <li className="w-36 text-left">"status"</li>}
+              {desktopVersion && <li className="w-36 text-left">status</li>}
               {desktopVersion && (
-                <li className="w-32 text-left">"exercises completed"</li>
+                <li className="w-32 text-left">exercises completed</li>
               )}
+
               {desktopVersion &&
                 (session?.user.role === "TEACHER" ? (
-                  <li className="w-32">
-                    <div
-                      onClick={() => {
-                        getModuleId(module.id);
-                        modalClickHandler(Action.CREATEEXERCISE);
-                      }}
-                      className="flex gap-2 p-2 rounded bg-primary hover:bg-indigo-400 text-white"
-                    >
-                      <Plus />
-                      Uppgift
-                    </div>
-                  </li>
+                  <>
+                    <li className="w-32">
+                      <div
+                        className={
+                          userModule.published
+                            ? "bg-red-500 text-white py-2 px-6 rounded-sm hover:bg-red-50 hover:text-foreground"
+                            : "bg-green-500 text-white py-2 px-6 rounded-sm hover:bg-green-50 hover:text-foreground"
+                        }
+                        onClick={(e) => publishClickHandler(e, userModule)}
+                      >
+                        {userModule.published ? "Nej" : "Ja"}
+                      </div>
+                    </li>
+                  </>
                 ) : (
                   ""
                 ))}
+              {/* {role && role === "TEACHER" ? (
+     
+              
+            ) : (
+              ""
+            )} */}
             </ul>
           </div>
         </AccordionTrigger>
         <AccordionContent>
-          <div>{parse(module.content)}</div>
+          <div>
+            {userModule?.content && typeof userModule.content === "string"
+              ? parse(userModule.content)
+              : "Loading..."}
+          </div>
           <Accordion type="single" collapsible>
             <AccordionItem value="item-1">
               <AccordionTrigger>
@@ -113,8 +171,10 @@ const ModuleAccordion = ({ module, modalClickHandler, getModuleId }: Props) => {
                 </div>
               </AccordionTrigger>
               <AccordionContent>
-                {module.exercises &&
-                  module.exercises.map((exercise, index) => (
+                {userModule &&
+                  userModule.exercises &&
+                  userModule &&
+                  userModule.exercises.map((exercise, index) => (
                     <Link
                       href={`/${router.asPath}/exercise/${exercise.slug}`}
                       key={index}

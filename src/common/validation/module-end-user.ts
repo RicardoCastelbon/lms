@@ -11,12 +11,16 @@ const moduleEndUser = z
     content: z.string(),
     courseId: z.number(),
     // course: z.object({}),
+    published: z.boolean(),
+
     exercises: z
       .object({
         id: z.number(),
         title: z.string(),
         slug: z.string(),
         content: z.string(),
+        published: z.boolean(),
+
         moduleId: z.number(),
       })
       .array(),
@@ -30,6 +34,8 @@ const moduleEndUser = z
         endDate: z.string(),
         content: z.string(),
         courseId: z.number(),
+        published: z.boolean(),
+
         // course: z.object({}),
         exercises: z
           .object({
@@ -37,6 +43,8 @@ const moduleEndUser = z
             title: z.string(),
             slug: z.string(),
             content: z.string(),
+            published: z.boolean(),
+
             moduleId: z.number(),
           })
           .array(),
@@ -64,6 +72,8 @@ export const moduleInputSchema = z.object({
   endDate: z.string(),
   content: z.string(),
   courseId: z.number(),
+  published: z.boolean(),
+
 });
 
 //Default resource output schema, used in all outputs.
@@ -86,6 +96,8 @@ export const moduleRenderSchema = z.object({
   content: z.string(),
   courseId: z.number(),
   // course: z.object({}),
+  published: z.boolean(),
+
   exercises: z
     .object({
       id: z.number(),
@@ -93,6 +105,8 @@ export const moduleRenderSchema = z.object({
       slug: z.string(),
       content: z.string(),
       moduleId: z.number(),
+      published: z.boolean(),
+
     })
     .array(),
 });
@@ -114,6 +128,8 @@ export const updateModuleInputSchema = z.object({
       endDate: z.string(),
       content: z.string(),
       courseId: z.number(),
+      published: z.boolean(),
+
     })
     .partial(),
 });

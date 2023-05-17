@@ -15,9 +15,10 @@ import {
 
 type Props = {
   moduleId: number;
+  setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const CreateExerciseForm = ({ moduleId }: Props) => {
+const CreateExerciseForm = ({ moduleId, setShowModal }: Props) => {
   const {
     handleSubmit,
     control,
@@ -45,13 +46,14 @@ const CreateExerciseForm = ({ moduleId }: Props) => {
         if (result.success) {
           quill!.root.innerHTML = "";
           reset();
+          setShowModal(false);
         }
       } catch (err) {
         console.error(err);
         reset();
       }
     },
-    [mutateAsync, reset, quill, moduleId]
+    [mutateAsync, reset, quill, moduleId, setShowModal]
   );
 
   return (
