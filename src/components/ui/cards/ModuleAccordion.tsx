@@ -24,15 +24,16 @@ import { useRouter } from "next/router";
 type Props = {
   module: ModuleRenderSchema;
   modalClickHandler: (action: Action) => void;
+  getModuleId: (moduleId: number) => void;
 };
 
-const ModuleAccordion = ({ module, modalClickHandler }: Props) => {
+const ModuleAccordion = ({ module, modalClickHandler, getModuleId }: Props) => {
   const [desktopVersion, setdesktopVersion] = useState<boolean>(true);
   const [screenWidth, setScreenWidth] = useState<number>();
   const { data: session } = useSession();
 
   const router = useRouter();
-  console.log(router.asPath);
+  //console.log(router.asPath);
 
   useEffect(() => {
     if (window.innerWidth > 768) {
@@ -83,7 +84,10 @@ const ModuleAccordion = ({ module, modalClickHandler }: Props) => {
                 (session?.user.role === "TEACHER" ? (
                   <li className="w-32">
                     <div
-                      onClick={() => modalClickHandler(Action.CREATEEXERCISE)}
+                      onClick={() => {
+                        getModuleId(module.id);
+                        modalClickHandler(Action.CREATEEXERCISE);
+                      }}
                       className="flex gap-2 p-2 rounded bg-primary hover:bg-indigo-400 text-white"
                     >
                       <Plus />
