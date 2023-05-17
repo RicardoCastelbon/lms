@@ -242,16 +242,22 @@ export const updateCourse = async ({
 }) => {
   // NOTE!!! The input params passed to the update function will update, if a certain param isn't passed the old value will remain. Be careful what params are sent from the frontend. Might have to write a util for this to remove all unused parameters.
   try {
+    // let returnObject;
     const course = await ctx.prisma.course.update({
       where: { id: Number(input.courseId) },
       data: input.body,
     });
+
+    const courses = await ctx.prisma.course.findMany();
+
     return {
       success: true,
       code: 200,
-      message: "Resource found",
-      course,
+      message: "Resource updated",
+      course: courses,
     };
+
+    // return returnObject;
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === "P2025") {

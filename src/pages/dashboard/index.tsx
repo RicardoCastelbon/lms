@@ -75,27 +75,6 @@ const Dashboard = ({ courses, education }: Props) => {
     };
   }, [screenWidth]);
 
-  // handling click outside modal to close.
-  /*   useEffect(() => {
-    const handleClickOutside = (e: any) => {
-      //if close button in modal is pressed, dont run following if
-      if (e.target.id !== "closeModal") {
-        if (
-          modalRef.current &&
-          // @ts-ignore
-          !modalRef.current.contains(e.target)
-        ) {
-          showModal && setShowModal(false);
-        }
-      }
-    };
-
-    document.addEventListener("click", handleClickOutside, true);
-    return () => {
-      document.removeEventListener("click", handleClickOutside, true);
-    };
-  }, [modalRef, showModal]); */
-
   useEffect(() => {
     getModalHeader(action);
   }, [action]);
