@@ -47,12 +47,12 @@ const ModuleAccordion = ({
   const { mutateAsync } = trpc.module.update.useMutation();
 
   const router = useRouter();
-  console.log(router.asPath);
+  // console.log(typeof router.query.course);
   useEffect(() => {
     if (userModule) {
       // setIsPublished(userModule.published);
     }
-    console.log("usermodule", userModule)
+    // console.log("usermodule", userModule);
   }, [userModule]);
 
   useEffect(() => {
@@ -82,7 +82,7 @@ const ModuleAccordion = ({
   }, [screenWidth]);
 
   const publishClickHandler = async (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
     userModule: ModuleRenderSchema
   ) => {
     e.preventDefault();
@@ -121,32 +121,31 @@ const ModuleAccordion = ({
                   {userModule && userModule.endDate}
                 </li>
               )}
-              {desktopVersion && <li className="w-36 text-left">"status"</li>}
+              {desktopVersion && <li className="w-36 text-left">status</li>}
               {desktopVersion && (
-                <li className="w-32 text-left">"exercises completed"</li>
+                <li className="w-32 text-left">exercises completed</li>
               )}
 
               {desktopVersion &&
                 (session?.user.role === "TEACHER" ? (
                   <>
-        
-                 <li className="w-32">
-                             <div
-                               className={
-                                 userModule.published
-                                   ? "bg-red-500 text-white py-2 px-6 rounded-sm hover:bg-red-50 hover:text-foreground"
-                                   : "bg-green-500 text-white py-2 px-6 rounded-sm hover:bg-green-50 hover:text-foreground"
-                               }
-                               onClick={(e) => publishClickHandler(e, userModule)}
-                             >
-                               {userModule.published ? "Nej" : "Ja"}
-                             </div>
-                           </li>
+                    <li className="w-32">
+                      <div
+                        className={
+                          userModule.published
+                            ? "bg-red-500 text-white py-2 px-6 rounded-sm hover:bg-red-50 hover:text-foreground"
+                            : "bg-green-500 text-white py-2 px-6 rounded-sm hover:bg-green-50 hover:text-foreground"
+                        }
+                        onClick={(e) => publishClickHandler(e, userModule)}
+                      >
+                        {userModule.published ? "Nej" : "Ja"}
+                      </div>
+                    </li>
                   </>
                 ) : (
                   ""
                 ))}
-            {/* {role && role === "TEACHER" ? (
+              {/* {role && role === "TEACHER" ? (
      
               
             ) : (
