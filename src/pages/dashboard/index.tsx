@@ -121,7 +121,7 @@ const Dashboard = ({ courses, education }: Props) => {
       <UserLayout role={session?.user.role}>
         <div className="w-full flex flex-col md:flex-row gap-8">
           {/* Main content */}
-          <div className="w-full h-full flex flex-wrap justify-center gap-4 md:justify-start md:w-3/6 lg:w-4/6">
+          <div className="w-full h-full flex flex-wrap justify-center gap-4 md:justify-start md:w-4/6 lg:w-4/6">
             {courses !== null ? (
               courses?.map((course: Course) => (
                 <CourseCard
@@ -150,7 +150,6 @@ const Dashboard = ({ courses, education }: Props) => {
                 ) : (
                   <p className="">Invänta info från din handledare</p>
                 )}
-                {/* </div> */}
               </section>
             )}
           </div>
@@ -257,6 +256,8 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
     educationId,
   });
 
+  // console.log(res);
+
   type UserRole = string | undefined | null;
   //filter result depending on the role of the logged in user
   const filterCoursesByRole = (role: UserRole, resource: Course[]) => {
@@ -267,8 +268,9 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
     //filter resource to only return resources that are published.
     if (resource && role === "STUDENT") {
       const publishedResources = resource.filter(
-        (item) => item?.published === true
+        (item) => item.published === true
       );
+
       return publishedResources;
     }
     // else return all resources
