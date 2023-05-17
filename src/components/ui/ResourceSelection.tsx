@@ -1,7 +1,7 @@
-import { Course, Exercise, Module } from "@prisma/client";
 import React, { Dispatch, SetStateAction, useState } from "react";
+import { Course, Exercise, Module } from "@prisma/client";
 import UpdateCourseForm from "./forms/teacher/UpdateCourseForm";
-import { log } from "console";
+import { Trash2 } from "lucide-react";
 import { trpc } from "@/src/common/trpc";
 
 type Resource = Course | Module | Exercise;
@@ -31,6 +31,9 @@ const ResourceSelection = ({ resource, setResourceId, role }: Props) => {
     });
 
     console.log(result);
+  };
+  const deleteHandle = (id: number) => {
+    console.log(id);
   };
   return (
     <section className="w-full h-full flex flex-col gap-2 p-2">
@@ -63,6 +66,10 @@ const ResourceSelection = ({ resource, setResourceId, role }: Props) => {
                     >
                       Avpublicera
                     </button>
+                    <Trash2
+                      className="hover:cursor-pointer"
+                      onClick={() => deleteHandle(item.id)}
+                    />
                   </>
                 ) : (
                   <>
@@ -73,6 +80,10 @@ const ResourceSelection = ({ resource, setResourceId, role }: Props) => {
                     >
                       Publicera nu
                     </button>
+                    <Trash2
+                      className="hover:cursor-pointer"
+                      onClick={() => deleteHandle(item.id)}
+                    />
                   </>
                 )
               ) : (

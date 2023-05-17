@@ -9,7 +9,7 @@ import UserLayout from "@/src/components/ui/UserLayout";
 import { IconContext } from "react-icons";
 import { nextAuthOptions } from "@/src/common/auth";
 import CourseCard from "@/src/components/ui/cards/CourseCard";
-import { Plus, X, FileEdit } from "lucide-react";
+import { Plus, X, FileEdit, Trash2 } from "lucide-react";
 // import ColorSelect from "@/src/components/ui/dropdowns/ColorSelect";
 import CreateCourseForm from "@/src/components/ui/forms/teacher/CreateCourseForm";
 import Modal from "@/src/components/ui/modals/Modal";
@@ -44,9 +44,11 @@ const Dashboard = ({ courses, education }: Props) => {
 
   const modalRef = useRef(null);
 
+  //If modal closes, reset courseToUpdate
   useEffect(() => {
     if (!showModal) {
       setCourseToUpdate(null);
+      setResourceId(0);
     }
   }, [showModal]);
 
@@ -74,13 +76,13 @@ const Dashboard = ({ courses, education }: Props) => {
   }, [screenWidth]);
 
   // handling click outside modal to close.
-  useEffect(() => {
+  /*   useEffect(() => {
     const handleClickOutside = (e: any) => {
       //if close button in modal is pressed, dont run following if
       if (e.target.id !== "closeModal") {
         if (
           modalRef.current &&
-          /* @ts-ignore */
+          // @ts-ignore
           !modalRef.current.contains(e.target)
         ) {
           showModal && setShowModal(false);
@@ -92,7 +94,7 @@ const Dashboard = ({ courses, education }: Props) => {
     return () => {
       document.removeEventListener("click", handleClickOutside, true);
     };
-  }, [modalRef, showModal]);
+  }, [modalRef, showModal]); */
 
   useEffect(() => {
     getModalHeader(action);
@@ -229,7 +231,12 @@ const Dashboard = ({ courses, education }: Props) => {
                 />
               ) : (
                 <div>
-                  <button onClick={() => setCourseToUpdate(null)}>
+                  <button
+                    onClick={() => {
+                      setCourseToUpdate(null);
+                      setResourceId(0);
+                    }}
+                  >
                     Tillbaka
                   </button>
                   <UpdateCourseForm
