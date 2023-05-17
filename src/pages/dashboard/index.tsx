@@ -228,6 +228,7 @@ const Dashboard = ({ courses, education }: Props) => {
                   role={session?.user.role}
                   setResourceId={setResourceId}
                   resource={courses}
+                  action={CourseAction.UPDATECOURSE}
                 />
               ) : (
                 <div>

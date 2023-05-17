@@ -32,7 +32,7 @@ export const useIcon = () => {
     if (iconName === "" || !iconName) return;
     const icon = icons.filter((i) => i.name === iconName);
 
-    return icon[0].icon;
+    return icon[0]?.icon;
   }, []);
 
   /*  const Icon = React.useMemo(() => {

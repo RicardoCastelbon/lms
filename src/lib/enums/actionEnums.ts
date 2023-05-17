@@ -1,8 +1,9 @@
 export enum Action {
-  CREATEMODULE,
-  UPDATEMODULE,
-  CREATESTUDENT,
-  CREATEEXERCISE,
+  CREATEMODULE = "createModule",
+  UPDATEMODULE = "updateModule",
+  CREATESTUDENT = "createStudent",
+  CREATEEXERCISE = "createExercise",
+  UPDATEEXERCISE = "updateExercise",
 }
 
 export enum CourseAction {

@@ -35,6 +35,8 @@ const CourseCard = ({ course, role }: Props) => {
       body: {
         ...course,
         published: course.published ? false : true,
+        educationId: course.educationId !== null ? course.educationId : undefined,
+        
       },
     });
 
