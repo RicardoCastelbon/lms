@@ -13,16 +13,23 @@ import {
   ExerciseInputSchema,
 } from "@/src/common/validation/exercise-end-user";
 
-type Props = {};
+type Props = {
+  moduleId: number;
+};
 
-const CreateExerciseForm = (props: Props) => {
-  const { handleSubmit, control, reset } = useForm<ExerciseInputSchema>({
+const CreateExerciseForm = ({ moduleId }: Props) => {
+  const {
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors },
+    setValue,
+  } = useForm<ExerciseInputSchema>({
     defaultValues: {
       title: "",
       content: "",
-      moduleId: 0,
+      moduleId: moduleId,
     },
-    resolver: zodResolver(exerciseInputSchema),
   });
 
   const { quill, quillRef } = useQuill();
@@ -32,28 +39,20 @@ const CreateExerciseForm = (props: Props) => {
     async (data: ExerciseInputSchema) => {
       try {
         data.content = String(quill?.root.innerHTML);
-        data.moduleId = 1;
-
-        if (!data.title || !data.content || !data.moduleId) {
-          console.log("need to fill in all fields");
-          console.log(data);
-          return;
-        } else {
-          console.log(data);
-          const result = await mutateAsync(data);
-          if (result.success) {
-            quill!.root.innerHTML = "";
-            reset();
-          }
+        data.moduleId = moduleId;
+        console.log(data);
+        const result = await mutateAsync(data);
+        if (result.success) {
+          quill!.root.innerHTML = "";
+          reset();
         }
       } catch (err) {
         console.error(err);
+        reset();
       }
     },
-    [mutateAsync, reset, quill]
+    [mutateAsync, reset, quill, moduleId]
   );
-
-  useEffect(() => {}, []);
 
   return (
     <form className="md:flex gap-4 block" onSubmit={handleSubmit(onSubmit)}>
@@ -63,17 +62,24 @@ const CreateExerciseForm = (props: Props) => {
         <Controller
           name="title"
           control={control}
-          rules={{ required: true }}
-          render={({ field }) => (
+          rules={{ required: "Ange ett namn på uppgiften" }}
+          render={({ field: { value, onChange, onBlur, name, ...field } }) => (
             <div className="w-full max-w-md flex flex-col mb-4">
               <label htmlFor="title">Uppgiftsnamn</label>
               <input
+                {...field}
+                value={value}
+                name={name}
+                onChange={onChange}
+                onBlur={onBlur}
                 id="title"
                 type="text"
                 placeholder="Skriv in uppgiftsnamn"
                 className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
-                {...field}
               />
+              <p className="text-xs text-red-500 mt-1">
+                {errors?.title?.message}
+              </p>
             </div>
           )}
         />
@@ -90,7 +96,36 @@ const CreateExerciseForm = (props: Props) => {
         <div className="flex justify-between p-2 items-center">
           <p>Uppgiftsinformation</p>
         </div>
-        <RichText ref={quillRef} />
+        <Controller
+          name="content"
+          control={control}
+          rules={{
+            // required: "Ange en beskrivande text av uppgiften",
+            validate: {
+              hasContent: (value) => {
+                value = String(quill?.getText());
+
+                return value.length > 10 || "Ange en text med minst 10 tecken";
+              },
+            },
+          }}
+          render={({ field: { value, onChange, onBlur, name, ...field } }) => (
+            <div className="w-full max-w-md flex flex-col mb-4">
+              <RichText
+                id="content"
+                {...field}
+                name={name}
+                value={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                ref={quillRef}
+              />
+              <p className="text-xs text-red-500 mt-1">
+                {errors?.content?.message}
+              </p>
+            </div>
+          )}
+        />
       </section>
     </form>
   );

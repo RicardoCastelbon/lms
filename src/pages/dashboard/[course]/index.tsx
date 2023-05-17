@@ -30,6 +30,8 @@ const CourseOverview = ({ modules, course }: Props) => {
   const [modalHeader, setModalHeader] = useState<string>("");
   const { data: session } = useSession();
   const router = useRouter();
+  const [moduleId, setModuleId] = useState<number>(0);
+  const [isCreatedExercise, setIsCreatedExercise] = useState<boolean>(false);
 
   useEffect(() => {
     console.log(session);
@@ -75,6 +77,10 @@ const CourseOverview = ({ modules, course }: Props) => {
     setShowModal((prev) => !prev);
   };
 
+  const getModuleId = (moduleId: number) => {
+    setModuleId(moduleId);
+  };
+
   const getModalHeader = (action: Action | undefined) => {
     switch (action) {
       case Action.CREATEEXERCISE:
@@ -118,6 +124,7 @@ const CourseOverview = ({ modules, course }: Props) => {
                     key={module.id}
                     module={module}
                     modalClickHandler={modalClickHandler}
+                    getModuleId={getModuleId}
                   />
                 ))}
             </section>
@@ -172,8 +179,12 @@ const CourseOverview = ({ modules, course }: Props) => {
           showModal={showModal}
           setShowModal={setShowModal}
         >
-          {action === Action.CREATEMODULE && <CreateModuleForm />}
-          {action === Action.CREATEEXERCISE && <CreateExerciseForm />}
+          {action === Action.CREATEMODULE && (
+            <CreateModuleForm courseId={course?.id} />
+          )}
+          {action === Action.CREATEEXERCISE && (
+            <CreateExerciseForm moduleId={moduleId} />
+          )}
         </Modal>
       </UserLayout>
     </>
