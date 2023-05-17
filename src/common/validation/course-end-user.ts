@@ -64,6 +64,20 @@ export const courseInputSchema = z.object({
   published: z.boolean(),
 });
 
+export const courseUpdateFormSchema = z.object({
+  id: z.number(),
+  title: z.string(),
+  slug: z.string(),
+  icon: z.string(),
+  color: z.string(),
+  content: z.string(),
+  educationId: z.number(),
+  points: z.string(),
+  published: z.boolean(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+});
+
 //Default resource output schema, used in all output methods in router.
 export const courseOutputSchema = z.object({
   success: z.boolean().optional(),
@@ -100,3 +114,4 @@ export type CourseSlugSchema = z.infer<typeof courseSlug>;
 export type CourseInputSchema = z.infer<typeof courseInputSchema>;
 export type CourseOutputSchema = z.infer<typeof courseOutputSchema>;
 export type UpdateCourseInputSchema = z.infer<typeof updateCourseInputSchema>;
+export type CourseUpdateFormSchema = z.infer<typeof courseUpdateFormSchema>;

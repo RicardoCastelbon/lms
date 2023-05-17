@@ -1,13 +1,13 @@
 import { CourseIdSchema } from "@/src/common/validation/course-end-user";
 import { FilterQueryInput } from "@/src/common/validation/education";
-import CoursesPage from "@/src/pages/admin/courses";
 import { Education, Module, Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
-import { Context } from "vm";
+
 import {
   ModuleIdSchema,
   ModuleInputSchema,
   UpdateModuleInputSchema,
+  ModuleRenderSchema,
 } from "../../common/validation/module-end-user";
 import { IContext } from "../context";
 
@@ -175,7 +175,7 @@ export const findAllModulesController = async ({
     const limit = filterQuery.limit || 10;
     const skip = (page - 1) * limit;
 
-    const userModules: Module[] = await ctx.prisma.module.findMany({
+    const userModules: ModuleRenderSchema[] = await ctx.prisma.module.findMany({
       skip,
       take: limit,
       include: {
@@ -187,7 +187,7 @@ export const findAllModulesController = async ({
         success: false,
         code: 404,
         message: "No modules found, please try again",
-        userModules,
+        module: userModules,
       };
     } else {
       return {
@@ -260,7 +260,7 @@ export const deleteModuleController = async ({
   ctx,
 }: {
   input: ModuleIdSchema;
-  ctx: Context;
+  ctx: IContext;
 }) => {
   try {
     const userModule: Module = await ctx.prisma.module.delete({

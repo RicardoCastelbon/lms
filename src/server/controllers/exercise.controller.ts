@@ -24,7 +24,7 @@ export const createExerciseController = async ({
       data: {
         title: input.title,
         slug: slug,
-        description: input.description,
+        // description: input.description,
         content: input.content,
         module: {
           connect: { id: input.moduleId },

@@ -28,27 +28,33 @@ import { trpc } from "@/src/common/trpc";
 // };
 
 type Props = {
-  userModule: Module;
+  userModule: ModuleRenderSchema;
   modalClickHandler: (action: Action) => void;
   role: string | null | undefined;
-
+  getModuleId: (moduleId: number) => void;
 };
 
-const ModuleAccordion = ({ userModule, modalClickHandler, role }: Props) => {
+const ModuleAccordion = ({
+  userModule,
+  modalClickHandler,
+  getModuleId,
+  role,
+}: Props) => {
   const [desktopVersion, setdesktopVersion] = useState<boolean>(true);
   const [screenWidth, setScreenWidth] = useState<number>();
   const { data: session } = useSession();
-  const { mutateAsync } = trpc.module.update.useMutation();
   const [isPublished, setIsPublished] = useState<boolean>(false);
-
+  const { mutateAsync } = trpc.module.update.useMutation();
 
   const router = useRouter();
   console.log(router.asPath);
   useEffect(() => {
     if (userModule) {
-      setIsPublished(userModule.published);
+      // setIsPublished(userModule.published);
     }
+    console.log("usermodule", userModule)
   }, [userModule]);
+
   useEffect(() => {
     if (window.innerWidth > 768) {
       setdesktopVersion(true);
@@ -77,23 +83,22 @@ const ModuleAccordion = ({ userModule, modalClickHandler, role }: Props) => {
 
   const publishClickHandler = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    userModule: Module
+    userModule: ModuleRenderSchema
   ) => {
     e.preventDefault();
-    if (session?.user.role !== "TEACHER") return;
+    if (role !== "TEACHER") return;
 
     const result = await mutateAsync({
       moduleId: String(userModule.id),
       body: {
         ...userModule,
         published: userModule.published ? false : true,
-        
       },
     });
     if (result) {
       setIsPublished(!isPublished);
     }
-      };
+  };
   return (
     <Accordion type="single" collapsible>
       <AccordionItem value="item-1">
@@ -103,38 +108,59 @@ const ModuleAccordion = ({ userModule, modalClickHandler, role }: Props) => {
               <li className="w-16 text-left">
                 <ClipboardList />
               </li>
-              <li className="w-32 text-left">{userModule && userModule.title}</li>
+              <li className="w-32 text-left">
+                {userModule && userModule.title}
+              </li>
               {desktopVersion && (
-                <li className="w-32 text-left">{userModule && userModule.startDate}</li>
+                <li className="w-32 text-left">
+                  {userModule && userModule.startDate}
+                </li>
               )}
               {desktopVersion && (
-                <li className="w-32 text-left">{userModule &&  userModule.endDate}</li>
+                <li className="w-32 text-left">
+                  {userModule && userModule.endDate}
+                </li>
               )}
               {desktopVersion && <li className="w-36 text-left">"status"</li>}
               {desktopVersion && (
                 <li className="w-32 text-left">"exercises completed"</li>
               )}
-              {role && role === "TEACHER" ? (
-                <>
-                userModule.published
-                <li className="w-32">
-              <button
-                className={isPublished ? "bg-red-500 text-white py-2 px-6 rounded-sm hover:bg-red-50 hover:text-foreground" : "bg-green-500 text-white py-2 px-6 rounded-sm hover:bg-green-50 hover:text-foreground"}
-                onClick={(e) => publishClickHandler(e, userModule)}
-              >
-                {isPublished ? 'Nej' : 'Ja'}
-              </button>
-            </li>
-     </>
-) : (
-  ""
-)}
 
+              {desktopVersion &&
+                (session?.user.role === "TEACHER" ? (
+                  <>
+        
+                 <li className="w-32">
+                             <div
+                               className={
+                                 userModule.published
+                                   ? "bg-red-500 text-white py-2 px-6 rounded-sm hover:bg-red-50 hover:text-foreground"
+                                   : "bg-green-500 text-white py-2 px-6 rounded-sm hover:bg-green-50 hover:text-foreground"
+                               }
+                               onClick={(e) => publishClickHandler(e, userModule)}
+                             >
+                               {userModule.published ? "Nej" : "Ja"}
+                             </div>
+                           </li>
+                  </>
+                ) : (
+                  ""
+                ))}
+            {/* {role && role === "TEACHER" ? (
+     
+              
+            ) : (
+              ""
+            )} */}
             </ul>
           </div>
         </AccordionTrigger>
         <AccordionContent>
-        <div>{userModule?.content && typeof userModule.content === 'string' ? parse(userModule.content) : 'Loading...'}</div>
+          <div>
+            {userModule?.content && typeof userModule.content === "string"
+              ? parse(userModule.content)
+              : "Loading..."}
+          </div>
           <Accordion type="single" collapsible>
             <AccordionItem value="item-1">
               <AccordionTrigger>
@@ -146,8 +172,10 @@ const ModuleAccordion = ({ userModule, modalClickHandler, role }: Props) => {
                 </div>
               </AccordionTrigger>
               <AccordionContent>
-                {userModule &&  userModule.exercises &&
-                  userModule && userModule.exercises.map((exercise, index) => (
+                {userModule &&
+                  userModule.exercises &&
+                  userModule &&
+                  userModule.exercises.map((exercise, index) => (
                     <Link
                       href={`/${router.asPath}/exercise/${exercise.slug}`}
                       key={index}
@@ -196,4 +224,3 @@ const ModuleAccordion = ({ userModule, modalClickHandler, role }: Props) => {
 };
 
 export default ModuleAccordion;
-

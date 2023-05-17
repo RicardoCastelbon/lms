@@ -86,6 +86,7 @@ export const moduleOutputSchema = z.object({
   error: error,
 });
 
+//For frontend rendering
 export const moduleRenderSchema = z.object({
   // .object({
   id: z.number(),

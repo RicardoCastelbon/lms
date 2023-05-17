@@ -16,6 +16,7 @@ import ModuleAccordion from "@/src/components/ui/cards/ModuleAccordion";
 import CreateExerciseForm from "@/src/components/ui/forms/teacher/CreateExerciseForm";
 import { Action } from "@/src/lib/enums/actionEnums";
 import { ModuleRenderSchema } from "@/src/common/validation/module-end-user";
+import ResourceSelection from "@/src/components/ui/ResourceSelection";
 
 type Props = {
   modules: ModuleRenderSchema[];
@@ -30,6 +31,14 @@ const CourseOverview = ({ modules, course }: Props) => {
   const [modalHeader, setModalHeader] = useState<string>("");
   const { data: session } = useSession();
   const router = useRouter();
+  const [moduleId, setModuleId] = useState<number>(0);
+  const [isCreatedExercise, setIsCreatedExercise] = useState<boolean>(false);
+
+  //To be set within the ResourceSelect component whenever a list item is clicked.
+  const [resourceId, setResourceId] = useState<number>(0);
+  //To be selected course from when resourceId is set ResourceSelection, always reset this to NULL.
+  const [moduleToUpdate, setModuleToUpdate] =
+    useState<ModuleRenderSchema | null>(null);
 
   useEffect(() => {
     console.log(session);
@@ -70,9 +79,29 @@ const CourseOverview = ({ modules, course }: Props) => {
     getModalHeader(action);
   }, [action]);
 
+  //Selects the course by id with the given resourceId whenever resourceId is updated within ResrouceSelection.
+  useEffect(() => {
+    setModuleToUpdate(getModuleToUpdate(resourceId, modules));
+  }, [resourceId]);
+
+  //Function to run whenever a resource is clicked in the resource list in component ResourceSelection when clicking update course button
+  const getModuleToUpdate = (
+    moduleId: number,
+    modules: ModuleRenderSchema[]
+  ) => {
+    if (modules.length <= 0) return null;
+
+    const filteredModule = modules.filter((module) => module.id === moduleId);
+
+    return filteredModule.length <= 0 ? null : filteredModule[0];
+  };
   const modalClickHandler = (action: Action) => {
     setAction(action);
     setShowModal((prev) => !prev);
+  };
+
+  const getModuleId = (moduleId: number) => {
+    setModuleId(moduleId);
   };
 
   const getModalHeader = (action: Action | undefined) => {
@@ -111,15 +140,16 @@ const CourseOverview = ({ modules, course }: Props) => {
                   {desktopVersion && <li className="w-36">Status</li>}
                   {desktopVersion && <li className="w-32">Uppgifter</li>}
                   {desktopVersion && <li className="w-32">Publicerad</li>}
-
                 </ul>
               </div>
               {modules &&
                 modules?.map((module: ModuleRenderSchema) => (
                   <ModuleAccordion
                     key={module.id}
-                    module={module}
+                    userModule={module}
                     modalClickHandler={modalClickHandler}
+                    getModuleId={getModuleId}
+                    role={session?.user.role}
                   />
                 ))}
             </section>
@@ -184,8 +214,24 @@ const CourseOverview = ({ modules, course }: Props) => {
           showModal={showModal}
           setShowModal={setShowModal}
         >
-          {action === Action.CREATEMODULE && <CreateModuleForm />}
-          {action === Action.CREATEEXERCISE && <CreateExerciseForm />}
+          {action === Action.CREATEMODULE && (
+            <CreateModuleForm courseId={course?.id} />
+          )}
+
+          {action === Action.CREATEEXERCISE && (
+            <>
+              {!moduleToUpdate ? (
+                <ResourceSelection
+                  role={session?.user.role}
+                  setResourceId={setResourceId}
+                  resource={modules}
+                  action={Action.CREATEEXERCISE}
+                />
+              ) : (
+                <CreateExerciseForm moduleId={moduleId} />
+              )}
+            </>
+          )}
         </Modal>
       </UserLayout>
     </>
@@ -212,7 +258,6 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
     courseSlug: slug,
   });
 
-  
   // fetch all the modules with with courseId
   const res = await helpers.module.getManyByCourseId.fetch({
     courseId: course?.course?.id,
