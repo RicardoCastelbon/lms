@@ -110,6 +110,8 @@ const CourseOverview = ({ modules, course }: Props) => {
                   {desktopVersion && <li className="w-32">In.datum</li>}
                   {desktopVersion && <li className="w-36">Status</li>}
                   {desktopVersion && <li className="w-32">Uppgifter</li>}
+                  {desktopVersion && <li className="w-32">Publicerad</li>}
+
                 </ul>
               </div>
               {modules &&

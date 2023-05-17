@@ -22,29 +22,33 @@ import { ModuleRenderSchema } from "@/src/common/validation/module-end-user";
 import { useRouter } from "next/router";
 import { trpc } from "@/src/common/trpc";
 
-type Props = {
-  module: ModuleRenderSchema;
-  modalClickHandler: (action: Action) => void;
-};
-
 // type Props = {
-//   userModule: Module;
+//   module: ModuleRenderSchema;
 //   modalClickHandler: (action: Action) => void;
-//   role: string | null | undefined;
-
 // };
 
-const ModuleAccordion = ({ module, modalClickHandler }: Props) => {
+type Props = {
+  userModule: Module;
+  modalClickHandler: (action: Action) => void;
+  role: string | null | undefined;
+
+};
+
+const ModuleAccordion = ({ userModule, modalClickHandler, role }: Props) => {
   const [desktopVersion, setdesktopVersion] = useState<boolean>(true);
   const [screenWidth, setScreenWidth] = useState<number>();
   const { data: session } = useSession();
   const { mutateAsync } = trpc.module.update.useMutation();
-  const [isPublished, setIsPublished] = useState<boolean>(module.published);
+  const [isPublished, setIsPublished] = useState<boolean>(false);
 
 
   const router = useRouter();
   console.log(router.asPath);
-
+  useEffect(() => {
+    if (userModule) {
+      setIsPublished(userModule.published);
+    }
+  }, [userModule]);
   useEffect(() => {
     if (window.innerWidth > 768) {
       setdesktopVersion(true);
@@ -99,41 +103,29 @@ const ModuleAccordion = ({ module, modalClickHandler }: Props) => {
               <li className="w-16 text-left">
                 <ClipboardList />
               </li>
-              <li className="w-32 text-left">{module.title}</li>
+              <li className="w-32 text-left">{userModule && userModule.title}</li>
               {desktopVersion && (
-                <li className="w-32 text-left">{module.startDate}</li>
+                <li className="w-32 text-left">{userModule && userModule.startDate}</li>
               )}
               {desktopVersion && (
-                <li className="w-32 text-left">{module.endDate}</li>
+                <li className="w-32 text-left">{userModule &&  userModule.endDate}</li>
               )}
               {desktopVersion && <li className="w-36 text-left">"status"</li>}
               {desktopVersion && (
                 <li className="w-32 text-left">"exercises completed"</li>
               )}
-              {session?.user.role === "TEACHER" ? (
-  <li className="w-32">
-    {isPublished ? (
-      <>
-     <p className="text-green-500">Publicerad</p>
-      <button
-        className="bg-indigo-500 text-white py-2 px-6 rounded-sm hover:bg-indigo-50 hover:text-foreground"
-        onClick={(e) => publishClickHandler(e, module)}
-      >
-        Avpublicera
-      </button>
-      </>
-    ) : (
-      <>
-          <p className="text-rose-500">Ej publicerad</p>
-      <button
-        className="bg-indigo-500 text-white py-2 px-6 rounded-sm hover:bg-indigo-50 hover:text-foreground"
-        onClick={(e) => publishClickHandler(e, module)}
-      >
-        Publicera 
-      </button>
-    </>
-    )}
-  </li>
+              {role && role === "TEACHER" ? (
+                <>
+                userModule.published
+                <li className="w-32">
+              <button
+                className={isPublished ? "bg-red-500 text-white py-2 px-6 rounded-sm hover:bg-red-50 hover:text-foreground" : "bg-green-500 text-white py-2 px-6 rounded-sm hover:bg-green-50 hover:text-foreground"}
+                onClick={(e) => publishClickHandler(e, userModule)}
+              >
+                {isPublished ? 'Nej' : 'Ja'}
+              </button>
+            </li>
+     </>
 ) : (
   ""
 )}
@@ -142,7 +134,7 @@ const ModuleAccordion = ({ module, modalClickHandler }: Props) => {
           </div>
         </AccordionTrigger>
         <AccordionContent>
-          <div>{parse(module.content)}</div>
+        <div>{userModule?.content && typeof userModule.content === 'string' ? parse(userModule.content) : 'Loading...'}</div>
           <Accordion type="single" collapsible>
             <AccordionItem value="item-1">
               <AccordionTrigger>
@@ -154,8 +146,8 @@ const ModuleAccordion = ({ module, modalClickHandler }: Props) => {
                 </div>
               </AccordionTrigger>
               <AccordionContent>
-                {module.exercises &&
-                  module.exercises.map((exercise, index) => (
+                {userModule &&  userModule.exercises &&
+                  userModule && userModule.exercises.map((exercise, index) => (
                     <Link
                       href={`/${router.asPath}/exercise/${exercise.slug}`}
                       key={index}
