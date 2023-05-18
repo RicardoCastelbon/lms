@@ -14,7 +14,7 @@ const LibCard = ({ setReadInfo, cardResource, infoClickHandler }: Props) => {
       {/* card header */}
       {/* <FaTrash className="absolute top-2 right-2 hover:cursor-pointer" /> */}
       <FileText size={48} />
-      <h3>hej</h3>
+      <h3>{cardResource.title}</h3>
       <button
         className="bg-green-500 text-white py-1 px-10 rounded-md hover:bg-green-600"
         onClick={() => infoClickHandler(cardResource.id)}
