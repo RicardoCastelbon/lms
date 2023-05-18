@@ -21,6 +21,7 @@ import { Action } from "@/src/lib/enums/actionEnums";
 import { ModuleRenderSchema } from "@/src/common/validation/module-end-user";
 import { useRouter } from "next/router";
 import { trpc } from "@/src/common/trpc";
+import { Trash2 } from "lucide-react";
 
 // type Props = {
 //   module: ModuleRenderSchema;
@@ -134,23 +135,25 @@ const ModuleAccordion = ({
     </ul>
   </div>
 </AccordionTrigger>
-...
+
 
         <AccordionContent>
           <div>
           <div>
-          <ul>
-        {desktopVersion && 
-            <li className="w-32 flex">
-                <span>Startdatum: </span><span> <strong>{userModule &&userModule.startDate}</strong></span>
-            </li>
-        }
-        {desktopVersion && 
-            <li className="w-32 flex">
-                <span>In.datum: </span><span><strong>{userModule && userModule.endDate}</strong></span>
-            </li>
-              }
-          </ul>
+          <ul className="mb-4">
+  <li className="w-32 flex">
+    <span>Startdatum: </span> 
+    <span className="ml-1"><strong>{userModule && userModule.startDate}</strong></span>
+  </li>
+
+  {desktopVersion && 
+    <li className="w-32 flex">
+      <span>In.datum: </span>
+      <span className="ml-1"><strong>{userModule && userModule.endDate}</strong></span>
+    </li>
+  }
+</ul>
+
             </div>
               
             {userModule?.content && typeof userModule.content === "string"
@@ -173,10 +176,11 @@ const ModuleAccordion = ({
                   userModule.exercises &&
                   userModule &&
                   userModule.exercises.map((exercise, index) => (
+                    <div key={index} className="relative">
                     <Link
                       href={`/${router.asPath}/exercise/${exercise.slug}`}
                       key={index}
-                      className="flex justify-between w-full bg-accent text-white text-left p-4 hover:bg-blue-400"
+                      className="flex justify-between w-11/12 bg-accent text-white text-left p-4 hover:bg-blue-400" // set width to 11/12
                     >
                       <div className="flex">
                         <span className=" mr-4">
@@ -188,6 +192,13 @@ const ModuleAccordion = ({
                         <Check />
                       </span>
                     </Link>
+                     <button
+                    //  onClick={() => handleTrashClick(exercise)}
+                     className="absolute right-0 top-3 mt-1 mr-10" // position the trash icon
+                   >
+                     <Trash2 className="h- w-5 text-black" />
+                   </button>
+                       </div>
                   ))}
               </AccordionContent>
             </AccordionItem>
