@@ -9,7 +9,7 @@ import UserLayout from "@/src/components/ui/UserLayout";
 import { IconContext } from "react-icons";
 import { nextAuthOptions } from "@/src/common/auth";
 import CourseCard from "@/src/components/ui/cards/CourseCard";
-import { Plus, X, FileEdit } from "lucide-react";
+import { Plus, X, FileEdit, Trash2 } from "lucide-react";
 // import ColorSelect from "@/src/components/ui/dropdowns/ColorSelect";
 import CreateCourseForm from "@/src/components/ui/forms/teacher/CreateCourseForm";
 import Modal from "@/src/components/ui/modals/Modal";
@@ -45,9 +45,11 @@ const Dashboard = ({ courses, education }: Props) => {
 
   const modalRef = useRef(null);
 
+  //If modal closes, reset courseToUpdate
   useEffect(() => {
     if (!showModal) {
       setCourseToUpdate(null);
+      setResourceId(0);
     }
   }, [showModal]);
 
@@ -74,27 +76,6 @@ const Dashboard = ({ courses, education }: Props) => {
     };
   }, [screenWidth]);
 
-  // handling click outside modal to close.
-  useEffect(() => {
-    const handleClickOutside = (e: any) => {
-      //if close button in modal is pressed, dont run following if
-      if (e.target.id !== "closeModal") {
-        if (
-          modalRef.current &&
-          /* @ts-ignore */
-          !modalRef.current.contains(e.target)
-        ) {
-          showModal && setShowModal(false);
-        }
-      }
-    };
-
-    document.addEventListener("click", handleClickOutside, true);
-    return () => {
-      document.removeEventListener("click", handleClickOutside, true);
-    };
-  }, [modalRef, showModal]);
-
   useEffect(() => {
     getModalHeader(action);
   }, [action]);
@@ -106,11 +87,14 @@ const Dashboard = ({ courses, education }: Props) => {
 
   //Function to run whenever a resource is clicked in the resource list in component ResourceSelection when clicking update course button
   const getCourseToUpdate = (courseId: number, courses: Course[]) => {
-    if (courses.length <= 0) return null;
+    if (!courses || (courses && courses.length <= 0)) return null;
 
-    const filteredCourse = courses.filter((course) => course.id === courseId);
+    const filteredCourse =
+      courses && courses.filter((course) => course.id === courseId);
 
-    return filteredCourse.length <= 0 ? null : filteredCourse[0];
+    return filteredCourse && filteredCourse.length <= 0
+      ? null
+      : filteredCourse[0];
   };
 
   const modalClickHandler = (action: CourseAction) => {
@@ -131,6 +115,7 @@ const Dashboard = ({ courses, education }: Props) => {
         break;
     }
   };
+  console.log(courses);
 
   return (
     <IconContext.Provider
@@ -141,8 +126,8 @@ const Dashboard = ({ courses, education }: Props) => {
       <UserLayout role={session?.user.role}>
         <div className="w-full flex flex-col md:flex-row gap-8">
           {/* Main content */}
-          <div className="w-full h-full flex flex-wrap justify-center gap-4 md:justify-start md:w-3/6 lg:w-4/6">
-            {courses !== null ? (
+          <div className="w-full h-full flex flex-wrap justify-center gap-4 md:justify-start md:w-4/6 lg:w-4/6">
+            {courses && courses.length > 0 ? (
               courses?.map((course: Course) => (
                 <CourseCard
                   key={course.id}
@@ -154,23 +139,23 @@ const Dashboard = ({ courses, education }: Props) => {
               <section className="w-full flex flex-col justify-center items-center gap-4">
                 <h2 className="text-2xl">Inga övningar finns</h2>
 
-                {session?.user.role === "TEACHER" ? (
+                {session?.user.role === "TEACHER" && (
                   <>
                     <p className="">Skapa en nu!</p>
 
                     <button
                       className="bg-primary text-white px-4 py-2 rounded-md hover:bg-indigo-50 hover:text-primary"
-                      onClick={(e) => {
-                        setShowModal(true);
+                      onClick={() => {
+                        modalClickHandler(CourseAction.CREATECOURSE);
                       }}
                     >
                       Skapa en övning
                     </button>
                   </>
-                ) : (
-                  <p className="">Invänta info från din handledare</p>
                 )}
-                {/* </div> */}
+                {session?.user.role === "STUDENT" && (
+                  <p>Invänta info från din handledare</p>
+                )}
               </section>
             )}
           </div>
@@ -231,7 +216,12 @@ const Dashboard = ({ courses, education }: Props) => {
                 />
               ) : (
                 <div>
-                  <button onClick={() => setCourseToUpdate(null)}>
+                  <button
+                    onClick={() => {
+                      setCourseToUpdate(null);
+                      setResourceId(0);
+                    }}
+                  >
                     Tillbaka
                   </button>
                   <UpdateCourseForm
@@ -252,6 +242,8 @@ const Dashboard = ({ courses, education }: Props) => {
 
 /* getServerSideProps */
 export const getServerSideProps: GetServerSideProps = async (context: any) => {
+  type UserRole = string | undefined | null;
+
   const currentSession = await getServerSession(
     context.req,
     context.res,
@@ -272,7 +264,8 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
     educationId,
   });
 
-  type UserRole = string | undefined | null;
+  console.log(res);
+
   //filter result depending on the role of the logged in user
   const filterCoursesByRole = (role: UserRole, resource: Course[]) => {
     console.log(role);
@@ -282,28 +275,30 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
     //filter resource to only return resources that are published.
     if (resource && role === "STUDENT") {
       const publishedResources = resource.filter(
-        (item) => item?.published === true
+        (item) => item.published === true
       );
+
       return publishedResources;
     }
     // else return all resources
     return resource;
   };
 
-  const courses: Course[] = JSON.parse(JSON.stringify(res.course));
+  const courses: Course[] =
+    res.success && JSON.parse(JSON.stringify(res.course));
 
   const userRole = currentSession && (currentSession.user.role as string);
 
-  const filteredCourses = filterCoursesByRole(userRole, courses);
+  const filteredCourses = filterCoursesByRole(userRole, courses); //<- filter the JSON parsed data before sending it to props.
 
   //Needed to serialize Date objects for createdAt + updatedAt otherwise error is thrown
-  const education = JSON.parse(JSON.stringify(eduRes));
+  const education = eduRes.success && JSON.parse(JSON.stringify(eduRes));
 
   return {
     props: {
       session: currentSession,
       courses: filteredCourses,
-      education: education.education,
+      education: !education ? null : education.education,
     },
   };
 };

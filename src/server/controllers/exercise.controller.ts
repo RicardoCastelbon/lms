@@ -6,6 +6,7 @@ import { Context } from "vm";
 import {
   ExerciseIdSchema,
   ExerciseInputSchema,
+  ExerciseSlugSchema,
   UpdateExerciseInputSchema,
 } from "../../common/validation/exercise-end-user";
 import { IContext } from "../context";
@@ -141,6 +142,46 @@ export const findExerciseController = async ({
         success: false,
         code: 404,
         message: "Module not found, please try again.",
+        exercise,
+      };
+    } else {
+      return {
+        success: true,
+        code: 200,
+        message: "Resource found",
+        exercise,
+      };
+    }
+  } catch (error) {
+    return {
+      success: false,
+      error: new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "An unexpected error occurred, please try again later.",
+        // optional: pass the original error to retain stack trace
+        cause: error,
+      }),
+    };
+  }
+};
+
+export const getOneExerciseBySlug = async ({
+  input,
+  ctx,
+}: {
+  input: ExerciseSlugSchema;
+  ctx: IContext;
+}) => {
+  try {
+    const exercise: Exercise | null = await ctx.prisma.exercise.findFirst({
+      where: { slug: input.exerciseSlug },
+    });
+
+    if (exercise === null) {
+      return {
+        success: false,
+        code: 404,
+        message: "Exercise not found, please try again.",
         exercise,
       };
     } else {

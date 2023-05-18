@@ -141,6 +141,7 @@ const CourseOverview = ({ modules, course }: Props) => {
   }, [resourceId, modules, action, exerciseData]);
 
   //Function to run whenever a resource is clicked in the resource list in component ResourceSelection when clicking update course button
+  // make util
   const getModuleToUpdate = (
     moduleId: number,
     modules: ModuleRenderSchema[]
@@ -152,6 +153,7 @@ const CourseOverview = ({ modules, course }: Props) => {
     return filteredModule.length <= 0 ? null : filteredModule[0];
   };
   //Get exercise to update
+  // make util
   const getExerciseToUpdate = (
     exerciseId: number,
     exercises: ExerciseData[] | null
@@ -175,7 +177,8 @@ const CourseOverview = ({ modules, course }: Props) => {
     setModuleId(moduleId);
   };
 
-  const getModalHeader = (action: Action  | undefined) => {
+  // make util
+  const getModalHeader = (action: Action | undefined) => {
     switch (action) {
       case Action.CREATEEXERCISE:
         setModalHeader("Skapa en uppgift");
@@ -197,6 +200,7 @@ const CourseOverview = ({ modules, course }: Props) => {
     }
   };
 
+  // make util
   const getExerciseData = (modules: ModuleRenderSchema[]) => {
     let combinedArr: ExerciseData[] = [];
 

@@ -1,40 +1,66 @@
+import { nextAuthOptions } from "@/src/common/auth";
 import UserLayout from "@/src/components/ui/UserLayout";
+import { serverRouter } from "@/src/server/routers";
+import { createServerSideHelpers } from "@trpc/react-query/server";
+import { GetServerSideProps } from "next";
+import { getServerSession } from "next-auth";
 import React from "react";
+import { createContext } from "@/src/server/context";
+import { Course } from "@prisma/client";
+import parse from "html-react-parser";
 
-type Props = {};
+type Props = {
+  course: Course;
+};
 
-const CourseInfo = (props: Props) => {
+const CourseInfo = ({ course }: Props) => {
+  console.log(course);
+
   return (
     <>
       <UserLayout>
-        <div className="flex justify-between">
+        <div className="flex flex-col-reverse lg:flex lg:flex-row justify-between ">
           <div className="course-info-wrapper">
-            <h1>Kursinnehåll</h1>
-            <ul>
-              <li>React templating & JSX</li>
-              <li>States</li>
-              <li>Hooks</li>
-              <li>Rendering</li>
-            </ul>
-            <h2>Syfte och mål</h2>
-            <p>
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-              Accusantium voluptatum corrupti, maiores similique magnam in
-              beatae nobis tempora sint accusamus, ipsa sequi hic alias ducimus
-              natus optio rerum velit officia cumque eum sit voluptatem
-              consequatur. Magni quisquam ea similique id est quas tempora dicta
-              et, minima eveniet delectus atque totam laboriosam voluptatum
-              assumenda, a quia.
-            </p>
+            {course && parse(course.content)}
           </div>
           <div>
             <h3 className="font-semibold text-xl mr-5">Poäng</h3>
-            <span>40 yhp</span>
+            {course && <span>{course.points}</span>}
           </div>
         </div>
       </UserLayout>
     </>
   );
 };
-/* getServerSideProps */
+
+export const getServerSideProps: GetServerSideProps = async (context: any) => {
+  const currentSession = await getServerSession(
+    context.req,
+    context.res,
+    nextAuthOptions
+  );
+
+  //Set up a trpc helper, needed for serverSide fetching
+  const helpers = createServerSideHelpers({
+    router: serverRouter,
+    ctx: await createContext(context),
+  });
+  //might have to cast context to string
+  const slug = String(context.params.course);
+
+  //fetch the course from params to get the courseId
+  const course = await helpers.course.getCourseBySlug.fetch({
+    courseSlug: slug,
+  });
+
+  const courseData = JSON.parse(JSON.stringify(course));
+
+  return {
+    props: {
+      session: currentSession,
+      course: courseData.course,
+    },
+  };
+};
+
 export default CourseInfo;
