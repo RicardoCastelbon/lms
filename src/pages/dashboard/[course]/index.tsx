@@ -19,6 +19,7 @@ import { ModuleRenderSchema } from "@/src/common/validation/module-end-user";
 import ResourceSelection from "@/src/components/ui/ResourceSelection";
 // import { ModuleAction } from "@/src/lib/enums/actionEnums";
 import UpdateModuleForm from "@/src/components/ui/forms/teacher/UpdateModuleForm";
+import UpdateExerciseForm from "@/src/components/ui/forms/teacher/UpdateExerciseForm";
 
 
 
@@ -164,19 +165,6 @@ const CourseOverview = ({ modules, course }: Props) => {
     return filteredExercise.length <= 0 ? null : filteredExercise[0];
   };
 
-  // type ActionTypes = Action | ModuleAction;
-
-  // const modalClickHandler = (action: ActionTypes) => {
-  //   if (Object.values(Action).includes(action as Action)) {
-  //     // Handle action as Action
-  //     console.log("Handling action as Action:", action);
-  //   } else if (Object.values(ModuleAction).includes(action as ModuleAction)) {
-  //     // Handle action as ModuleAction
-  //         console.log("Handling action as ModuleAction:", action);
-  //   }
-  //   setAction(action);
-  //   setShowModal((prev) => !prev);
-  // };
   
   const modalClickHandler = (action: Action) => {
     setAction(action);
@@ -237,8 +225,7 @@ const CourseOverview = ({ modules, course }: Props) => {
               <div className="w-full">
                 <ul className="flex font-medium text-slate-400">
                   <li className="md:w-48 ">Moduler</li>
-                  {/* {desktopVersion && <li className="w-32">Startdatum</li>}
-                  {desktopVersion && <li className="w-32">In.datum</li>} */}
+             
                   {desktopVersion && <li className="w-36">Status</li>}
                   {desktopVersion && <li className="w-32">Uppgifter</li>}
                   {desktopVersion && <li className="w-32 ml-auto">Publicerad</li>}
@@ -350,6 +337,10 @@ const CourseOverview = ({ modules, course }: Props) => {
                   </button>
                   {/* <p>Module id: {moduleToUpdate.id}</p> */}
                  <strong> <p>Module name: {moduleToUpdate.title}</p></strong>
+                 <p>
+                    publicerad:{" "}
+                    {moduleToUpdate.published ? "ja" : "nej"}
+                  </p>
                   <UpdateModuleForm
                     userModule={moduleToUpdate}
                     hasSubmitted={hasSubmitted}
@@ -410,16 +401,24 @@ const CourseOverview = ({ modules, course }: Props) => {
                   </button>
                   <p>id: {exerciseToUpdate.exercise.id}</p>
                   <p>namn: {exerciseToUpdate.exercise.title}</p>
+                  
                   <p>
                     publicerad:{" "}
                     {exerciseToUpdate.exercise.published ? "ja" : "nej"}
                   </p>
-                  <p>modulId: {exerciseToUpdate.exercise.moduleId}</p>
-                  <p>Content: {exerciseToUpdate.exercise.content}</p>
+                  {/* <p>modulId: {exerciseToUpdate.exercise.moduleId}</p>
+                  <p>Content: {exerciseToUpdate.exercise.content}</p> */}
                   {/* <CreateExerciseForm
                     moduleId={moduleToUpdate.id}
                     setShowModal={setShowModal}
                   /> */}
+                  <UpdateExerciseForm 
+                              exercise={exerciseToUpdate}
+                              hasSubmitted={hasSubmitted}
+                              setHasSubmitted={setHasSubmitted}
+                              setShowModal={setShowModal}
+                    / >
+
                 </div>
               )}
             </>
