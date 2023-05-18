@@ -21,6 +21,7 @@ import { Action } from "@/src/lib/enums/actionEnums";
 import { ModuleRenderSchema } from "@/src/common/validation/module-end-user";
 import { useRouter } from "next/router";
 import { trpc } from "@/src/common/trpc";
+import { Trash2 } from "lucide-react";
 
 // type Props = {
 //   module: ModuleRenderSchema;
@@ -102,70 +103,70 @@ const ModuleAccordion = ({
   return (
     <Accordion type="single" collapsible>
       <AccordionItem value="item-1">
-        <AccordionTrigger>
-          <div className="w-full">
-            <ul className="flex">
-              <li className="w-16 text-left">
-                <ClipboardList />
-              </li>
-              <li className="w-32 text-left">
-                {userModule && userModule.title}
-              </li>
-              {desktopVersion && (
-                <li className="w-32 text-left">
-                  {userModule && userModule.startDate}
-                </li>
-              )}
-              {desktopVersion && (
-                <li className="w-32 text-left">
-                  {userModule && userModule.endDate}
-                </li>
-              )}
-              {desktopVersion && <li className="w-36 text-left">status</li>}
-              {desktopVersion && (
-                <li className="w-32 text-left">exercises completed</li>
-              )}
+<AccordionTrigger>
+  <div className="w-full">
+    <ul className="flex">
+      <li className="md:w-48 text-left">
+        <ClipboardList />
+        {userModule && userModule.title}
+      </li>
+      {desktopVersion && <li className="w-36 text-left">status</li>}
+      {desktopVersion && (
+        <li className="w-32 text-left">exercises completed</li>
+      )}
 
-              {desktopVersion &&
-                (session?.user.role === "TEACHER" ? (
-                  <>
-                    <li className="w-32">
-                      <div
-                        className={
-                          userModule.published
-                            ? "bg-red-500 text-white py-2 px-6 rounded-sm hover:bg-red-50 hover:text-foreground"
-                            : "bg-green-500 text-white py-2 px-6 rounded-sm hover:bg-green-50 hover:text-foreground"
-                        }
-                        onClick={(e) => publishClickHandler(e, userModule)}
-                      >
-                        {userModule.published ? "Nej" : "Ja"}
-                      </div>
-                    </li>
-                  </>
-                ) : (
-                  ""
-                ))}
-              {/* {role && role === "TEACHER" ? (
-     
-              
-            ) : (
-              ""
-            )} */}
-            </ul>
-          </div>
-        </AccordionTrigger>
+{desktopVersion &&
+  (session?.user.role === "TEACHER" ? (
+    <li className="w-32 ml-auto">
+      <div
+        className={
+          userModule.published
+            ? "bg-red-500 text-white py-2 px-6 rounded-sm hover:bg-red-50 hover:text-foreground"
+            : "bg-green-500 text-white py-2 px-6 rounded-sm hover:bg-green-50 hover:text-foreground"
+        }
+        onClick={(e) => publishClickHandler(e, userModule)}
+      >
+        {userModule.published ? "Nej" : "Ja"}
+      </div>
+    </li>
+  ) : (
+          ""
+        ))}
+    </ul>
+  </div>
+</AccordionTrigger>
+
+
         <AccordionContent>
           <div>
+          <div>
+          <ul className="mb-4">
+  <li className="w-32 flex">
+    <span>Startdatum: </span> 
+    <span className="ml-1"><strong>{userModule && userModule.startDate}</strong></span>
+  </li>
+
+  {desktopVersion && 
+    <li className="w-32 flex">
+      <span>In.datum: </span>
+      <span className="ml-1"><strong>{userModule && userModule.endDate}</strong></span>
+    </li>
+  }
+</ul>
+
+            </div>
+              
             {userModule?.content && typeof userModule.content === "string"
               ? parse(userModule.content)
               : "Loading..."}
           </div>
           <Accordion type="single" collapsible>
+
             <AccordionItem value="item-1">
               <AccordionTrigger>
                 <div className="w-full">
                   <ul className="flex justify-between pr-5 text-base">
-                    <li className="">Se alla uppgifter för modulen</li>
+                    <li className="">Se alla uppgifter för modalen</li>
                     <li className="">3/5</li>
                   </ul>
                 </div>
@@ -175,10 +176,11 @@ const ModuleAccordion = ({
                   userModule.exercises &&
                   userModule &&
                   userModule.exercises.map((exercise, index) => (
+                    <div key={index} className="relative">
                     <Link
                       href={`/${router.asPath}/exercise/${exercise.slug}`}
                       key={index}
-                      className="flex justify-between w-full bg-accent text-white text-left p-4 hover:bg-blue-400"
+                      className="flex justify-between w-11/12 bg-accent text-white text-left p-4 hover:bg-blue-400" // set width to 11/12
                     >
                       <div className="flex">
                         <span className=" mr-4">
@@ -190,29 +192,14 @@ const ModuleAccordion = ({
                         <Check />
                       </span>
                     </Link>
+                     <button
+                    //  onClick={() => handleTrashClick(exercise)}
+                     className="absolute right-0 top-3 mt-1 mr-10" // position the trash icon
+                   >
+                     <Trash2 className="h- w-5 text-black" />
+                   </button>
+                       </div>
                   ))}
-                {/*  <button className="flex justify-between w-full bg-accent text-white text-left p-4 hover:bg-blue-400">
-                  <div className="flex">
-                    <span className=" mr-4">
-                      <ClipboardList />
-                    </span>
-                    <span>Filstrukture i React</span>
-                  </div>
-                  <span className="">
-                    <Check />
-                  </span>
-                </button> */}
-                {/*  <button className="flex justify-between w-full bg-accent text-white text-left p-4 hover:bg-blue-400">
-                  <div className="flex">
-                    <span className=" mr-4">
-                      <ClipboardList />
-                    </span>
-                    <span>Components i React</span>
-                  </div>
-                  <span className="">
-                    <Check />
-                  </span>
-                </button> */}
               </AccordionContent>
             </AccordionItem>
           </Accordion>
@@ -223,3 +210,26 @@ const ModuleAccordion = ({
 };
 
 export default ModuleAccordion;
+
+{/*  <button className="flex justify-between w-full bg-accent text-white text-left p-4 hover:bg-blue-400">
+  <div className="flex">
+    <span className=" mr-4">
+      <ClipboardList />
+    </span>
+    <span>Filstrukture i React</span>
+  </div>
+  <span className="">
+    <Check />
+  </span>
+</button> */}
+{/*  <button className="flex justify-between w-full bg-accent text-white text-left p-4 hover:bg-blue-400">
+  <div className="flex">
+    <span className=" mr-4">
+      <ClipboardList />
+    </span>
+    <span>Components i React</span>
+  </div>
+  <span className="">
+    <Check />
+  </span>
+</button> */}
