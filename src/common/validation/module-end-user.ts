@@ -86,6 +86,19 @@ export const moduleOutputSchema = z.object({
   error: error,
 });
 
+
+export const moduleUpdateFormSchema = z.object({
+  id: z.number(),
+  title: z.string(),
+  startDate: z.string(),
+  endDate: z.string(),
+  content: z.string(),
+  courseId: z.number(),
+  published: z.boolean(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+});
+
 //For frontend rendering
 export const moduleRenderSchema = z.object({
   // .object({
@@ -149,3 +162,4 @@ export type ModuleOutputSchema = z.infer<typeof moduleOutputSchema>;
 export type UpdateModuleInputSchema = z.infer<typeof updateModuleInputSchema>;
 export type FilterQuerySchema = z.infer<typeof filterQuery>;
 export type ModuleRenderSchema = z.infer<typeof moduleRenderSchema>;
+export type ModuleUpdateFormSchema = z.infer<typeof moduleUpdateFormSchema>;

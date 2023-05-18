@@ -40,7 +40,6 @@ const UpdateCourseForm = ({
   course,
   hasSubmitted,
   setHasSubmitted,
-
   setShowModal,
 }: Props) => {
   const [iconName, setIconName] = useState<string>("");

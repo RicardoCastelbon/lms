@@ -11,3 +11,4 @@ export enum CourseAction {
   UPDATECOURSE,
   DELETECOURSE,
 }
+

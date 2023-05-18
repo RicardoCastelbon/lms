@@ -17,6 +17,12 @@ import CreateExerciseForm from "@/src/components/ui/forms/teacher/CreateExercise
 import { Action } from "@/src/lib/enums/actionEnums";
 import { ModuleRenderSchema } from "@/src/common/validation/module-end-user";
 import ResourceSelection from "@/src/components/ui/ResourceSelection";
+// import { ModuleAction } from "@/src/lib/enums/actionEnums";
+import UpdateModuleForm from "@/src/components/ui/forms/teacher/UpdateModuleForm";
+import UpdateExerciseForm from "@/src/components/ui/forms/teacher/UpdateExerciseForm";
+
+
+
 export interface ExerciseData {
   moduleName: string;
   exercise: {
@@ -53,6 +59,7 @@ const CourseOverview = ({ modules, course }: Props) => {
   const [exerciseToUpdate, setExerciseToUpdate] = useState<ExerciseData | null>(
     null
   );
+  const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
 
   const { data: session } = useSession();
   const router = useRouter();
@@ -120,7 +127,7 @@ const CourseOverview = ({ modules, course }: Props) => {
     if (
       action === Action.CREATEMODULE ||
       action === Action.UPDATEMODULE ||
-      action === Action.CREATEEXERCISE
+       action === Action.CREATEEXERCISE
     ) {
       console.log("I will filter modules");
 
@@ -160,6 +167,7 @@ const CourseOverview = ({ modules, course }: Props) => {
     return filteredExercise.length <= 0 ? null : filteredExercise[0];
   };
 
+  
   const modalClickHandler = (action: Action) => {
     setAction(action);
     setShowModal((prev) => !prev);
@@ -187,7 +195,6 @@ const CourseOverview = ({ modules, course }: Props) => {
       case Action.UPDATEEXERCISE:
         setModalHeader("Uppdatera en övning");
         break;
-
       default:
         break;
     }
@@ -222,12 +229,11 @@ const CourseOverview = ({ modules, course }: Props) => {
               <div className="w-full">
                 <ul className="flex font-medium text-slate-400">
                   <li className="md:w-48 ">Moduler</li>
-                  {desktopVersion && <li className="w-32">Startdatum</li>}
-                  {desktopVersion && <li className="w-32">In.datum</li>}
+             
                   {desktopVersion && <li className="w-36">Status</li>}
                   {desktopVersion && <li className="w-32">Uppgifter</li>}
-                  {desktopVersion && <li className="w-32">Publicerad</li>}
-                </ul>
+                  {desktopVersion && <li className="w-32 ml-auto">Publicerad</li>}
+                                  </ul>
               </div>
               {modules &&
                 modules?.map((module: ModuleRenderSchema) => (
@@ -321,7 +327,7 @@ const CourseOverview = ({ modules, course }: Props) => {
                   role={session?.user.role}
                   setResourceId={setResourceId}
                   resource={modules}
-                  action={action}
+                  action={Action.UPDATEMODULE}
                 />
               ) : (
                 <div>
@@ -333,8 +339,18 @@ const CourseOverview = ({ modules, course }: Props) => {
                   >
                     Tillbaka
                   </button>
-                  <p>Module id: {moduleToUpdate.id}</p>
-                  <p>Module name: {moduleToUpdate.title}</p>
+                  {/* <p>Module id: {moduleToUpdate.id}</p> */}
+                 <strong> <p>Module name: {moduleToUpdate.title}</p></strong>
+                 <p>
+                    publicerad:{" "}
+                    {moduleToUpdate.published ? "ja" : "nej"}
+                  </p>
+                  <UpdateModuleForm
+                    userModule={moduleToUpdate}
+                    hasSubmitted={hasSubmitted}
+                    setHasSubmitted={setHasSubmitted}
+                    setShowModal={setShowModal}
+                  />
                 </div>
               )}
             </>
@@ -389,16 +405,24 @@ const CourseOverview = ({ modules, course }: Props) => {
                   </button>
                   <p>id: {exerciseToUpdate.exercise.id}</p>
                   <p>namn: {exerciseToUpdate.exercise.title}</p>
+                  
                   <p>
                     publicerad:{" "}
                     {exerciseToUpdate.exercise.published ? "ja" : "nej"}
                   </p>
-                  <p>modulId: {exerciseToUpdate.exercise.moduleId}</p>
-                  <p>Content: {exerciseToUpdate.exercise.content}</p>
+                  {/* <p>modulId: {exerciseToUpdate.exercise.moduleId}</p>
+                  <p>Content: {exerciseToUpdate.exercise.content}</p> */}
                   {/* <CreateExerciseForm
                     moduleId={moduleToUpdate.id}
                     setShowModal={setShowModal}
                   /> */}
+                  <UpdateExerciseForm 
+                              exercise={exerciseToUpdate}
+                              hasSubmitted={hasSubmitted}
+                              setHasSubmitted={setHasSubmitted}
+                              setShowModal={setShowModal}
+                    / >
+
                 </div>
               )}
             </>

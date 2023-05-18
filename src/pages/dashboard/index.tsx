@@ -25,6 +25,7 @@ import {
 } from "@prisma/client";
 import { CourseAction } from "@/src/lib/enums/actionEnums";
 import UpdateCourseForm from "@/src/components/ui/forms/teacher/UpdateCourseForm";
+import UpdateModuleForm from "@/src/components/ui/forms/teacher/UpdateModuleForm";
 import ResourceSelection from "@/src/components/ui/ResourceSelection";
 import UpdateResource from "@/src/components/ui/ResourceSelection";
 import LibSelection from "@/src/components/ui/LibSelection";

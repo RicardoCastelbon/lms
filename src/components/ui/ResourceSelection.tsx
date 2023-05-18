@@ -16,6 +16,8 @@ type Props = {
   setResourceId: Dispatch<SetStateAction<number>>;
   role: string | undefined | null;
   action: Action | CourseAction;
+  // action: Action | ModuleAction;
+
 };
 
 const ResourceSelection = ({
@@ -196,5 +198,5 @@ Props) => {
     </section>
   );
 };
-
 export default ResourceSelection;
+
