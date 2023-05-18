@@ -1,10 +1,16 @@
 "use client";
-import React,  {Dispatch,SetStateAction, useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 import { useQuill } from "react-quilljs";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
 import RichText from "../../text-editor/RichText";
 import {
   moduleInputSchema,
@@ -16,19 +22,18 @@ import { trpc } from "@/src/common/trpc";
 import { Module } from "@prisma/client";
 
 type Props = {
-    moduleId: number;
-    userModule: Module
-    setHasSubmitted: Dispatch<SetStateAction<boolean>>;
-    setShowModal: Dispatch<SetStateAction<boolean>>;
-    hasSubmitted: boolean;
+  // moduleId: number;
+  userModule: Module;
+  setHasSubmitted: Dispatch<SetStateAction<boolean>>;
+  setShowModal: Dispatch<SetStateAction<boolean>>;
+  hasSubmitted: boolean;
 };
 
-const UpdateModuleForm = ({ 
-    hasSubmitted,
-    setHasSubmitted,
-    userModule,
-    setShowModal,
-
+const UpdateModuleForm = ({
+  hasSubmitted,
+  setHasSubmitted,
+  userModule,
+  setShowModal,
 }: Props) => {
   const {
     handleSubmit,
@@ -39,12 +44,10 @@ const UpdateModuleForm = ({
   } = useForm<ModuleUpdateFormSchema>({
     defaultValues: {
       title: userModule.title,
-    //   startDate: "",
-    //   endDate: "",
-    //   courseId: 0,
-    content: userModule.content,
-    published: userModule.published,
-
+      startDate: userModule.startDate,
+      endDate: userModule.endDate,
+      content: userModule.content,
+      published: userModule.published,
     },
   });
 
@@ -70,31 +73,28 @@ const UpdateModuleForm = ({
 
         console.log(data);
         const result = await mutateAsync({
-            moduleId: String(userModule.id),
-            body: {
-                ...data,
-            }
+          moduleId: String(userModule.id),
+          body: {
+            ...data,
+          },
         });
-        
+
         if (result.success) {
-        setHasSubmitted(true);
-        quill!.root.innerHTML = "";
-        reset();
-        setShowModal(false);
-      }
-  
-    } catch (err) {
+          setHasSubmitted(true);
+          quill!.root.innerHTML = "";
+          reset();
+          setShowModal(false);
+        }
+      } catch (err) {
         console.log(err);
         reset();
       }
     },
     [mutateAsync, quill, reset]
   );
-//   useEffect(() => {}, []);
 
   return (
-    <form className="md:flex gap-4 block"
-     onSubmit={handleSubmit(onSubmit)}>
+    <form className="md:flex gap-4 block" onSubmit={handleSubmit(onSubmit)}>
       {/* left side */}
       <section className="flex-1 flex flex-col gap-4">
         {/* form group */}
@@ -104,7 +104,7 @@ const UpdateModuleForm = ({
           rules={{ required: "Ange ett namn på modulen" }}
           render={({ field: { value, onChange, onBlur, name, ...field } }) => (
             <div className="w-full max-w-md flex flex-col mb-4">
-              <label htmlFor="title">Modulnamn</label>
+              {/* <label htmlFor="title">Modulnamn</label> */}
               <input
                 {...field}
                 value={value}
@@ -122,7 +122,7 @@ const UpdateModuleForm = ({
             </div>
           )}
         />
-        {/* <Controller
+        <Controller
           name="startDate"
           control={control}
           rules={{ required: "Ange ett startdatum" }}
@@ -145,8 +145,8 @@ const UpdateModuleForm = ({
               </p>
             </div>
           )}
-        /> */}
-        {/* <Controller
+        />
+        <Controller
           name="endDate"
           control={control}
           rules={{ required: "Ange ett inlämningsdatum" }}
@@ -169,7 +169,7 @@ const UpdateModuleForm = ({
               </p>
             </div>
           )}
-        /> */}
+        />
         <button
           type="submit"
           className="bg-indigo-500 text-white py-2 px-6 rounded-sm hover:bg-indigo-50 hover:text-foreground"

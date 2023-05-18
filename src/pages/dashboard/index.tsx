@@ -206,7 +206,6 @@ const Dashboard = ({ courses, education }: Props) => {
             </div>
           </aside>
         </div>
-        <p>HEEEEj</p>
 
         <Modal
           header={modalHeader}

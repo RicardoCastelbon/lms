@@ -17,6 +17,11 @@ import CreateExerciseForm from "@/src/components/ui/forms/teacher/CreateExercise
 import { Action } from "@/src/lib/enums/actionEnums";
 import { ModuleRenderSchema } from "@/src/common/validation/module-end-user";
 import ResourceSelection from "@/src/components/ui/ResourceSelection";
+// import { ModuleAction } from "@/src/lib/enums/actionEnums";
+import UpdateModuleForm from "@/src/components/ui/forms/teacher/UpdateModuleForm";
+
+
+
 export interface ExerciseData {
   moduleName: string;
   exercise: {
@@ -53,6 +58,7 @@ const CourseOverview = ({ modules, course }: Props) => {
   const [exerciseToUpdate, setExerciseToUpdate] = useState<ExerciseData | null>(
     null
   );
+  const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
 
   const { data: session } = useSession();
   const router = useRouter();
@@ -120,7 +126,7 @@ const CourseOverview = ({ modules, course }: Props) => {
     if (
       action === Action.CREATEMODULE ||
       action === Action.UPDATEMODULE ||
-      action === Action.CREATEEXERCISE
+       action === Action.CREATEEXERCISE
     ) {
       console.log("I will filter modules");
 
@@ -158,6 +164,20 @@ const CourseOverview = ({ modules, course }: Props) => {
     return filteredExercise.length <= 0 ? null : filteredExercise[0];
   };
 
+  // type ActionTypes = Action | ModuleAction;
+
+  // const modalClickHandler = (action: ActionTypes) => {
+  //   if (Object.values(Action).includes(action as Action)) {
+  //     // Handle action as Action
+  //     console.log("Handling action as Action:", action);
+  //   } else if (Object.values(ModuleAction).includes(action as ModuleAction)) {
+  //     // Handle action as ModuleAction
+  //         console.log("Handling action as ModuleAction:", action);
+  //   }
+  //   setAction(action);
+  //   setShowModal((prev) => !prev);
+  // };
+  
   const modalClickHandler = (action: Action) => {
     setAction(action);
     setShowModal((prev) => !prev);
@@ -167,7 +187,7 @@ const CourseOverview = ({ modules, course }: Props) => {
     setModuleId(moduleId);
   };
 
-  const getModalHeader = (action: Action | undefined) => {
+  const getModalHeader = (action: Action  | undefined) => {
     switch (action) {
       case Action.CREATEEXERCISE:
         setModalHeader("Skapa en uppgift");
@@ -184,7 +204,6 @@ const CourseOverview = ({ modules, course }: Props) => {
       case Action.UPDATEEXERCISE:
         setModalHeader("Uppdatera en övning");
         break;
-
       default:
         break;
     }
@@ -218,12 +237,12 @@ const CourseOverview = ({ modules, course }: Props) => {
               <div className="w-full">
                 <ul className="flex font-medium text-slate-400">
                   <li className="md:w-48 ">Moduler</li>
-                  {desktopVersion && <li className="w-32">Startdatum</li>}
-                  {desktopVersion && <li className="w-32">In.datum</li>}
+                  {/* {desktopVersion && <li className="w-32">Startdatum</li>}
+                  {desktopVersion && <li className="w-32">In.datum</li>} */}
                   {desktopVersion && <li className="w-36">Status</li>}
                   {desktopVersion && <li className="w-32">Uppgifter</li>}
-                  {desktopVersion && <li className="w-32">Publicerad</li>}
-                </ul>
+                  {desktopVersion && <li className="w-32 ml-auto">Publicerad</li>}
+                                  </ul>
               </div>
               {modules &&
                 modules?.map((module: ModuleRenderSchema) => (
@@ -317,7 +336,7 @@ const CourseOverview = ({ modules, course }: Props) => {
                   role={session?.user.role}
                   setResourceId={setResourceId}
                   resource={modules}
-                  action={action}
+                  action={Action.UPDATEMODULE}
                 />
               ) : (
                 <div>
@@ -329,8 +348,14 @@ const CourseOverview = ({ modules, course }: Props) => {
                   >
                     Tillbaka
                   </button>
-                  <p>Module id: {moduleToUpdate.id}</p>
-                  <p>Module name: {moduleToUpdate.title}</p>
+                  {/* <p>Module id: {moduleToUpdate.id}</p> */}
+                 <strong> <p>Module name: {moduleToUpdate.title}</p></strong>
+                  <UpdateModuleForm
+                    userModule={moduleToUpdate}
+                    hasSubmitted={hasSubmitted}
+                    setHasSubmitted={setHasSubmitted}
+                    setShowModal={setShowModal}
+                  />
                 </div>
               )}
             </>

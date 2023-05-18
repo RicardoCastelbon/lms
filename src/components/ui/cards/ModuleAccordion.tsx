@@ -102,70 +102,68 @@ const ModuleAccordion = ({
   return (
     <Accordion type="single" collapsible>
       <AccordionItem value="item-1">
-        <AccordionTrigger>
-          <div className="w-full">
-            <ul className="flex">
-              <li className="w-16 text-left">
-                <ClipboardList />
-              </li>
-              <li className="w-32 text-left">
-                {userModule && userModule.title}
-              </li>
-              {desktopVersion && (
-                <li className="w-32 text-left">
-                  {userModule && userModule.startDate}
-                </li>
-              )}
-              {desktopVersion && (
-                <li className="w-32 text-left">
-                  {userModule && userModule.endDate}
-                </li>
-              )}
-              {desktopVersion && <li className="w-36 text-left">status</li>}
-              {desktopVersion && (
-                <li className="w-32 text-left">exercises completed</li>
-              )}
+<AccordionTrigger>
+  <div className="w-full">
+    <ul className="flex">
+      <li className="md:w-48 text-left">
+        <ClipboardList />
+        {userModule && userModule.title}
+      </li>
+      {desktopVersion && <li className="w-36 text-left">status</li>}
+      {desktopVersion && (
+        <li className="w-32 text-left">exercises completed</li>
+      )}
 
-              {desktopVersion &&
-                (session?.user.role === "TEACHER" ? (
-                  <>
-                    <li className="w-32">
-                      <div
-                        className={
-                          userModule.published
-                            ? "bg-red-500 text-white py-2 px-6 rounded-sm hover:bg-red-50 hover:text-foreground"
-                            : "bg-green-500 text-white py-2 px-6 rounded-sm hover:bg-green-50 hover:text-foreground"
-                        }
-                        onClick={(e) => publishClickHandler(e, userModule)}
-                      >
-                        {userModule.published ? "Nej" : "Ja"}
-                      </div>
-                    </li>
-                  </>
-                ) : (
-                  ""
-                ))}
-              {/* {role && role === "TEACHER" ? (
-     
-              
-            ) : (
-              ""
-            )} */}
-            </ul>
-          </div>
-        </AccordionTrigger>
+{desktopVersion &&
+  (session?.user.role === "TEACHER" ? (
+    <li className="w-32 ml-auto">
+      <div
+        className={
+          userModule.published
+            ? "bg-red-500 text-white py-2 px-6 rounded-sm hover:bg-red-50 hover:text-foreground"
+            : "bg-green-500 text-white py-2 px-6 rounded-sm hover:bg-green-50 hover:text-foreground"
+        }
+        onClick={(e) => publishClickHandler(e, userModule)}
+      >
+        {userModule.published ? "Nej" : "Ja"}
+      </div>
+    </li>
+  ) : (
+          ""
+        ))}
+    </ul>
+  </div>
+</AccordionTrigger>
+...
+
         <AccordionContent>
           <div>
+          <div>
+          <ul>
+        {desktopVersion && 
+            <li className="w-32 flex">
+                <span>Startdatum: </span><span> <strong>{userModule &&userModule.startDate}</strong></span>
+            </li>
+        }
+        {desktopVersion && 
+            <li className="w-32 flex">
+                <span>In.datum: </span><span><strong>{userModule && userModule.endDate}</strong></span>
+            </li>
+              }
+          </ul>
+            </div>
+              
             {userModule?.content && typeof userModule.content === "string"
               ? parse(userModule.content)
               : "Loading..."}
           </div>
           <Accordion type="single" collapsible>
+
             <AccordionItem value="item-1">
               <AccordionTrigger>
                 <div className="w-full">
                   <ul className="flex justify-between pr-5 text-base">
-                    <li className="">Se alla uppgifter för modulen</li>
+                    <li className="">Se alla uppgifter för modalen</li>
                     <li className="">3/5</li>
                   </ul>
                 </div>
@@ -191,28 +189,6 @@ const ModuleAccordion = ({
                       </span>
                     </Link>
                   ))}
-                {/*  <button className="flex justify-between w-full bg-accent text-white text-left p-4 hover:bg-blue-400">
-                  <div className="flex">
-                    <span className=" mr-4">
-                      <ClipboardList />
-                    </span>
-                    <span>Filstrukture i React</span>
-                  </div>
-                  <span className="">
-                    <Check />
-                  </span>
-                </button> */}
-                {/*  <button className="flex justify-between w-full bg-accent text-white text-left p-4 hover:bg-blue-400">
-                  <div className="flex">
-                    <span className=" mr-4">
-                      <ClipboardList />
-                    </span>
-                    <span>Components i React</span>
-                  </div>
-                  <span className="">
-                    <Check />
-                  </span>
-                </button> */}
               </AccordionContent>
             </AccordionItem>
           </Accordion>
@@ -223,3 +199,26 @@ const ModuleAccordion = ({
 };
 
 export default ModuleAccordion;
+
+{/*  <button className="flex justify-between w-full bg-accent text-white text-left p-4 hover:bg-blue-400">
+  <div className="flex">
+    <span className=" mr-4">
+      <ClipboardList />
+    </span>
+    <span>Filstrukture i React</span>
+  </div>
+  <span className="">
+    <Check />
+  </span>
+</button> */}
+{/*  <button className="flex justify-between w-full bg-accent text-white text-left p-4 hover:bg-blue-400">
+  <div className="flex">
+    <span className=" mr-4">
+      <ClipboardList />
+    </span>
+    <span>Components i React</span>
+  </div>
+  <span className="">
+    <Check />
+  </span>
+</button> */}
