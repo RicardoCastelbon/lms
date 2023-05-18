@@ -85,7 +85,7 @@ const Modal = ({ showModal, setShowModal, header, children }: Props) => {
             onClick={modalClickHandler}
           />
         </div>
-        <div className="w-full p-4">
+        <div className="relative w-full p-4">
           {/* <CreateCourseForm /> */}
           {children}
         </div>
