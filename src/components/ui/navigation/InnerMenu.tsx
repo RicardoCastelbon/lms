@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { User } from "lucide-react";
+import { useSession } from "next-auth/react";
 
 type Props = {
   educationName: string;
@@ -10,6 +11,7 @@ type Props = {
 const InnerMenu = ({ educationName }: Props) => {
   const [hasCourse, setHasCourse] = useState<boolean>(true);
   const router = useRouter();
+  const { data: session } = useSession();
 
   //change menuItems depending on which route the user is
   useEffect(() => {
@@ -54,8 +56,8 @@ const InnerMenu = ({ educationName }: Props) => {
           <User height="24px" width="24px" strokeWidth="1" />
         </div>
         <div>
-          <p className="text-sm font-medium">John Doe</p>
-          <span className="text-xs">Student</span>
+          <p className="text-sm font-medium">{session?.user.name}</p>
+          <span className="text-xs">{session?.user.role}</span>
         </div>
       </div>
     </nav>
