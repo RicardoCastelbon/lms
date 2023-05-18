@@ -101,6 +101,9 @@ const ColorSelect = ({
     setColor(color);
     setValue("color", color);
   };
+
+  console.log(colors);
+
   return (
     <div className="py-8">
       {/* Icon select wrapper */}
