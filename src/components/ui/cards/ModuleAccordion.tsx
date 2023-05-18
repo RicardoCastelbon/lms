@@ -1,5 +1,5 @@
-import { Module } from "@prisma/client";
-import React, { useEffect, useState } from "react";
+import { Exercise, Module } from "@prisma/client";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Link from "next/link";
 
 import {
@@ -22,13 +22,17 @@ import { ModuleRenderSchema } from "@/src/common/validation/module-end-user";
 import { useRouter } from "next/router";
 import { trpc } from "@/src/common/trpc";
 import { Trash2 } from "lucide-react";
+import { ResourceType } from "@/src/lib/enums/resourceTypeEnum";
 
 // type Props = {
 //   module: ModuleRenderSchema;
 //   modalClickHandler: (action: Action) => void;
 // };
+type Resource = Exercise | ModuleRenderSchema;
 
 type Props = {
+   resource?: Exercise[] ;
+  setResourceId: Dispatch<SetStateAction<number>>;
   userModule: ModuleRenderSchema;
   modalClickHandler: (action: Action) => void;
   role: string | null | undefined;
@@ -40,13 +44,21 @@ const ModuleAccordion = ({
   modalClickHandler,
   getModuleId,
   role,
-}: Props) => {
+  resource
+}: 
+Props) => {
+  const [resourceType, setResourceType] = useState<ResourceType | null>(null);
+
+  const [resourceData, setResourceData] = useState<Resource[] | undefined>(
+    resource
+  );
   const [desktopVersion, setdesktopVersion] = useState<boolean>(true);
   const [screenWidth, setScreenWidth] = useState<number>();
   const { data: session } = useSession();
   const [isPublished, setIsPublished] = useState<boolean>(false);
   const { mutateAsync } = trpc.module.update.useMutation();
-
+  const { mutateAsync: deleteExerciseAsync } =
+    trpc.exercise.delete.useMutation();
   const router = useRouter();
   // console.log(typeof router.query.course);
   useEffect(() => {
@@ -100,6 +112,35 @@ const ModuleAccordion = ({
       setIsPublished(!isPublished);
     }
   };
+
+
+// Delete function for exercises
+const deleteHandle = async (id: number) => {
+  if (role !== "TEACHER") return;
+  if (resourceType === ResourceType.EXERCISE) {
+    const result = await deleteExerciseAsync({
+      exerciseId: id,
+    });
+
+    if (result.success) {
+      filterResourceArray(resource, id);
+    }
+  }
+};
+const filterResourceArray = (
+  resource: Resource[] | undefined,
+  id: number
+) => {
+  if (!resource) return;
+  const filteredArray = resource?.filter((item) => item.id !== id);
+  setResourceData([...filteredArray]);
+};
+
+// const handleTrashClick = (id: number) => {
+//   deleteHandle(id);
+// };
+
+
   return (
     <Accordion type="single" collapsible>
       <AccordionItem value="item-1">
@@ -192,12 +233,13 @@ const ModuleAccordion = ({
                         <Check />
                       </span>
                     </Link>
-                     <button
-                    //  onClick={() => handleTrashClick(exercise)}
-                     className="absolute right-0 top-3 mt-1 mr-10" // position the trash icon
-                   >
-                     <Trash2 className="h- w-5 text-black" />
-                   </button>
+                    <button
+                      onClick={() => deleteHandle(exercise.id)}
+                      className="absolute right-0 top-3 mt-1 mr-10" // position the trash icon
+                    >
+                      <Trash2 className="h- w-5 text-black" />
+                    </button>
+
                        </div>
                   ))}
               </AccordionContent>

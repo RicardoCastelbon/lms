@@ -4,6 +4,7 @@ export enum Action {
   CREATESTUDENT = "createStudent",
   CREATEEXERCISE = "createExercise",
   UPDATEEXERCISE = "updateExercise",
+  DELETEEXERCISE = "deleteExercise",
 }
 
 export enum CourseAction {

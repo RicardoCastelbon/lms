@@ -38,6 +38,9 @@ Props) => {
     trpc.course.deleteCourse.useMutation();
   const { mutateAsync: createExercise } = trpc.exercise.create.useMutation();
 
+  const { mutateAsync: deleteModuleAsync } = trpc.module.delete.useMutation();
+const { mutateAsync: deleteExerciseAsync } = trpc.exercise.delete.useMutation();
+
   const router = useRouter();
 
   useEffect(() => {
@@ -51,7 +54,8 @@ Props) => {
       if (
         action === Action.CREATEMODULE ||
         action === Action.UPDATEMODULE ||
-        action === Action.CREATEEXERCISE
+        action === Action.CREATEEXERCISE ||
+        action === Action.DELETEEXERCISE
       ) {
         console.log("Iam module action");
         console.log(action);
