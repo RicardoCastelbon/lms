@@ -19,6 +19,7 @@ import RichText from "../../text-editor/RichText";
 import ColorSelect from "../../dropdowns/ColorSelect";
 import { trpc } from "@/src/common/trpc";
 import { useSession } from "next-auth/react";
+import { ResourceObject } from "@/src/pages/dashboard";
 /* type Course = {
   title: string;
   color: string;
@@ -30,12 +31,14 @@ type Props = {
   setHasSubmitted: Dispatch<SetStateAction<boolean>>;
   setShowModal: Dispatch<SetStateAction<boolean>>;
   hasSubmitted: boolean;
+  libData?: ResourceObject | null;
 };
 
 const CreateCourseForm = ({
   educationId,
   hasSubmitted,
   setHasSubmitted,
+  libData,
 
   setShowModal,
 }: Props) => {
@@ -50,11 +53,11 @@ const CreateCourseForm = ({
     setValue,
   } = useForm<CourseInputSchema>({
     defaultValues: {
-      title: "",
+      title: libData ? libData.title : "",
       icon: "",
       // slug: "",
       color: "",
-      content: "",
+      content: libData ? libData.content : "",
       educationId: 0,
       points: "",
       published: false,
@@ -64,9 +67,18 @@ const CreateCourseForm = ({
   const { quill, quillRef } = useQuill();
   const { mutateAsync } = trpc.course.create.useMutation();
 
-  /*   useEffect(() => {
-    console.log(errors);
-  }, [errors]); */
+  useEffect(() => {
+    if (quill && libData) {
+      quill!.root.innerHTML = libData?.content;
+    }
+    /*  return () => {
+      libData = null;
+    }; */
+  }, [libData, quill]);
+
+  useEffect(() => {
+    console.log(libData);
+  }, [libData]);
 
   const onSubmit = useCallback(
     async (data: CourseInputSchema) => {

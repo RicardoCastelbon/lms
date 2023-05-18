@@ -20,7 +20,9 @@ import {
   Course_lib,
   Education,
   Exercise,
+  Exercise_lib,
   Module,
+  Module_lib,
   Role,
 } from "@prisma/client";
 import { CourseAction } from "@/src/lib/enums/actionEnums";
@@ -30,7 +32,7 @@ import ResourceSelection from "@/src/components/ui/ResourceSelection";
 import UpdateResource from "@/src/components/ui/ResourceSelection";
 import LibSelection from "@/src/components/ui/LibSelection";
 // import { trpc } from "@/src/common/trpc";
-
+export type ResourceObject = Course_lib | Module_lib | Exercise_lib;
 type Props = {
   courses: Course[];
   education: Education;
@@ -44,6 +46,11 @@ const Dashboard = ({ courses, education, courseLib }: Props) => {
   const [courseLibData, setCourseLibData] = useState<Course_lib[]>(courseLib);
   const [action, setAction] = useState<CourseAction>();
   const [modalHeader, setModalHeader] = useState<string>("");
+
+  //state for deciding when CreateCourseForm should appear
+  const [isCreateFormOpen, setIsCreateFormOpen] = useState<boolean>(false);
+
+  const [libData, setLibData] = useState<ResourceObject | null>(null);
   //To be set within the ResourceSelect component whenever a list item is clicked.
   const [resourceId, setResourceId] = useState<number>(0);
   //To be selected course from when resourceId is set ResourceSelection, always reset this to NULL.
@@ -53,7 +60,7 @@ const Dashboard = ({ courses, education, courseLib }: Props) => {
   const router = useRouter();
 
   const modalRef = useRef(null);
-  console.log(courseLib);
+  // console.log(courseLib);
 
   //If modal closes, reset courseToUpdate
   useEffect(() => {
@@ -62,6 +69,9 @@ const Dashboard = ({ courses, education, courseLib }: Props) => {
       setResourceId(0);
     }
   }, [showModal]);
+  useEffect(() => {
+    console.log(libData);
+  }, [libData]);
 
   useEffect(() => {
     if (!session) {
@@ -92,11 +102,11 @@ const Dashboard = ({ courses, education, courseLib }: Props) => {
 
   //Selects the course by id with the given resourceId whenever resourceId is updated within ResrouceSelection.
   useEffect(() => {
-    setCourseToUpdate(getCourseToUpdate(resourceId, courses));
+    setCourseToUpdate(getCourseById(resourceId, courses));
   }, [resourceId]);
 
   //Function to run whenever a resource is clicked in the resource list in component ResourceSelection when clicking update course button
-  const getCourseToUpdate = (courseId: number, courses: Course[]) => {
+  const getCourseById = (courseId: number, courses: Course[]) => {
     if (!courses || (courses && courses.length <= 0)) return null;
 
     const filteredCourse =
@@ -126,6 +136,12 @@ const Dashboard = ({ courses, education, courseLib }: Props) => {
     }
   };
   // console.log(courses);
+
+  //used within LibSelect component to grab clicked "card" - data
+  const selectLibResourceHandler = (selectedResource: ResourceObject) => {
+    setLibData(selectedResource);
+    setIsCreateFormOpen(true);
+  };
 
   return (
     <IconContext.Provider
@@ -209,15 +225,34 @@ const Dashboard = ({ courses, education, courseLib }: Props) => {
         >
           {action === CourseAction.CREATECOURSE && (
             <>
-              <LibSelection resource={courseLibData} />
-              {/*  <CreateCourseForm
-              hasSubmitted={hasSubmitted}
-              setHasSubmitted={setHasSubmitted}
-              educationId={education?.id}
-              setShowModal={setShowModal}
-            /> */}
+              {!isCreateFormOpen ? (
+                <LibSelection
+                  resource={courseLibData}
+                  setIsCreateFormOpen={setIsCreateFormOpen}
+                  selectLibResourceHandler={selectLibResourceHandler}
+                />
+              ) : (
+                <>
+                  <button
+                    onClick={() => {
+                      setIsCreateFormOpen(false);
+                      setLibData(null);
+                    }}
+                  >
+                    Tillbaka
+                  </button>
+                  <CreateCourseForm
+                    hasSubmitted={hasSubmitted}
+                    setHasSubmitted={setHasSubmitted}
+                    educationId={education?.id}
+                    setShowModal={setShowModal}
+                    libData={libData}
+                  />
+                </>
+              )}
             </>
           )}
+
           {action === CourseAction.UPDATECOURSE && (
             <>
               {!courseToUpdate ? (
