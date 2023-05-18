@@ -18,6 +18,7 @@ import { IContext, createContext } from "@/src/server/context";
 import { Course, Education, Exercise, Module } from "@prisma/client";
 import { CourseAction } from "@/src/lib/enums/actionEnums";
 import UpdateCourseForm from "@/src/components/ui/forms/teacher/UpdateCourseForm";
+import UpdateModuleForm from "@/src/components/ui/forms/teacher/UpdateModuleForm";
 import ResourceSelection from "@/src/components/ui/ResourceSelection";
 import UpdateResource from "@/src/components/ui/ResourceSelection";
 // import { trpc } from "@/src/common/trpc";
@@ -205,6 +206,7 @@ const Dashboard = ({ courses, education }: Props) => {
             </div>
           </aside>
         </div>
+        <p>HEEEEj</p>
 
         <Modal
           header={modalHeader}
