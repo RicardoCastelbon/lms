@@ -42,7 +42,47 @@ const colors: Color[] = [
   },
   {
     value: "bg-slate-500",
-    name: "Gray",
+    name: "slate",
+  },
+  {
+    value: "bg-gray-500",
+    name: "gray",
+  },
+  {
+    value: "bg-amber-500",
+    name: "amber",
+  },
+  {
+    value: "bg-lime-500",
+    name: "lime",
+  },
+  {
+    value: "bg-emerald-500",
+    name: "emerald",
+  },
+  {
+    value: "bg-teal-500",
+    name: "teal",
+  },
+  {
+    value: "bg-sky-500",
+    name: "sky",
+  },
+  {
+    value: "bg-indigo-500",
+    name: "indigo",
+  },
+  {
+    value: "bg-violet-500",
+    name: "violet",
+  },
+  {
+    value: "bg-fuchsia-500",
+    name: "fuchsia",
+  },
+  {
+    value: "bg-rose-500",
+    name: "rose",
   },
 ];
 export const useColor = () => {
