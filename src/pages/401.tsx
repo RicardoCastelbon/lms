@@ -1,15 +1,16 @@
 // pages/401.tsx
 import { useRouter } from "next/router";
+import Image from "next/image";
+import img from "../assets/images/401.png";
 
 const Unauthorized: React.FC = () => {
   const router = useRouter();
 
   return (
-    <div className='flex flex-col items-center justify-center min-h-screen'>
-      <h1 className='text-2xl font-semibold mb-4'>401 - Unauthorized</h1>
-      <p>You do not have permission to access this page.</p>
+    <div className="flex flex-col items-center justify-center min-h-screen">
+      <Image src={img} width={600} alt="not found" />
       <button
-        className='mt-4 px-4 py-2 bg-blue-500 text-white rounded-md'
+        className="mt-4 px-4 py-2 bg-primary text-white rounded-md hover:bg-indigo-200 hover:text-primary"
         onClick={() => router.push("/")}
       >
         Go back to Home

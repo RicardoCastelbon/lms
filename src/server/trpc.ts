@@ -18,7 +18,11 @@ const isAuthed = middleware(async (opts) => {
   const { ctx } = opts;
   console.log("isAuthed middleware", ctx.session);
   if (!ctx.session) {
-    throw new TRPCError({ code: "UNAUTHORIZED" });
+    /*  throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "You are not authorized to enter this route",
+    }); */
+    new Error("UNAUTHORIZED");
   }
   return opts.next();
 });
@@ -26,7 +30,7 @@ const isTeacher = middleware(async (opts) => {
   const { ctx } = opts;
   console.log("isTeacher middleware", ctx.session);
   if (ctx.session?.user?.role !== "TEACHER") {
-    throw new TRPCError({ code: "UNAUTHORIZED" });
+    new Error("UNAUTHORIZED");
   }
   return opts.next();
 });
@@ -38,7 +42,7 @@ const isAdmin = middleware(async (opts) => {
   console.log("isAdmin middleware", ctx.session);
 
   if (ctx.session?.admin?.role === "ADMIN") {
-    throw new TRPCError({ code: "UNAUTHORIZED" });
+    new Error("UNAUTHORIZED");
   }
   return opts.next({
     ctx: {
