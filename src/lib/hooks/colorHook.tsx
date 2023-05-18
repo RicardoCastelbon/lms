@@ -9,36 +9,40 @@ export type Color = {
 };
 const colors: Color[] = [
   {
-    value: "bg-blue-100",
+    value: "bg-blue-500",
     name: "Blå",
   },
   {
-    value: "bg-cyan-100",
+    value: "bg-cyan-500",
     name: "Turkos",
   },
   {
-    value: "bg-green-100",
+    value: "bg-green-500",
     name: "Grön",
   },
   {
-    value: "bg-red-100",
+    value: "bg-red-500",
     name: "Röd",
   },
   {
-    value: "bg-yellow-100",
+    value: "bg-yellow-500",
     name: "Gul",
   },
   {
-    value: "bg-purple-100",
+    value: "bg-purple-500",
     name: "Lila",
   },
   {
-    value: "bg-pink-100",
+    value: "bg-pink-500",
     name: "Rosa",
   },
   {
-    value: "bg-orange-100",
+    value: "bg-orange-500",
     name: "Orange",
+  },
+  {
+    value: "bg-slate-500",
+    name: "Gray",
   },
 ];
 export const useColor = () => {
