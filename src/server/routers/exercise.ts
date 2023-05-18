@@ -6,6 +6,7 @@ import {
   findAllExercisesController,
   findExerciseController,
   updateExerciseController,
+  getOneExerciseBySlug,
 } from "../controllers/exercise.controller";
 import {
   exerciseOutputSchema,
@@ -13,6 +14,7 @@ import {
   exerciseInputSchema,
   updateExerciseInputSchema,
   filterQuery,
+  exerciseSlug,
 } from "../../common/validation/exercise-end-user";
 import { moduleId } from "@/src/common/validation/module-end-user";
 
@@ -38,6 +40,17 @@ export const exerciseRouter = t.router({
     .input(exerciseId)
     .output(exerciseOutputSchema)
     .query(({ input, ctx }) => findExerciseController({ input: input, ctx })),
+
+  getExerciseBySlug: t.procedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/exercise/getOneBySlug/{courseSlug}",
+      },
+    })
+    .input(exerciseSlug)
+    .output(exerciseOutputSchema)
+    .query(({ input, ctx }) => getOneExerciseBySlug({ input, ctx })),
 
   getMany: t.procedure
     .meta({
