@@ -1,15 +1,16 @@
 import { useEffect, useRef, useState } from "react";
 import type { GetServerSideProps, NextPage } from "next";
-import { useSession } from "next-auth/react";
-// import { trpc } from "@/src/common/trpc";
-import { getServerSession } from "next-auth";
 import { useRouter } from "next/router";
-import { createServerSideHelpers } from "@trpc/react-query/server";
-import UserLayout from "@/src/components/ui/UserLayout";
+import { useSession } from "next-auth/react";
 import { IconContext } from "react-icons";
+// import { trpc } from "@/src/common/trpc";
 import { nextAuthOptions } from "@/src/common/auth";
-import CourseCard from "@/src/components/ui/cards/CourseCard";
+import { getServerSession } from "next-auth";
+import { createServerSideHelpers } from "@trpc/react-query/server";
 import { Plus, X, FileEdit, Trash2 } from "lucide-react";
+
+import UserLayout from "@/src/components/ui/UserLayout";
+import CourseCard from "@/src/components/ui/cards/CourseCard";
 // import ColorSelect from "@/src/components/ui/dropdowns/ColorSelect";
 import CreateCourseForm from "@/src/components/ui/forms/teacher/CreateCourseForm";
 import Modal from "@/src/components/ui/modals/Modal";
@@ -43,15 +44,10 @@ const Dashboard = ({ courses, education, courseLib }: Props) => {
   const [sideBarClass, setSideBarClass] = useState<boolean>(false);
   const [screenWidth, setScreenWidth] = useState<number>();
   const [showModal, setShowModal] = useState<boolean>(false);
-  // const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
   const [courseLibData, setCourseLibData] = useState<Course_lib[]>(courseLib);
   const [action, setAction] = useState<CourseAction>();
   const [modalHeader, setModalHeader] = useState<string>("");
 
-  //state for deciding when CreateCourseForm should appear
-  const [isCreateFormOpen, setIsCreateFormOpen] = useState<boolean>(false);
-
-  const [libData, setLibData] = useState<ResourceObject | null>(null);
   //To be set within the ResourceSelect component whenever a list item is clicked.
   const [resourceId, setResourceId] = useState<number>(0);
   //To be selected course from when resourceId is set ResourceSelection, always reset this to NULL.
@@ -60,22 +56,14 @@ const Dashboard = ({ courses, education, courseLib }: Props) => {
   const { data: session } = useSession();
   const router = useRouter();
 
-  // const modalRef = useRef(null);
-  // console.log(courseLib);
-
   //If modal closes, reset all forms data
   useEffect(() => {
     if (!showModal) {
       setCourseToUpdate(null);
       setResourceId(0);
-      setLibData(null);
-      setIsCreateFormOpen(false);
+      // setLibData(null);
     }
   }, [showModal]);
-
-  useEffect(() => {
-    console.log(libData);
-  }, [libData]);
 
   useEffect(() => {
     if (!session) {
@@ -138,13 +126,6 @@ const Dashboard = ({ courses, education, courseLib }: Props) => {
       default:
         break;
     }
-  };
-  // console.log(courses);
-
-  //used within LibSelect component to grab clicked "card" - data
-  const selectLibResourceHandler = (selectedResource: ResourceObject) => {
-    setLibData(selectedResource);
-    setIsCreateFormOpen(true);
   };
 
   return (
@@ -229,32 +210,14 @@ const Dashboard = ({ courses, education, courseLib }: Props) => {
         >
           {action === CourseAction.CREATECOURSE && (
             <>
-              {!isCreateFormOpen ? (
-                <LibSelection
-                  resource={courseLibData}
-                  setIsCreateFormOpen={setIsCreateFormOpen}
-                  selectLibResourceHandler={selectLibResourceHandler}
-                />
-              ) : (
-                <>
-                  <button
-                    onClick={() => {
-                      setIsCreateFormOpen(false);
-                      setLibData(null);
-                    }}
-                  >
-                    Tillbaka
-                  </button>
-                  <CreateCourseForm
-                    // hasSubmitted={hasSubmitted}
-                    // setHasSubmitted={setHasSubmitted}
-                    educationId={education?.id}
-                    setShowModal={setShowModal}
-                    libData={libData}
-                    showModal={showModal}
-                  />
-                </>
-              )}
+              {/* {!isCreateFormOpen ? ( */}
+              <LibSelection
+                educationId={education.id}
+                setShowModal={setShowModal} //used to reset form data if form is closed.
+                showModal={showModal} //pass showModal to reset "isCreateFormOpen" - state
+                action={action} // pass action to conditionally render the correct create form
+                resource={courseLibData}
+              />
             </>
           )}
 
@@ -279,8 +242,6 @@ const Dashboard = ({ courses, education, courseLib }: Props) => {
                   </button>
                   <UpdateCourseForm
                     course={courseToUpdate}
-                    // hasSubmitted={hasSubmitted}
-                    // setHasSubmitted={setHasSubmitted}
                     setShowModal={setShowModal}
                   />
                 </div>

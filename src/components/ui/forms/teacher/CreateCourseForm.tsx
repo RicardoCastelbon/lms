@@ -19,7 +19,8 @@ import RichText from "../../text-editor/RichText";
 import ColorSelect from "../../dropdowns/ColorSelect";
 import { trpc } from "@/src/common/trpc";
 import { useSession } from "next-auth/react";
-import { ResourceObject } from "@/src/pages/dashboard";
+import { ResourceObject } from "@/src/lib/types/resourceTypes";
+// import { ResourceObject } from "@/src/pages/dashboard";
 /* type Course = {
   title: string;
   color: string;
@@ -30,8 +31,8 @@ type Props = {
   educationId: number;
   // setHasSubmitted: Dispatch<SetStateAction<boolean>>;
   setShowModal: Dispatch<SetStateAction<boolean>>;
-  // hasSubmitted: boolean;
   showModal: boolean;
+  // hasSubmitted: boolean;
   libData?: ResourceObject | null;
 };
 
@@ -41,7 +42,6 @@ const CreateCourseForm = ({
   // setHasSubmitted,
   showModal,
   libData,
-
   setShowModal,
 }: Props) => {
   const [iconName, setIconName] = useState<string>("");
@@ -86,7 +86,7 @@ const CreateCourseForm = ({
       setValue("title", "");
       reset();
     }
-  }, [showModal, quill, reset]);
+  }, [showModal, quill, reset, setValue]);
 
   const onSubmit = useCallback(
     async (data: CourseInputSchema) => {
@@ -100,9 +100,9 @@ const CreateCourseForm = ({
         // data.color = color;
         data.published = false; // needed?
         console.log(data);
-        setHasSubmitted((prev) => !prev);
         // console.log(hasSubmitted);
 
+        setHasSubmitted((prev) => !prev);
         const result = await mutateAsync(data);
         if (result.success) {
           setHasSubmitted(true);
@@ -115,7 +115,7 @@ const CreateCourseForm = ({
         reset();
       }
     },
-    [iconName, color, mutateAsync, quill, reset]
+    [mutateAsync, quill, reset, setShowModal, educationId]
   );
   return (
     <form
