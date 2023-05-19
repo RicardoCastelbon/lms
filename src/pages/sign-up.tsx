@@ -140,7 +140,7 @@ const SignUp: NextPage<Props> = ({ educations }: Props) => {
                 field: { value, onChange, onBlur, name, ...field },
               }) => (
                 <div className="w-full max-w-md flex flex-col mb-4">
-                  <label htmlFor="email">Email</label>
+                  <label htmlFor="email">E-post</label>
                   <input
                     {...field}
                     onChange={onChange}
@@ -148,7 +148,7 @@ const SignUp: NextPage<Props> = ({ educations }: Props) => {
                     name={name}
                     value={value}
                     id="email"
-                    placeholder="Email"
+                    placeholder="Ange din e-post..."
                     className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
                   />
 
@@ -179,7 +179,7 @@ const SignUp: NextPage<Props> = ({ educations }: Props) => {
                   <input
                     id="password"
                     type="password"
-                    placeholder="Type your password..."
+                    placeholder="Ange ditt lösenord..."
                     className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
                     {...field}
                     onChange={onChange}
@@ -216,7 +216,7 @@ const SignUp: NextPage<Props> = ({ educations }: Props) => {
                     onBlur={onBlur}
                     name={name}
                     value={value}
-                    placeholder="Your first name"
+                    placeholder="Ange ditt förnamn"
                     className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
                   />
                   <p className="text-xs text-red-500 mt-1">
@@ -248,7 +248,7 @@ const SignUp: NextPage<Props> = ({ educations }: Props) => {
                     value={value}
                     id="lastName"
                     type="text"
-                    placeholder="Type your email..."
+                    placeholder="Ange ditt efternamn..."
                     className="input bg-muted h-[40px] input-bordered w-full rounded-md  mt-2 pl-2"
                   />
                   <p className="text-xs text-red-500 mt-1">
