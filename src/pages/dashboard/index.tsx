@@ -42,7 +42,7 @@ const Dashboard = ({ courses, education, courseLib }: Props) => {
   const [sideBarClass, setSideBarClass] = useState<boolean>(false);
   const [screenWidth, setScreenWidth] = useState<number>();
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
+  // const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
   const [courseLibData, setCourseLibData] = useState<Course_lib[]>(courseLib);
   const [action, setAction] = useState<CourseAction>();
   const [modalHeader, setModalHeader] = useState<string>("");
@@ -242,8 +242,8 @@ const Dashboard = ({ courses, education, courseLib }: Props) => {
                     Tillbaka
                   </button>
                   <CreateCourseForm
-                    hasSubmitted={hasSubmitted}
-                    setHasSubmitted={setHasSubmitted}
+                    // hasSubmitted={hasSubmitted}
+                    // setHasSubmitted={setHasSubmitted}
                     educationId={education?.id}
                     setShowModal={setShowModal}
                     libData={libData}
@@ -274,8 +274,8 @@ const Dashboard = ({ courses, education, courseLib }: Props) => {
                   </button>
                   <UpdateCourseForm
                     course={courseToUpdate}
-                    hasSubmitted={hasSubmitted}
-                    setHasSubmitted={setHasSubmitted}
+                    // hasSubmitted={hasSubmitted}
+                    // setHasSubmitted={setHasSubmitted}
                     setShowModal={setShowModal}
                   />
                 </div>

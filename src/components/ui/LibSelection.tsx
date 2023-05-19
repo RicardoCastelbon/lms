@@ -38,16 +38,13 @@ const LibSelection = ({
   useEffect(() => {
     console.log(searchTerm);
     setResourceData(filterSearchHandle(resource, searchTerm));
-
-    /* return () => {
-      setSearchTerm("");
-    }; */
   }, [searchTerm, resource]);
 
   const infoClickHandler = (id: number) => {
     console.log(id);
     setSelectedResource(getResourceData(resource, id));
     setReadInfo(true);
+    setSearchTerm("");
   };
 
   //get the clicked recource when clicking info to set "selectedResource". This acts as object to display description
@@ -70,64 +67,26 @@ const LibSelection = ({
       <section
         className={`w-full h-full flex flex-col gap-4 md:flex-row md:items-center md:justify-between`}
       >
-        <form
-          className="w-full max-w-md"
-          //  onSubmit={handleSubmit(onSubmit)}
-        >
-          {/* <Controller
-            name="search"
-            control={control}
-            rules={{ required: "Ange ett sökord" }}
-            render={({
-              field: { value, onChange, onBlur, name, ...field },
-            }) => (
-              <div className="w-full max-w-md flex flex-col mb-4">
-                <label htmlFor="search">Sök kurser i biblioteket</label>
-                <input
-                  id="search"
-                  type="search"
-                  name={name}
-                  value={value}
-                  onChange={onChange}
-                  onBlur={onBlur}
-                  placeholder="Sök kurser"
-                  className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
-                  {...field}
-                />
-                <p className="text-xs text-red-500 mt-1">
-                  {errors?.search?.message}
-                </p>
-              </div>
-            )}
-          /> */}
+        <form className="w-full max-w-md">
           <div className="w-full max-w-md flex flex-col mb-4">
             <label htmlFor="search">Sök kurser i biblioteket</label>
             <input
               id="search"
               type="search"
               name="search"
-              //   value={value}
+              value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              //   onBlur={onBlur}
               placeholder="Sök kurser"
               className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
-              //   {...field}
             />
-            {/* <p className="text-xs text-red-500 mt-1">
-              {errors?.search?.message}
-            </p> */}
           </div>
-          {/* <button
-            type="submit"
-            className="w-full max-w-md bg-indigo-500 text-white py-2 px-6 mb-6 rounded-sm hover:bg-indigo-50 hover:text-foreground"
-          >
-            Sök
-          </button> */}
         </form>
 
         <button
-          //   type="submit"
-          onClick={() => setIsCreateFormOpen(true)}
+          onClick={() => {
+            setIsCreateFormOpen(true);
+            setSearchTerm("");
+          }}
           className="max-w-md flex gap-2 justify-center bg-indigo-500 text-white py-2 px-6 rounded-sm hover:bg-indigo-50 hover:text-foreground md:self-baseline"
         >
           <Plus />
@@ -138,7 +97,7 @@ const LibSelection = ({
       {/* Whenever the readInfo is true implement scroll, else no "WON'T WORK IF CARDS EXCEEDS A HEIGHT OF 450PX?!" */}
       <div
         className={`relative overflow-x-hidden ${
-          readInfo ? "overflow-y-scroll" : "overflow-y-hidden"
+          readInfo ? "overflow-y-scroll" : ""
         } md:h-[450px]`}
       >
         <section
@@ -163,13 +122,6 @@ const LibSelection = ({
                   infoClickHandler={infoClickHandler}
                 />
               ))}
-          {/* <LibCard setReadInfo={setReadInfo} />
-          <LibCard setReadInfo={setReadInfo} />
-          <LibCard setReadInfo={setReadInfo} />
-          <LibCard />
-          <LibCard />
-          <LibCard />
-          <LibCard /> */}
         </section>
 
         <div
@@ -180,7 +132,6 @@ const LibSelection = ({
           <article className="flex flex-col gap-2">
             {selectedResource && parse(selectedResource!.description)}
             <button
-              //   type="submit"
               onClick={() => {
                 selectedResource && selectLibResourceHandler(selectedResource);
                 setReadInfo((prev) => !prev);
@@ -191,7 +142,6 @@ const LibSelection = ({
             </button>
           </article>
           <button
-            //   type="submit"
             onClick={() => setReadInfo((prev) => !prev)}
             className="max-w-md flex gap-2 justify-center bg-indigo-500 text-white py-2 px-6 rounded-sm hover:bg-indigo-50 hover:text-foreground md:self-baseline"
           >

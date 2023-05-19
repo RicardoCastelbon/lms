@@ -28,23 +28,23 @@ import { ResourceObject } from "@/src/pages/dashboard";
 }; */
 type Props = {
   educationId: number;
-  setHasSubmitted: Dispatch<SetStateAction<boolean>>;
+  // setHasSubmitted: Dispatch<SetStateAction<boolean>>;
   setShowModal: Dispatch<SetStateAction<boolean>>;
-  hasSubmitted: boolean;
+  // hasSubmitted: boolean;
   libData?: ResourceObject | null;
 };
 
 const CreateCourseForm = ({
   educationId,
-  hasSubmitted,
-  setHasSubmitted,
+  // hasSubmitted,
+  // setHasSubmitted,
   libData,
 
   setShowModal,
 }: Props) => {
   const [iconName, setIconName] = useState<string>("");
   const [color, setColor] = useState<string>("");
-  // const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
+  const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
   const {
     handleSubmit,
     control,

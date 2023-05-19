@@ -88,7 +88,7 @@ const ColorSelect = ({
       setSelectedColor(value);
     }
 
-    console.log("color", hasSubmitted);
+    // console.log("color", hasSubmitted);
     if (hasSubmitted) {
       setSelectedColor("");
     }
