@@ -12,7 +12,7 @@ import CreateCourseForm from "./forms/teacher/CreateCourseForm";
 
 type Props = {
   resource: LibResource;
-  educationId: number;
+  educationId?: number;
   setShowModal: Dispatch<SetStateAction<boolean>>;
   showModal: boolean;
   // setIsCreateFormOpen: Dispatch<SetStateAction<boolean>>;

@@ -28,7 +28,7 @@ import { ResourceObject } from "@/src/lib/types/resourceTypes";
   content: string;
 }; */
 type Props = {
-  educationId: number;
+  educationId?: number;
   // setHasSubmitted: Dispatch<SetStateAction<boolean>>;
   setShowModal: Dispatch<SetStateAction<boolean>>;
   showModal: boolean;
@@ -93,7 +93,10 @@ const CreateCourseForm = ({
       try {
         // let selectedIcon = iconName;
         data.content = String(quill?.root.innerHTML);
-        data.educationId = educationId;
+
+        if (educationId) {
+          data.educationId = educationId;
+        }
 
         //Both color and iconName comes from outside the scope of the form.
         // data.icon = iconName;
