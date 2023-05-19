@@ -1,4 +1,4 @@
-import { t } from "../trpc";
+import { t, teacherProcedure, privateProcedure } from "../trpc";
 import {
   createExerciseController,
   deleteExerciseController,
@@ -78,7 +78,7 @@ export const exerciseRouter = t.router({
       findAllExercisesByModuleIdController({ input, ctx })
     ),
 
-  update: t.procedure
+  update: teacherProcedure
     .meta({
       openapi: {
         method: "PUT",
@@ -95,7 +95,7 @@ export const exerciseRouter = t.router({
       })
     ),
 
-  delete: t.procedure
+  delete: teacherProcedure
     .meta({
       openapi: {
         method: "DELETE",

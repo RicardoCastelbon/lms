@@ -15,6 +15,7 @@ import RichText from "../../text-editor/RichText";
 import {
   moduleInputSchema,
   ModuleInputSchema,
+  ModuleRenderSchema,
   ModuleUpdateFormSchema,
   UpdateModuleInputSchema,
 } from "@/src/common/validation/module-end-user";
@@ -23,7 +24,7 @@ import { Module } from "@prisma/client";
 
 type Props = {
   // moduleId: number;
-  userModule: Module;
+  userModule: ModuleRenderSchema;
   setHasSubmitted: Dispatch<SetStateAction<boolean>>;
   setShowModal: Dispatch<SetStateAction<boolean>>;
   hasSubmitted: boolean;
