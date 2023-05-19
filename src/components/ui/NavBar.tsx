@@ -15,10 +15,10 @@ const NavBar = (props: Props) => {
         {/* menu items */}
         <div className="flex gap-4">
           <Link className="font-popp hover:text-muted" href="/login">
-            Login
+            Logga in
           </Link>
           <Link className="font-popp hover:text-muted" href="/sign-up">
-            Become a member
+            Bli medlem
           </Link>
         </div>
       </div>
