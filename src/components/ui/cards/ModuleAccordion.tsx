@@ -21,18 +21,12 @@ import { Action } from "@/src/lib/enums/actionEnums";
 import { ModuleRenderSchema } from "@/src/common/validation/module-end-user";
 import { useRouter } from "next/router";
 import { trpc } from "@/src/common/trpc";
-import { Trash2 } from "lucide-react";
-import { ResourceType } from "@/src/lib/enums/resourceTypeEnum";
 
-// type Props = {
-//   module: ModuleRenderSchema;
-//   modalClickHandler: (action: Action) => void;
-// };
+
 type Resource = Exercise | ModuleRenderSchema;
 
 type Props = {
    resource?: Exercise[] ;
-  setResourceId: Dispatch<SetStateAction<number>>;
   userModule: ModuleRenderSchema;
   modalClickHandler: (action: Action) => void;
   role: string | null | undefined;
@@ -44,14 +38,9 @@ const ModuleAccordion = ({
   modalClickHandler,
   getModuleId,
   role,
-  resource
 }: 
 Props) => {
-  const [resourceType, setResourceType] = useState<ResourceType | null>(null);
 
-  const [resourceData, setResourceData] = useState<Resource[] | undefined>(
-    resource
-  );
   const [desktopVersion, setdesktopVersion] = useState<boolean>(true);
   const [screenWidth, setScreenWidth] = useState<number>();
   const { data: session } = useSession();
@@ -112,33 +101,6 @@ Props) => {
       setIsPublished(!isPublished);
     }
   };
-
-
-// Delete function for exercises
-const deleteHandle = async (id: number) => {
-  if (role !== "TEACHER") return;
-  if (resourceType === ResourceType.EXERCISE) {
-    const result = await deleteExerciseAsync({
-      exerciseId: id,
-    });
-
-    if (result.success) {
-      filterResourceArray(resource, id);
-    }
-  }
-};
-const filterResourceArray = (
-  resource: Resource[] | undefined,
-  id: number
-) => {
-  if (!resource) return;
-  const filteredArray = resource?.filter((item) => item.id !== id);
-  setResourceData([...filteredArray]);
-};
-
-// const handleTrashClick = (id: number) => {
-//   deleteHandle(id);
-// };
 
 
   return (
@@ -233,13 +195,6 @@ const filterResourceArray = (
                         <Check />
                       </span>
                     </Link>
-                    <button
-                      onClick={() => deleteHandle(exercise.id)}
-                      className="absolute right-0 top-3 mt-1 mr-10" // position the trash icon
-                    >
-                      <Trash2 className="h- w-5 text-black" />
-                    </button>
-
                        </div>
                   ))}
               </AccordionContent>
@@ -253,25 +208,3 @@ const filterResourceArray = (
 
 export default ModuleAccordion;
 
-{/*  <button className="flex justify-between w-full bg-accent text-white text-left p-4 hover:bg-blue-400">
-  <div className="flex">
-    <span className=" mr-4">
-      <ClipboardList />
-    </span>
-    <span>Filstrukture i React</span>
-  </div>
-  <span className="">
-    <Check />
-  </span>
-</button> */}
-{/*  <button className="flex justify-between w-full bg-accent text-white text-left p-4 hover:bg-blue-400">
-  <div className="flex">
-    <span className=" mr-4">
-      <ClipboardList />
-    </span>
-    <span>Components i React</span>
-  </div>
-  <span className="">
-    <Check />
-  </span>
-</button> */}
