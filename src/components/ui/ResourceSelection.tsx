@@ -1,6 +1,5 @@
 import { Course, Exercise, Module } from "@prisma/client";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
-import UpdateCourseForm from "./forms/teacher/UpdateCourseForm";
 import { Trash2 } from "lucide-react";
 import { trpc } from "@/src/common/trpc";
 import { ModuleRenderSchema } from "@/src/common/validation/module-end-user";
@@ -17,7 +16,6 @@ type Props = {
   role: string | undefined | null;
   action: Action | CourseAction;
   // action: Action | ModuleAction;
-
 };
 
 const ResourceSelection = ({
@@ -199,4 +197,3 @@ Props) => {
   );
 };
 export default ResourceSelection;
-

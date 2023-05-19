@@ -19,6 +19,8 @@ import RichText from "../../text-editor/RichText";
 import ColorSelect from "../../dropdowns/ColorSelect";
 import { trpc } from "@/src/common/trpc";
 import { useSession } from "next-auth/react";
+import { ResourceObject } from "@/src/lib/types/resourceTypes";
+// import { ResourceObject } from "@/src/pages/dashboard";
 /* type Course = {
   title: string;
   color: string;
@@ -26,22 +28,25 @@ import { useSession } from "next-auth/react";
   content: string;
 }; */
 type Props = {
-  educationId: number;
-  setHasSubmitted: Dispatch<SetStateAction<boolean>>;
+  educationId?: number;
+  // setHasSubmitted: Dispatch<SetStateAction<boolean>>;
   setShowModal: Dispatch<SetStateAction<boolean>>;
-  hasSubmitted: boolean;
+  showModal: boolean;
+  // hasSubmitted: boolean;
+  libData?: ResourceObject | null;
 };
 
 const CreateCourseForm = ({
   educationId,
-  hasSubmitted,
-  setHasSubmitted,
-
+  // hasSubmitted,
+  // setHasSubmitted,
+  showModal,
+  libData,
   setShowModal,
 }: Props) => {
   const [iconName, setIconName] = useState<string>("");
   const [color, setColor] = useState<string>("");
-  // const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
+  const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
   const {
     handleSubmit,
     control,
@@ -50,11 +55,11 @@ const CreateCourseForm = ({
     setValue,
   } = useForm<CourseInputSchema>({
     defaultValues: {
-      title: "",
+      title: libData ? libData.title : "",
       icon: "",
       // slug: "",
       color: "",
-      content: "",
+      content: libData ? libData.content : "",
       educationId: 0,
       points: "",
       published: false,
@@ -64,25 +69,43 @@ const CreateCourseForm = ({
   const { quill, quillRef } = useQuill();
   const { mutateAsync } = trpc.course.create.useMutation();
 
-  /*   useEffect(() => {
-    console.log(errors);
-  }, [errors]); */
+  useEffect(() => {
+    if (quill && libData) {
+      quill!.root.innerHTML = libData?.content;
+    }
+    /*  return () => {
+      libData = null;
+    }; */
+  }, [libData, quill]);
+
+  useEffect(() => {
+    if (!showModal) {
+      if (quill) {
+        quill!.root.innerHTML = "";
+      }
+      setValue("title", "");
+      reset();
+    }
+  }, [showModal, quill, reset, setValue]);
 
   const onSubmit = useCallback(
     async (data: CourseInputSchema) => {
       try {
         // let selectedIcon = iconName;
         data.content = String(quill?.root.innerHTML);
-        data.educationId = educationId;
+
+        if (educationId) {
+          data.educationId = educationId;
+        }
 
         //Both color and iconName comes from outside the scope of the form.
         // data.icon = iconName;
         // data.color = color;
         data.published = false; // needed?
         console.log(data);
-        setHasSubmitted((prev) => !prev);
         // console.log(hasSubmitted);
 
+        setHasSubmitted((prev) => !prev);
         const result = await mutateAsync(data);
         if (result.success) {
           setHasSubmitted(true);
@@ -95,7 +118,7 @@ const CreateCourseForm = ({
         reset();
       }
     },
-    [iconName, color, mutateAsync, quill, reset]
+    [mutateAsync, quill, reset, setShowModal, educationId]
   );
   return (
     <form

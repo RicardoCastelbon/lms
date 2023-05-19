@@ -1,40 +1,53 @@
 import { useEffect, useRef, useState } from "react";
 import type { GetServerSideProps, NextPage } from "next";
-import { useSession } from "next-auth/react";
-// import { trpc } from "@/src/common/trpc";
-import { getServerSession } from "next-auth";
 import { useRouter } from "next/router";
-import { createServerSideHelpers } from "@trpc/react-query/server";
-import UserLayout from "@/src/components/ui/UserLayout";
+import { useSession } from "next-auth/react";
 import { IconContext } from "react-icons";
+// import { trpc } from "@/src/common/trpc";
 import { nextAuthOptions } from "@/src/common/auth";
-import CourseCard from "@/src/components/ui/cards/CourseCard";
+import { getServerSession } from "next-auth";
+import { createServerSideHelpers } from "@trpc/react-query/server";
 import { Plus, X, FileEdit, Trash2 } from "lucide-react";
+
+import UserLayout from "@/src/components/ui/UserLayout";
+import CourseCard from "@/src/components/ui/cards/CourseCard";
 // import ColorSelect from "@/src/components/ui/dropdowns/ColorSelect";
 import CreateCourseForm from "@/src/components/ui/forms/teacher/CreateCourseForm";
 import Modal from "@/src/components/ui/modals/Modal";
 import { serverRouter } from "@/src/server/routers";
 import { IContext, createContext } from "@/src/server/context";
-import { Course, Education, Exercise, Module } from "@prisma/client";
+import {
+  Course,
+  Course_lib,
+  Education,
+  Exercise,
+  Exercise_lib,
+  Module,
+  Module_lib,
+  Role,
+} from "@prisma/client";
 import { CourseAction } from "@/src/lib/enums/actionEnums";
 import UpdateCourseForm from "@/src/components/ui/forms/teacher/UpdateCourseForm";
 import UpdateModuleForm from "@/src/components/ui/forms/teacher/UpdateModuleForm";
 import ResourceSelection from "@/src/components/ui/ResourceSelection";
 import UpdateResource from "@/src/components/ui/ResourceSelection";
+import LibSelection from "@/src/components/ui/LibSelection";
+import { ResourceObject } from "@/src/lib/types/resourceTypes";
 // import { trpc } from "@/src/common/trpc";
-
+// export type ResourceObject = Course_lib | Module_lib | Exercise_lib;
 type Props = {
   courses: Course[];
   education: Education;
+  courseLib: Course_lib[];
 };
-const Dashboard = ({ courses, education }: Props) => {
+const Dashboard = ({ courses, education, courseLib }: Props) => {
   const [sideBarClass, setSideBarClass] = useState<boolean>(false);
   const [screenWidth, setScreenWidth] = useState<number>();
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
-  // const [clientCourses, setClientCourses] = useState<Course[]>();
+  const [courseLibData, setCourseLibData] = useState<Course_lib[]>(courseLib);
   const [action, setAction] = useState<CourseAction>();
   const [modalHeader, setModalHeader] = useState<string>("");
+
   //To be set within the ResourceSelect component whenever a list item is clicked.
   const [resourceId, setResourceId] = useState<number>(0);
   //To be selected course from when resourceId is set ResourceSelection, always reset this to NULL.
@@ -43,13 +56,12 @@ const Dashboard = ({ courses, education }: Props) => {
   const { data: session } = useSession();
   const router = useRouter();
 
-  const modalRef = useRef(null);
-
-  //If modal closes, reset courseToUpdate
+  //If modal closes, reset all forms data
   useEffect(() => {
     if (!showModal) {
       setCourseToUpdate(null);
       setResourceId(0);
+      // setLibData(null);
     }
   }, [showModal]);
 
@@ -82,11 +94,11 @@ const Dashboard = ({ courses, education }: Props) => {
 
   //Selects the course by id with the given resourceId whenever resourceId is updated within ResrouceSelection.
   useEffect(() => {
-    setCourseToUpdate(getCourseToUpdate(resourceId, courses));
+    setCourseToUpdate(getCourseById(resourceId, courses));
   }, [resourceId]);
 
   //Function to run whenever a resource is clicked in the resource list in component ResourceSelection when clicking update course button
-  const getCourseToUpdate = (courseId: number, courses: Course[]) => {
+  const getCourseById = (courseId: number, courses: Course[]) => {
     if (!courses || (courses && courses.length <= 0)) return null;
 
     const filteredCourse =
@@ -115,7 +127,6 @@ const Dashboard = ({ courses, education }: Props) => {
         break;
     }
   };
-  console.log(courses);
 
   return (
     <IconContext.Provider
@@ -198,13 +209,18 @@ const Dashboard = ({ courses, education }: Props) => {
           setShowModal={setShowModal}
         >
           {action === CourseAction.CREATECOURSE && (
-            <CreateCourseForm
-              hasSubmitted={hasSubmitted}
-              setHasSubmitted={setHasSubmitted}
-              educationId={education?.id}
-              setShowModal={setShowModal}
-            />
+            <>
+              {/* {!isCreateFormOpen ? ( */}
+              <LibSelection
+                educationId={education.id}
+                setShowModal={setShowModal} //used to reset form data if form is closed.
+                showModal={showModal} //pass showModal to reset "isCreateFormOpen" - state
+                action={action} // pass action to conditionally render the correct create form
+                resource={courseLibData}
+              />
+            </>
           )}
+
           {action === CourseAction.UPDATECOURSE && (
             <>
               {!courseToUpdate ? (
@@ -226,8 +242,6 @@ const Dashboard = ({ courses, education }: Props) => {
                   </button>
                   <UpdateCourseForm
                     course={courseToUpdate}
-                    hasSubmitted={hasSubmitted}
-                    setHasSubmitted={setHasSubmitted}
                     setShowModal={setShowModal}
                   />
                 </div>
@@ -243,13 +257,13 @@ const Dashboard = ({ courses, education }: Props) => {
 /* getServerSideProps */
 export const getServerSideProps: GetServerSideProps = async (context: any) => {
   type UserRole = string | undefined | null;
-
   const currentSession = await getServerSession(
     context.req,
     context.res,
     nextAuthOptions
   );
   const educationId = String(currentSession?.user.educationId);
+  const userRole = currentSession && (currentSession.user.role as string);
 
   //Set up a trpc helper, needed for serverSide fetching
   const helpers = createServerSideHelpers({
@@ -264,7 +278,9 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
     educationId,
   });
 
-  console.log(res);
+  const courseLibRes = await helpers.courseLib.getMany.fetch();
+  // const moduleLibRes = await helpers.moduleLib.getMany.fetch();
+  const exerciseLibRes = await helpers.exercise_lib.getMany.fetch();
 
   //filter result depending on the role of the logged in user
   const filterCoursesByRole = (role: UserRole, resource: Course[]) => {
@@ -273,7 +289,7 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
     if (!role || !resource) return null;
 
     //filter resource to only return resources that are published.
-    if (resource && role === "STUDENT") {
+    if (resource && role === Role.STUDENT) {
       const publishedResources = resource.filter(
         (item) => item.published === true
       );
@@ -284,21 +300,29 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
     return resource;
   };
 
-  const courses: Course[] =
-    res.success && JSON.parse(JSON.stringify(res.course));
-
-  const userRole = currentSession && (currentSession.user.role as string);
-
-  const filteredCourses = filterCoursesByRole(userRole, courses); //<- filter the JSON parsed data before sending it to props.
+  // console.log("userROle", userRole === Role.TEACHER);
 
   //Needed to serialize Date objects for createdAt + updatedAt otherwise error is thrown
+  const courses: Course[] =
+    res.success && JSON.parse(JSON.stringify(res.course));
   const education = eduRes.success && JSON.parse(JSON.stringify(eduRes));
+  const courseLib =
+    courseLibRes.success && JSON.parse(JSON.stringify(courseLibRes.courseLib));
+  // const moduleLib =
+  //   moduleLibRes.success && JSON.parse(JSON.stringify(moduleLibRes.moduleLib));
+  const exerciseLib =
+    exerciseLibRes.success &&
+    JSON.parse(JSON.stringify(exerciseLibRes.exerciseLib));
+
+  const filteredCourses = filterCoursesByRole(userRole, courses); //<- filter the JSON parsed data before sending it to props.
 
   return {
     props: {
       session: currentSession,
       courses: filteredCourses,
       education: !education ? null : education.education,
+      // courseLib: userRole === Role.TEACHER ? courseLib : [],
+      courseLib: userRole === Role.TEACHER ? exerciseLib : [],
     },
   };
 };

@@ -30,21 +30,21 @@ import { Course } from "@prisma/client";
 type Props = {
   //   educationId: number;
   course: Course;
-  setHasSubmitted: Dispatch<SetStateAction<boolean>>;
+  // setHasSubmitted: Dispatch<SetStateAction<boolean>>;
   setShowModal: Dispatch<SetStateAction<boolean>>;
-  hasSubmitted: boolean;
+  // hasSubmitted: boolean;
 };
 
 const UpdateCourseForm = ({
   //   educationId,
   course,
-  hasSubmitted,
-  setHasSubmitted,
+  // hasSubmitted,
+  // setHasSubmitted,
   setShowModal,
 }: Props) => {
   const [iconName, setIconName] = useState<string>("");
   const [color, setColor] = useState<string>("");
-  // const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
+  const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
   const {
     handleSubmit,
     control,
