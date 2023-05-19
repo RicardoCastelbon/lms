@@ -11,7 +11,7 @@ import { serverRouter } from "@/src/server/routers";
 import { createContext } from "@/src/server/context";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { Course, Exercise, Module } from "@prisma/client";
+import { Course, Exercise, Module, Module_lib, Role } from "@prisma/client";
 import ModuleAccordion from "@/src/components/ui/cards/ModuleAccordion";
 import CreateExerciseForm from "@/src/components/ui/forms/teacher/CreateExerciseForm";
 import { Action } from "@/src/lib/enums/actionEnums";
@@ -20,8 +20,7 @@ import ResourceSelection from "@/src/components/ui/ResourceSelection";
 // import { ModuleAction } from "@/src/lib/enums/actionEnums";
 import UpdateModuleForm from "@/src/components/ui/forms/teacher/UpdateModuleForm";
 import UpdateExerciseForm from "@/src/components/ui/forms/teacher/UpdateExerciseForm";
-
-
+import LibSelection from "@/src/components/ui/LibSelection";
 
 export interface ExerciseData {
   moduleName: string;
@@ -37,9 +36,10 @@ export interface ExerciseData {
 type Props = {
   modules: ModuleRenderSchema[];
   course: Course;
+  moduleLib: Module_lib[];
 };
 
-const CourseOverview = ({ modules, course }: Props) => {
+const CourseOverview = ({ modules, course, moduleLib }: Props) => {
   const [desktopVersion, setdesktopVersion] = useState<boolean>(true);
   const [screenWidth, setScreenWidth] = useState<number>();
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -65,8 +65,12 @@ const CourseOverview = ({ modules, course }: Props) => {
   const router = useRouter();
 
   useEffect(() => {
-    console.log(session);
-    console.log(modules);
+    console.log(moduleLib);
+  }, [moduleLib]);
+
+  useEffect(() => {
+    // console.log(session);
+    // console.log(modules);
 
     if (!session) {
       router.push("/401");
@@ -82,14 +86,14 @@ const CourseOverview = ({ modules, course }: Props) => {
       setdesktopVersion(false);
     }
   }, []);
-
+  /* 
   useEffect(() => {
     console.log(exerciseData);
   }, [exerciseData]);
 
   useEffect(() => {
     console.log(exerciseToUpdate);
-  }, [exerciseToUpdate]);
+  }, [exerciseToUpdate]); */
 
   //Remove open state for sidenav when screen width > 768px
   useEffect(() => {
@@ -117,7 +121,7 @@ const CourseOverview = ({ modules, course }: Props) => {
   }, [showModal]);
 
   useEffect(() => {
-    console.log(action);
+    // console.log(action);
 
     getModalHeader(action);
   }, [action]);
@@ -127,7 +131,7 @@ const CourseOverview = ({ modules, course }: Props) => {
     if (
       action === Action.CREATEMODULE ||
       action === Action.UPDATEMODULE ||
-       action === Action.CREATEEXERCISE
+      action === Action.CREATEEXERCISE
     ) {
       console.log("I will filter modules");
 
@@ -167,7 +171,6 @@ const CourseOverview = ({ modules, course }: Props) => {
     return filteredExercise.length <= 0 ? null : filteredExercise[0];
   };
 
-  
   const modalClickHandler = (action: Action) => {
     setAction(action);
     setShowModal((prev) => !prev);
@@ -229,11 +232,13 @@ const CourseOverview = ({ modules, course }: Props) => {
               <div className="w-full">
                 <ul className="flex font-medium text-slate-400">
                   <li className="md:w-48 ">Moduler</li>
-             
+
                   {desktopVersion && <li className="w-36">Status</li>}
                   {desktopVersion && <li className="w-32">Uppgifter</li>}
-                  {desktopVersion && <li className="w-32 ml-auto">Publicerad</li>}
-                                  </ul>
+                  {desktopVersion && (
+                    <li className="w-32 ml-auto">Publicerad</li>
+                  )}
+                </ul>
               </div>
               {modules &&
                 modules?.map((module: ModuleRenderSchema) => (
@@ -317,7 +322,13 @@ const CourseOverview = ({ modules, course }: Props) => {
           setShowModal={setShowModal}
         >
           {action === Action.CREATEMODULE && (
-            <CreateModuleForm courseId={course?.id} />
+            <LibSelection
+              courseId={course.id}
+              setShowModal={setShowModal} //used to reset form data if form is closed.
+              showModal={showModal} //pass showModal to reset "isCreateFormOpen" - state
+              action={action} // pass action to conditionally render the correct create form
+              resource={moduleLib}
+            />
           )}
 
           {action === Action.UPDATEMODULE && (
@@ -340,11 +351,11 @@ const CourseOverview = ({ modules, course }: Props) => {
                     Tillbaka
                   </button>
                   {/* <p>Module id: {moduleToUpdate.id}</p> */}
-                 <strong> <p>Module name: {moduleToUpdate.title}</p></strong>
-                 <p>
-                    publicerad:{" "}
-                    {moduleToUpdate.published ? "ja" : "nej"}
-                  </p>
+                  <strong>
+                    {" "}
+                    <p>Module name: {moduleToUpdate.title}</p>
+                  </strong>
+                  <p>publicerad: {moduleToUpdate.published ? "ja" : "nej"}</p>
                   <UpdateModuleForm
                     userModule={moduleToUpdate}
                     hasSubmitted={hasSubmitted}
@@ -405,7 +416,7 @@ const CourseOverview = ({ modules, course }: Props) => {
                   </button>
                   <p>id: {exerciseToUpdate.exercise.id}</p>
                   <p>namn: {exerciseToUpdate.exercise.title}</p>
-                  
+
                   <p>
                     publicerad:{" "}
                     {exerciseToUpdate.exercise.published ? "ja" : "nej"}
@@ -416,13 +427,12 @@ const CourseOverview = ({ modules, course }: Props) => {
                     moduleId={moduleToUpdate.id}
                     setShowModal={setShowModal}
                   /> */}
-                  <UpdateExerciseForm 
-                              exercise={exerciseToUpdate}
-                              hasSubmitted={hasSubmitted}
-                              setHasSubmitted={setHasSubmitted}
-                              setShowModal={setShowModal}
-                    / >
-
+                  <UpdateExerciseForm
+                    exercise={exerciseToUpdate}
+                    hasSubmitted={hasSubmitted}
+                    setHasSubmitted={setHasSubmitted}
+                    setShowModal={setShowModal}
+                  />
                 </div>
               )}
             </>
@@ -434,6 +444,8 @@ const CourseOverview = ({ modules, course }: Props) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (context: any) => {
+  type UserRole = string | undefined | null;
+
   const currentSession = await getServerSession(
     context.req,
     context.res,
@@ -446,12 +458,16 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
     ctx: await createContext(context),
   });
   //might have to cast context to string
+  const userRole = currentSession && (currentSession.user.role as string);
   const slug = String(context.params.course);
 
   //fetch the course from params to get the courseId
   const course = await helpers.course.getCourseBySlug.fetch({
     courseSlug: slug,
   });
+
+  const moduleLibRes = await helpers.moduleLib.getMany.fetch();
+  const exerciseLibRes = await helpers.exercise_lib.getMany.fetch();
 
   // const courseId = course.course.id as string
 
@@ -470,12 +486,19 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
   // console.log(...modules);
 
   const courseData = JSON.parse(JSON.stringify(course));
+  const moduleLib =
+    moduleLibRes.success && JSON.parse(JSON.stringify(moduleLibRes.moduleLib));
+  const exerciseLib =
+    exerciseLibRes.success &&
+    JSON.parse(JSON.stringify(exerciseLibRes.exerciseLib));
 
   return {
     props: {
       session: currentSession,
       modules: [...modules],
       course: courseData.course,
+      moduleLib: userRole === Role.TEACHER ? moduleLib : [],
+      // exerciseLib: userRole === Role.TEACHER ? exerciseLib : [],
     },
   };
 };

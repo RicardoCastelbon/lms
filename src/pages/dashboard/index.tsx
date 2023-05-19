@@ -279,8 +279,6 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
   });
 
   const courseLibRes = await helpers.courseLib.getMany.fetch();
-  // const moduleLibRes = await helpers.moduleLib.getMany.fetch();
-  const exerciseLibRes = await helpers.exercise_lib.getMany.fetch();
 
   //filter result depending on the role of the logged in user
   const filterCoursesByRole = (role: UserRole, resource: Course[]) => {
@@ -308,11 +306,6 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
   const education = eduRes.success && JSON.parse(JSON.stringify(eduRes));
   const courseLib =
     courseLibRes.success && JSON.parse(JSON.stringify(courseLibRes.courseLib));
-  // const moduleLib =
-  //   moduleLibRes.success && JSON.parse(JSON.stringify(moduleLibRes.moduleLib));
-  const exerciseLib =
-    exerciseLibRes.success &&
-    JSON.parse(JSON.stringify(exerciseLibRes.exerciseLib));
 
   const filteredCourses = filterCoursesByRole(userRole, courses); //<- filter the JSON parsed data before sending it to props.
 
@@ -321,8 +314,8 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
       session: currentSession,
       courses: filteredCourses,
       education: !education ? null : education.education,
-      // courseLib: userRole === Role.TEACHER ? courseLib : [],
-      courseLib: userRole === Role.TEACHER ? exerciseLib : [],
+      courseLib: userRole === Role.TEACHER ? courseLib : [],
+      // courseLib: userRole === Role.TEACHER ? exerciseLib : [],
     },
   };
 };

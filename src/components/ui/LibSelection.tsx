@@ -7,12 +7,15 @@ import LibCard from "./forms/teacher/LibCard";
 import { LibResource, LibResourceObject } from "@/src/lib/types/resourceTypes";
 import { CourseAction, Action } from "@/src/lib/enums/actionEnums";
 import CreateCourseForm from "./forms/teacher/CreateCourseForm";
+import CreateModuleForm from "./forms/teacher/CreateModuleForm";
+// import { courseId } from "@/src/common/validation/course-end-user";
 // import { ResourceObject } from "@/src/pages/dashboard";
 // type Resource = Course_lib[] | Module_lib[] | Exercise_lib[];
 
 type Props = {
   resource: LibResource;
   educationId?: number;
+  courseId?: number;
   setShowModal: Dispatch<SetStateAction<boolean>>;
   showModal: boolean;
   // setIsCreateFormOpen: Dispatch<SetStateAction<boolean>>;
@@ -23,6 +26,7 @@ type Props = {
 const LibSelection = ({
   resource,
   educationId,
+  courseId,
   // setIsCreateFormOpen,
   showModal,
   setShowModal,
@@ -78,7 +82,7 @@ const LibSelection = ({
 
   const filterSearchHandle = (resource: LibResource, input: string) => {
     const searchResult = resource.filter((item) =>
-      item.title.toLowerCase().includes(input)
+      item.title.toLowerCase().includes(input.toLowerCase())
     );
     console.log(searchResult);
 
@@ -189,6 +193,14 @@ const LibSelection = ({
           {action === CourseAction.CREATECOURSE && (
             <CreateCourseForm
               educationId={educationId}
+              setShowModal={setShowModal} //used to reset form data if form is closed.
+              showModal={showModal}
+              libData={selectedResource} //passed if a library-item is selected else = null
+            />
+          )}
+          {action === Action.CREATEMODULE && (
+            <CreateModuleForm
+              courseId={courseId}
               setShowModal={setShowModal} //used to reset form data if form is closed.
               showModal={showModal}
               libData={selectedResource} //passed if a library-item is selected else = null

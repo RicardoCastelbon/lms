@@ -1,5 +1,12 @@
 "use client";
-import React,  {Dispatch,SetStateAction, useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 import { useQuill } from "react-quilljs";
 import { Controller, useForm } from "react-hook-form";
@@ -11,12 +18,21 @@ import {
   ModuleInputSchema,
 } from "@/src/common/validation/module-end-user";
 import { trpc } from "@/src/common/trpc";
+import { ResourceObject } from "@/src/lib/types/resourceTypes";
 
 type Props = {
-  courseId: number;
+  courseId: number | undefined;
+  showModal: boolean;
+  setShowModal: Dispatch<SetStateAction<boolean>>;
+  libData?: ResourceObject | null;
 };
 
-const CreateModuleForm = ({ courseId }: Props) => {
+const CreateModuleForm = ({
+  courseId,
+  showModal,
+  setShowModal,
+  libData,
+}: Props) => {
   const {
     handleSubmit,
     control,
@@ -25,18 +41,36 @@ const CreateModuleForm = ({ courseId }: Props) => {
     setValue,
   } = useForm<ModuleInputSchema>({
     defaultValues: {
-      title: "",
+      title: libData ? libData.title : "",
       startDate: "",
       endDate: "",
       courseId: 0,
-      content: "",
+      content: libData ? libData.content : "",
       published: false,
-
     },
   });
 
   const { quill, quillRef } = useQuill();
   const { mutateAsync } = trpc.module.create.useMutation();
+
+  useEffect(() => {
+    if (quill && libData) {
+      quill!.root.innerHTML = libData?.content;
+    }
+    /*  return () => {
+      libData = null;
+    }; */
+  }, [libData, quill]);
+
+  useEffect(() => {
+    if (!showModal) {
+      if (quill) {
+        quill!.root.innerHTML = "";
+      }
+      setValue("title", "");
+      reset();
+    }
+  }, [showModal, quill, reset, setValue]);
 
   const onSubmit = useCallback(
     async (data: ModuleInputSchema) => {
@@ -44,20 +78,23 @@ const CreateModuleForm = ({ courseId }: Props) => {
         // let selectedIcon = iconName;
         data.content = String(quill?.root.innerHTML);
         data.published = false; // needed?
-        data.courseId = courseId;
+        if (courseId) {
+          data.courseId = courseId;
+        }
 
         console.log(data);
         const result = await mutateAsync(data);
         if (result.success) {
           quill!.root.innerHTML = "";
           reset();
+          setShowModal(false);
         }
       } catch (err) {
         console.error(err);
         reset();
       }
     },
-    [mutateAsync, quill, reset]
+    [mutateAsync, quill, reset, courseId, setShowModal]
   );
 
   useEffect(() => {}, []);
