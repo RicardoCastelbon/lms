@@ -9,16 +9,13 @@ import { useRouter } from "next/router";
 import { ExerciseData } from "@/src/pages/dashboard/[course]";
 import { ResourceType } from "@/src/lib/enums/resourceTypeEnum";
 
-
 type Resource = Course | ModuleRenderSchema;
-
-
 type Props = {
- resource?: Course[] | ModuleRenderSchema[];
- exercises?: ExerciseData[];
- setResourceId: Dispatch<SetStateAction<number>>;
- role: string | undefined | null;
- action: Action | CourseAction;
+  resource?: Course[] | ModuleRenderSchema[];
+  exercises?: ExerciseData[];
+  setResourceId: Dispatch<SetStateAction<number>>;
+  role: string | undefined | null;
+  action: Action | CourseAction;
 };
 
 

@@ -24,12 +24,17 @@ const Login: NextPage = () => {
       }
     }
   }, [status, data, router, loginAttempt]);
-  const { handleSubmit, control, reset } = useForm<ILogin>({
+  const {
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors },
+    setValue,
+  } = useForm<ILogin>({
     defaultValues: {
       email: "",
       password: "",
     },
-    resolver: zodResolver(loginSchema),
   });
 
   const onSubmit = useCallback(
@@ -65,19 +70,29 @@ const Login: NextPage = () => {
             className="flex flex-col items-center gap-4 h-full w-full md:w-4/6 bg-white px-4 py-10 rounded-lg shadow-xl"
             onSubmit={handleSubmit(onSubmit)}
           >
-            <h2 className="text-xl mb-8">Welcome back!</h2>
+            <h2 className="text-xl mb-8">Välkommen tillbaka!</h2>
             <Controller
               name="email"
               control={control}
-              render={({ field }) => (
+              rules={{ required: "Ange din email" }}
+              render={({
+                field: { value, onChange, onBlur, name, ...field },
+              }) => (
                 <div className="w-full max-w-md flex flex-col mb-4">
-                  <label htmlFor="education">Email</label>
+                  <label htmlFor="education">E-post</label>
                   <input
-                    type="email"
-                    placeholder="Type your email..."
-                    className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
                     {...field}
+                    value={value}
+                    name={name}
+                    onChange={onChange}
+                    onBlur={onBlur}
+                    type="email"
+                    placeholder="Ange din e-post..."
+                    className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
                   />
+                  <p className="text-xs text-red-500 mt-1">
+                    {errors?.email?.message}
+                  </p>
                 </div>
               )}
             />
@@ -85,24 +100,34 @@ const Login: NextPage = () => {
             <Controller
               name="password"
               control={control}
-              render={({ field }) => (
+              rules={{ required: "Ange ditt lösenord" }}
+              render={({
+                field: { value, onChange, onBlur, name, ...field },
+              }) => (
                 <div className="w-full max-w-md flex flex-col mb-4">
-                  <label htmlFor="education">Password</label>
+                  <label htmlFor="education">Lösenord</label>
                   <input
-                    type="password"
-                    placeholder="Type your password..."
-                    className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
                     {...field}
+                    value={value}
+                    name={name}
+                    onChange={onChange}
+                    onBlur={onBlur}
+                    type="password"
+                    placeholder="Ange ditt lösenord..."
+                    className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
                   />
+                  <p className="text-xs text-red-500 mt-1">
+                    {errors?.password?.message}
+                  </p>
                 </div>
               )}
             />
 
             <div className="w-full flex items-center justify-between max-w-md text-primary mt-8 hover:text-muted">
               <Link href="/login" className="link">
-                Not a member?
+                Inte en medlem?
               </Link>
-              <Button>Login</Button>
+              <Button>Logga in</Button>
               {/* <button className="btn btn-secondary" type="submit">
                 Sign Up
               </button> */}
