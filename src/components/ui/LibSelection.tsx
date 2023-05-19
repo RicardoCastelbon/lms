@@ -1,20 +1,11 @@
-import React, {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
-import { Controller, useForm } from "react-hook-form";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import parse from "html-react-parser";
-
-import { ISearch } from "@/src/common/validation/search";
 import { Course_lib, Exercise_lib, Module_lib } from "@prisma/client";
 import { Plus } from "lucide-react";
 import LibCard from "./forms/teacher/LibCard";
-import Modal from "./modals/Modal";
-import { ResourceObject } from "@/src/pages/dashboard";
-type Resource = Course_lib[] | Module_lib[] | Exercise_lib[];
+// import { ResourceObject } from "@/src/pages/dashboard";
+import { Resource, ResourceObject } from "@/src/lib/types/resourceTypes";
+// type Resource = Course_lib[] | Module_lib[] | Exercise_lib[];
 
 type Props = {
   resource: Resource;

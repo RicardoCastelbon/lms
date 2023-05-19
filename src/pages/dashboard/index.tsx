@@ -31,8 +31,9 @@ import UpdateModuleForm from "@/src/components/ui/forms/teacher/UpdateModuleForm
 import ResourceSelection from "@/src/components/ui/ResourceSelection";
 import UpdateResource from "@/src/components/ui/ResourceSelection";
 import LibSelection from "@/src/components/ui/LibSelection";
+import { ResourceObject } from "@/src/lib/types/resourceTypes";
 // import { trpc } from "@/src/common/trpc";
-export type ResourceObject = Course_lib | Module_lib | Exercise_lib;
+// export type ResourceObject = Course_lib | Module_lib | Exercise_lib;
 type Props = {
   courses: Course[];
   education: Education;
@@ -59,16 +60,19 @@ const Dashboard = ({ courses, education, courseLib }: Props) => {
   const { data: session } = useSession();
   const router = useRouter();
 
-  const modalRef = useRef(null);
+  // const modalRef = useRef(null);
   // console.log(courseLib);
 
-  //If modal closes, reset courseToUpdate
+  //If modal closes, reset all forms data
   useEffect(() => {
     if (!showModal) {
       setCourseToUpdate(null);
       setResourceId(0);
+      setLibData(null);
+      setIsCreateFormOpen(false);
     }
   }, [showModal]);
+
   useEffect(() => {
     console.log(libData);
   }, [libData]);
@@ -247,6 +251,7 @@ const Dashboard = ({ courses, education, courseLib }: Props) => {
                     educationId={education?.id}
                     setShowModal={setShowModal}
                     libData={libData}
+                    showModal={showModal}
                   />
                 </>
               )}
@@ -313,6 +318,8 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
   });
 
   const courseLibRes = await helpers.courseLib.getMany.fetch();
+  // const moduleLibRes = await helpers.moduleLib.getMany.fetch();
+  const exerciseLibRes = await helpers.exercise_lib.getMany.fetch();
 
   //filter result depending on the role of the logged in user
   const filterCoursesByRole = (role: UserRole, resource: Course[]) => {
@@ -340,6 +347,11 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
   const education = eduRes.success && JSON.parse(JSON.stringify(eduRes));
   const courseLib =
     courseLibRes.success && JSON.parse(JSON.stringify(courseLibRes.courseLib));
+  // const moduleLib =
+  //   moduleLibRes.success && JSON.parse(JSON.stringify(moduleLibRes.moduleLib));
+  const exerciseLib =
+    exerciseLibRes.success &&
+    JSON.parse(JSON.stringify(exerciseLibRes.exerciseLib));
 
   const filteredCourses = filterCoursesByRole(userRole, courses); //<- filter the JSON parsed data before sending it to props.
 
@@ -348,7 +360,8 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
       session: currentSession,
       courses: filteredCourses,
       education: !education ? null : education.education,
-      courseLib: userRole === Role.TEACHER ? courseLib : [],
+      // courseLib: userRole === Role.TEACHER ? courseLib : [],
+      courseLib: userRole === Role.TEACHER ? exerciseLib : [],
     },
   };
 };

@@ -31,6 +31,7 @@ type Props = {
   // setHasSubmitted: Dispatch<SetStateAction<boolean>>;
   setShowModal: Dispatch<SetStateAction<boolean>>;
   // hasSubmitted: boolean;
+  showModal: boolean;
   libData?: ResourceObject | null;
 };
 
@@ -38,6 +39,7 @@ const CreateCourseForm = ({
   educationId,
   // hasSubmitted,
   // setHasSubmitted,
+  showModal,
   libData,
 
   setShowModal,
@@ -77,8 +79,14 @@ const CreateCourseForm = ({
   }, [libData, quill]);
 
   useEffect(() => {
-    console.log(libData);
-  }, [libData]);
+    if (!showModal) {
+      if (quill) {
+        quill!.root.innerHTML = "";
+      }
+      setValue("title", "");
+      reset();
+    }
+  }, [showModal, quill, reset]);
 
   const onSubmit = useCallback(
     async (data: CourseInputSchema) => {
