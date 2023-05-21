@@ -56,8 +56,8 @@ const InnerMenu = ({ educationName }: Props) => {
           <User height="24px" width="24px" strokeWidth="1" />
         </div>
         <div>
-          <p className="text-sm font-medium">{session?.user.name}</p>
-          <span className="text-xs">{session?.user.role}</span>
+          <p className="text-sm font-medium">{session?.user?.name}</p>
+          <span className="text-xs">{session?.user?.role}</span>
         </div>
       </div>
     </nav>
