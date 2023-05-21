@@ -16,62 +16,47 @@ type Props = {
   // setResourceId: Dispatch<SetStateAction<number>>;
   role: string | undefined | null;
   action: Action | CourseAction;
-  setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
-  showModal: boolean;
-  // action: Action | ModuleAction;
 };
 
 const ResourceSelection = ({
   resource,
-  showModal,
+  setResourceId,
   role,
   action,
   exercises,
-  setShowModal,
 }: // action,
 Props) => {
-  const [resourceId, setResourceId] = useState<number>(0);
   const [resourceType, setResourceType] = useState<ResourceType | null>(null);
   //cast the resource prop to a state to be able to do realtime updates.
   const [resourceData, setResourceData] = useState<Resource[] | undefined>(
     resource
   );
-
-  //To be selected course from when resourceId is set ResourceSelection, always reset this to NULL.
-  const [resourceToUpdate, setResourceToUpdate] = useState<Resource | null>(
-    null
+  const [exerciseData, setExerciseData] = useState<ExerciseData[] | undefined>(
+    exercises
   );
-  const [exerciseToUpdate, setExerciseToUpdate] = useState<ExerciseData | null>(
-    null
-  );
-  const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
-
   const { mutateAsync } = trpc.course.updateCourse.useMutation();
   const { mutateAsync: deleteCourseAsync } =
     trpc.course.deleteCourse.useMutation();
   const { mutateAsync: createExercise } = trpc.exercise.create.useMutation();
-
+  const { mutateAsync: deleteExerciseAsync } =
+    trpc.exercise.delete.useMutation();
+  const { mutateAsync: deleteModuleAsync } = trpc.module.delete.useMutation();
   const router = useRouter();
 
-  /*   useEffect(() => {
+  useEffect(() => {
     if (resource) {
       console.log(resourceData);
     }
-  }, [resource, resourceData]); */
-
-  useEffect(() => {
-    if (!showModal) {
-      setResourceToUpdate(null);
-      setResourceId(0);
-    }
-  }, [showModal]);
+  }, [resource, resourceData]);
 
   useEffect(() => {
     if (!resourceType) {
       if (
         action === Action.CREATEMODULE ||
         action === Action.UPDATEMODULE ||
-        action === Action.CREATEEXERCISE
+        action === Action.CREATEEXERCISE ||
+        action === Action.DELETEEXERCISE ||
+        action === Action.DELETEMODULE
       ) {
         console.log("Iam module action");
         console.log(action);
@@ -94,24 +79,6 @@ Props) => {
     }
   }, [action, resourceType]);
 
-  //Selects the module by id with the given resourceId whenever resourceId is updated within ResrouceSelection.
-  useEffect(() => {
-    if (
-      action === Action.CREATEMODULE ||
-      action === Action.UPDATEMODULE ||
-      action === Action.CREATEEXERCISE
-    ) {
-      console.log("I will filter modules");
-
-      setResourceToUpdate(getResourceToUpdate(resourceId, resource));
-    } /* else if (action === Action.UPDATEEXERCISE) {
-      console.log("I will filter weird exercise array");
-      if (exerciseData) {
-        setExerciseToUpdate(getExerciseToUpdate(resourceId, exerciseData));
-      }
-    } */
-  }, [resourceId, resource, action /* , exerciseData */]);
-
   const publishClickHandler = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     resource: Resource
@@ -132,16 +99,30 @@ Props) => {
       setResourceData(res);
     }
   };
-
   const deleteHandle = async (id: number) => {
     if (role !== "TEACHER") return;
     if (resourceType === ResourceType.COURSE) {
       const result = await deleteCourseAsync({
         courseId: id,
       });
+      if (result.success) {
+        filterResourceArray(resourceData, id);
+      }
+    } else if (resourceType === ResourceType.EXERCISE) {
+      const result = await deleteExerciseAsync({
+        exerciseId: id.toString(),
+      });
 
       if (result.success) {
-        filterResourceArray(resource, id);
+        filterExercisesArray(exerciseData, id);
+      }
+    } else if (resourceType === ResourceType.MODULE) {
+      const result = await deleteModuleAsync({
+        moduleId: id.toString(),
+      });
+
+      if (result.success) {
+        filterResourceArray(resourceData, id);
       }
     }
   };
@@ -152,24 +133,23 @@ Props) => {
     id: number
   ) => {
     if (!resource) return;
-    const filteredArray = resource?.filter((item) => item.id !== id);
-    setResourceData([...filteredArray]);
+    if (
+      resourceType === ResourceType.MODULE ||
+      resourceType === ResourceType.COURSE
+    ) {
+      const filteredArray = resource?.filter((item) => item.id !== id);
+      console.log("filteredArray", filteredArray);
+      setResourceData([...filteredArray]);
+    }
   };
 
-  //Function to run whenever a resource is clicked in the resource list in component ResourceSelection when clicking update course button
-  // make util
-  const getResourceToUpdate = (
-    moduleId: number,
-    resource: Resource[] | undefined
+  const filterExercisesArray = (
+    exData: ExerciseData[] | undefined,
+    id: number
   ) => {
-    if (resource) {
-      if (resource.length <= 0) return null;
-
-      const filteredResource = resource.filter((res) => res.id === moduleId);
-
-      return filteredResource.length <= 0 ? null : filteredResource[0];
-    } else {
-      return null;
+    if (resourceType === ResourceType.EXERCISE) {
+      const filteredArray = exData?.filter((item) => item.exercise.id !== id);
+      setExerciseData(filteredArray);
     }
   };
   return (
@@ -180,106 +160,77 @@ Props) => {
         <h3>Kursnamn</h3>
         {action === Action.UPDATEEXERCISE && <h3>Uppgift</h3>}
         {/* </div> */}
-        <p>Status</p>
+        <p>Radera</p>
       </div>
       {/* list of courses */}
-      {!resourceToUpdate ? (
-        <>
-          {resourceData &&
-            resourceData.map((item, index) => (
-              <div
-                key={index}
-                className="w-full p-4 flex justify-between items-center bg-card  hover:bg-background"
-              >
-                <h3
-                  className=" hover:cursor-pointer font-semibold"
-                  onClick={() => setResourceId(item.id)}
-                >
-                  {item.title}
-                </h3>
-                <div className="flex gap-6 items-center">
-                  {role && role === "TEACHER"
-                    ? router.query.course === undefined &&
-                      (item.published ? (
-                        <>
-                          <button
-                            className="bg-indigo-500 text-white py-2 px-6 rounded-sm hover:bg-indigo-50 hover:text-foreground"
-                            onClick={(e) => publishClickHandler(e, item)}
-                          >
-                            Avpublicera
-                          </button>
-                        </>
-                      ) : (
-                        <>
-                          {/* <p className="text-rose-500">Ej publicerad</p> */}
-                          <button
-                            className="bg-indigo-500 text-white py-2 px-6 rounded-sm hover:bg-indigo-50 hover:text-foreground"
-                            onClick={(e) => publishClickHandler(e, item)}
-                          >
-                            Publicera nu
-                          </button>
-                        </>
-                      ))
-                    : ""}
-                  <Trash2
-                    className="hover:cursor-pointer"
-                    onClick={() => deleteHandle(item.id)}
-                  />
-                </div>
-              </div>
-            ))}
-
-          {exercises &&
-            exercises.map((exercise, index) => (
-              <div
-                key={index}
-                className="w-full p-4 flex justify-between items-center bg-card  hover:bg-background"
-              >
-                <h3
-                  className=" hover:cursor-pointer font-semibold"
-                  onClick={() => setResourceId(exercise.exercise.id)}
-                >
-                  {exercise.moduleName}
-                </h3>
-                <h3
-                  className=" hover:cursor-pointer font-semibold"
-                  onClick={() => setResourceId(exercise.exercise.id)}
-                >
-                  {exercise.exercise.title}
-                </h3>
-                <p>
-                  {exercise.exercise.published ? "Publicerad" : "Ej publicerad"}
-                </p>
-              </div>
-            ))}
-        </>
-      ) : (
-        <>
-          {action === Action.UPDATEMODULE && (
-            <div>
-              <button
-                onClick={() => {
-                  setResourceToUpdate(null);
-                  setResourceId(0);
-                }}
-              >
-                Tillbaka
-              </button>
-              <strong>
-                {" "}
-                <p>Module name: {resourceToUpdate.title}</p>
-              </strong>
-              <p>publicerad: {resourceToUpdate.published ? "ja" : "nej"}</p>
-              <UpdateModuleForm
-                userModule={resourceToUpdate as ModuleRenderSchema}
-                hasSubmitted={hasSubmitted}
-                setHasSubmitted={setHasSubmitted}
-                setShowModal={setShowModal}
+      {resourceData &&
+        resourceData.map((item, index) => (
+          <div
+            key={index}
+            className="w-full p-4 flex justify-between items-center bg-card  hover:bg-background"
+          >
+            <h3
+              className=" hover:cursor-pointer font-semibold"
+              onClick={() => setResourceId(item.id)}
+            >
+              {item.title}
+            </h3>
+            <div className="flex gap-6 items-center">
+              {role && role === "TEACHER"
+                ? router.query.course === undefined &&
+                  (item.published ? (
+                    <>
+                      <button
+                        className="bg-indigo-500 text-white py-2 px-6 rounded-sm hover:bg-indigo-50 hover:text-foreground"
+                        onClick={(e) => publishClickHandler(e, item)}
+                      >
+                        Avpublicera
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      {/* <p className="text-rose-500">Ej publicerad</p> */}
+                      <button
+                        className="bg-indigo-500 text-white py-2 px-6 rounded-sm hover:bg-indigo-50 hover:text-foreground"
+                        onClick={(e) => publishClickHandler(e, item)}
+                      >
+                        Publicera nu
+                      </button>
+                    </>
+                  ))
+                : ""}
+              <Trash2
+                className="hover:cursor-pointer"
+                onClick={() => deleteHandle(item.id)}
               />
             </div>
-          )}
-        </>
-      )}
+          </div>
+        ))}
+
+      {exerciseData &&
+        exerciseData.map((exercise, item) => (
+          <div
+            key={item}
+            className="w-full p-4 flex justify-between items-center bg-card  hover:bg-background"
+          >
+            <h3
+              className=" hover:cursor-pointer font-semibold"
+              onClick={() => setResourceId(exercise.exercise.id)}
+            >
+              {exercise.moduleName}
+            </h3>
+            <h3
+              className=" hover:cursor-pointer font-semibold"
+              onClick={() => setResourceId(exercise.exercise.id)}
+            >
+              {exercise.exercise.title}
+            </h3>
+            <Trash2
+              className="hover:cursor-pointer"
+              onClick={() => deleteHandle(exercise.exercise.id)}
+            />
+          </div>
+        ))}
     </section>
   );
 };
