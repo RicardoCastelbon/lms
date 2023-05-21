@@ -52,7 +52,7 @@ const CourseOverview = ({ modules, course, moduleLib }: Props) => {
   const [exerciseData, setExerciseData] = useState<ExerciseData[] | null>(null);
 
   //To be set within the ResourceSelect component whenever a list item is clicked.
-  const [resourceId, setResourceId] = useState<number>(0);
+  // const [resourceId, setResourceId] = useState<number>(0);
   //To be selected course from when resourceId is set ResourceSelection, always reset this to NULL.
   const [moduleToUpdate, setModuleToUpdate] =
     useState<ModuleRenderSchema | null>(null);
@@ -113,21 +113,19 @@ const CourseOverview = ({ modules, course, moduleLib }: Props) => {
     };
   }, [screenWidth]);
 
-  useEffect(() => {
+  /*   useEffect(() => {
     if (!showModal) {
       setModuleToUpdate(null);
       setResourceId(0);
     }
-  }, [showModal]);
+  }, [showModal]); */
 
   useEffect(() => {
-    // console.log(action);
-
     getModalHeader(action);
   }, [action]);
 
   //Selects the module by id with the given resourceId whenever resourceId is updated within ResrouceSelection.
-  useEffect(() => {
+  /*   useEffect(() => {
     if (
       action === Action.CREATEMODULE ||
       action === Action.UPDATEMODULE ||
@@ -142,11 +140,11 @@ const CourseOverview = ({ modules, course, moduleLib }: Props) => {
         setExerciseToUpdate(getExerciseToUpdate(resourceId, exerciseData));
       }
     }
-  }, [resourceId, modules, action, exerciseData]);
+  }, [resourceId, modules, action, exerciseData]); */
 
   //Function to run whenever a resource is clicked in the resource list in component ResourceSelection when clicking update course button
   // make util
-  const getModuleToUpdate = (
+  /*   const getModuleToUpdate = (
     moduleId: number,
     modules: ModuleRenderSchema[]
   ) => {
@@ -155,7 +153,7 @@ const CourseOverview = ({ modules, course, moduleLib }: Props) => {
     const filteredModule = modules.filter((module) => module.id === moduleId);
 
     return filteredModule.length <= 0 ? null : filteredModule[0];
-  };
+  }; */
   //Get exercise to update
   // make util
   const getExerciseToUpdate = (
@@ -333,41 +331,18 @@ const CourseOverview = ({ modules, course, moduleLib }: Props) => {
 
           {action === Action.UPDATEMODULE && (
             <>
-              {!moduleToUpdate ? (
-                <ResourceSelection
-                  role={session?.user.role}
-                  setResourceId={setResourceId}
-                  resource={modules}
-                  action={Action.UPDATEMODULE}
-                />
-              ) : (
-                <div>
-                  <button
-                    onClick={() => {
-                      setModuleToUpdate(null);
-                      setResourceId(0);
-                    }}
-                  >
-                    Tillbaka
-                  </button>
-                  {/* <p>Module id: {moduleToUpdate.id}</p> */}
-                  <strong>
-                    {" "}
-                    <p>Module name: {moduleToUpdate.title}</p>
-                  </strong>
-                  <p>publicerad: {moduleToUpdate.published ? "ja" : "nej"}</p>
-                  <UpdateModuleForm
-                    userModule={moduleToUpdate}
-                    hasSubmitted={hasSubmitted}
-                    setHasSubmitted={setHasSubmitted}
-                    setShowModal={setShowModal}
-                  />
-                </div>
-              )}
+              <ResourceSelection
+                role={session?.user.role}
+                // setResourceId={setResourceId}
+                resource={modules}
+                action={Action.UPDATEMODULE}
+                showModal={showModal}
+                setShowModal={setShowModal} //<- should be a memoized clickhandler-function to eliminate unessessary renders
+              />
             </>
           )}
 
-          {action === Action.CREATEEXERCISE && (
+          {/* {action === Action.CREATEEXERCISE && (
             <>
               {!moduleToUpdate ? (
                 <ResourceSelection
@@ -393,8 +368,8 @@ const CourseOverview = ({ modules, course, moduleLib }: Props) => {
                 </div>
               )}
             </>
-          )}
-          {action === Action.UPDATEEXERCISE && (
+          )} */}
+          {/*  {action === Action.UPDATEEXERCISE && (
             <>
               {!exerciseToUpdate ? (
                 <ResourceSelection
@@ -421,12 +396,7 @@ const CourseOverview = ({ modules, course, moduleLib }: Props) => {
                     publicerad:{" "}
                     {exerciseToUpdate.exercise.published ? "ja" : "nej"}
                   </p>
-                  {/* <p>modulId: {exerciseToUpdate.exercise.moduleId}</p>
-                  <p>Content: {exerciseToUpdate.exercise.content}</p> */}
-                  {/* <CreateExerciseForm
-                    moduleId={moduleToUpdate.id}
-                    setShowModal={setShowModal}
-                  /> */}
+                 
                   <UpdateExerciseForm
                     exercise={exerciseToUpdate}
                     hasSubmitted={hasSubmitted}
@@ -436,7 +406,7 @@ const CourseOverview = ({ modules, course, moduleLib }: Props) => {
                 </div>
               )}
             </>
-          )}
+          )} */}
         </Modal>
       </UserLayout>
     </>
