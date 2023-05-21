@@ -3,7 +3,6 @@ import type { GetServerSideProps, NextPage } from "next";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { IconContext } from "react-icons";
-// import { trpc } from "@/src/common/trpc";
 import { nextAuthOptions } from "@/src/common/auth";
 import { getServerSession } from "next-auth";
 import { createServerSideHelpers } from "@trpc/react-query/server";
@@ -208,7 +207,6 @@ const Dashboard = ({ courses, education, courseLib }: Props) => {
         >
           {action === CourseAction.CREATECOURSE && (
             <>
-              {/* {!isCreateFormOpen ? ( */}
               <LibSelection
                 educationId={education.id}
                 setShowModal={setShowModal} //used to reset form data if form is closed.
@@ -221,31 +219,13 @@ const Dashboard = ({ courses, education, courseLib }: Props) => {
 
           {action === CourseAction.UPDATECOURSE && (
             <>
-              {/*   {!courseToUpdate ? ( */}
               <ResourceSelection
                 role={session?.user.role}
-                // setResourceId={setResourceId}
                 showModal={showModal}
                 setShowModal={setShowModal}
                 resource={courses}
                 action={action}
               />
-              {/* /*   ) : (
-                <div>
-                  <button
-                    onClick={() => {
-                      setCourseToUpdate(null);
-                      setResourceId(0);
-                    }}
-                  >
-                    Tillbaka
-                  </button>
-                  <UpdateCourseForm
-                    course={courseToUpdate}
-                    setShowModal={setShowModal}
-                  />
-                </div>
-              )} */}
             </>
           )}
         </Modal>
