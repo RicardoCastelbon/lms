@@ -11,7 +11,14 @@ import { serverRouter } from "@/src/server/routers";
 import { createContext } from "@/src/server/context";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { Course, Exercise, Module, Module_lib, Role } from "@prisma/client";
+import {
+  Course,
+  Exercise,
+  Exercise_lib,
+  Module,
+  Module_lib,
+  Role,
+} from "@prisma/client";
 import ModuleAccordion from "@/src/components/ui/cards/ModuleAccordion";
 import CreateExerciseForm from "@/src/components/ui/forms/teacher/CreateExerciseForm";
 import { Action } from "@/src/lib/enums/actionEnums";
@@ -37,9 +44,10 @@ type Props = {
   modules: ModuleRenderSchema[];
   course: Course;
   moduleLib: Module_lib[];
+  exerciseLib: Exercise_lib[];
 };
 
-const CourseOverview = ({ modules, course, moduleLib }: Props) => {
+const CourseOverview = ({ modules, course, moduleLib, exerciseLib }: Props) => {
   const [desktopVersion, setdesktopVersion] = useState<boolean>(true);
   const [screenWidth, setScreenWidth] = useState<number>();
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -156,7 +164,7 @@ const CourseOverview = ({ modules, course, moduleLib }: Props) => {
   }; */
   //Get exercise to update
   // make util
-  const getExerciseToUpdate = (
+  /*   const getExerciseToUpdate = (
     exerciseId: number,
     exercises: ExerciseData[] | null
   ) => {
@@ -167,7 +175,7 @@ const CourseOverview = ({ modules, course, moduleLib }: Props) => {
     );
 
     return filteredExercise.length <= 0 ? null : filteredExercise[0];
-  };
+  }; */
 
   const modalClickHandler = (action: Action) => {
     setAction(action);
@@ -341,7 +349,28 @@ const CourseOverview = ({ modules, course, moduleLib }: Props) => {
               />
             </>
           )}
+          {action === Action.CREATEEXERCISE && (
+            <LibSelection
+              //  courseId={course.id}
+              setShowModal={setShowModal} //used to reset form data if form is closed.
+              showModal={showModal} //pass showModal to reset "isCreateFormOpen" - state
+              action={action} // pass action to conditionally render the correct create form
+              resource={exerciseLib}
+              modules={modules}
+            />
+          )}
 
+          {action === Action.UPDATEEXERCISE && (
+            <ResourceSelection
+              role={session?.user.role}
+              setShowModal={setShowModal} //used to reset form data if form is closed.
+              showModal={showModal} //pass showModal to reset "isCreateFormOpen" - state
+              //  setResourceId={setResourceId}
+              // resource={exerciseData!}
+              exercises={exerciseData!}
+              action={action}
+            />
+          )}
           {/* {action === Action.CREATEEXERCISE && (
             <>
               {!moduleToUpdate ? (
@@ -468,7 +497,7 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
       modules: [...modules],
       course: courseData.course,
       moduleLib: userRole === Role.TEACHER ? moduleLib : [],
-      // exerciseLib: userRole === Role.TEACHER ? exerciseLib : [],
+      exerciseLib: userRole === Role.TEACHER ? exerciseLib : [],
     },
   };
 };

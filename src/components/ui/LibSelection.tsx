@@ -8,6 +8,10 @@ import { LibResource, LibResourceObject } from "@/src/lib/types/resourceTypes";
 import { CourseAction, Action } from "@/src/lib/enums/actionEnums";
 import CreateCourseForm from "./forms/teacher/CreateCourseForm";
 import CreateModuleForm from "./forms/teacher/CreateModuleForm";
+import CreateExerciseForm from "./forms/teacher/CreateExerciseForm";
+import ResourceSelection from "./ResourceSelection";
+import { useSession } from "next-auth/react";
+import { ModuleRenderSchema } from "@/src/common/validation/module-end-user";
 // import { courseId } from "@/src/common/validation/course-end-user";
 // import { ResourceObject } from "@/src/pages/dashboard";
 // type Resource = Course_lib[] | Module_lib[] | Exercise_lib[];
@@ -18,6 +22,7 @@ type Props = {
   courseId?: number;
   setShowModal: Dispatch<SetStateAction<boolean>>;
   showModal: boolean;
+  modules?: ModuleRenderSchema[];
   // setIsCreateFormOpen: Dispatch<SetStateAction<boolean>>;
   // selectLibResourceHandler: (selectedResource: ResourceObject) => void;
   action: Action | CourseAction;
@@ -28,6 +33,7 @@ const LibSelection = ({
   educationId,
   courseId,
   // setIsCreateFormOpen,
+  modules,
   showModal,
   setShowModal,
   // selectLibResourceHandler,
@@ -40,6 +46,8 @@ const LibSelection = ({
     useState<LibResourceObject | null>(null);
 
   const [searchTerm, setSearchTerm] = useState<string>("");
+
+  const { data: session } = useSession();
 
   //Reset whenever modal is closed (might not be optimal)
   useEffect(() => {
@@ -205,6 +213,22 @@ const LibSelection = ({
               showModal={showModal}
               libData={selectedResource} //passed if a library-item is selected else = null
             />
+          )}
+          {action === Action.CREATEEXERCISE && (
+            <>
+              <ResourceSelection
+                role={session?.user.role}
+                setShowModal={setShowModal} //used to reset form data if form is closed.
+                showModal={showModal}
+                // setResourceId={setResourceId}
+                resource={modules}
+                action={action}
+              />
+              {/*  <CreateExerciseForm
+                moduleId={moduleToUpdate.id}
+                setShowModal={setShowModal}
+              /> */}
+            </>
           )}
         </>
       )}

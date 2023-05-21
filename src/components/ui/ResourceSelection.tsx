@@ -8,6 +8,8 @@ import { useRouter } from "next/router";
 import { ExerciseData } from "@/src/pages/dashboard/[course]";
 import { ResourceType } from "@/src/lib/enums/resourceTypeEnum";
 import UpdateModuleForm from "./forms/teacher/UpdateModuleForm";
+import UpdateExerciseForm from "@/src/components/ui/forms/teacher/UpdateExerciseForm";
+import CreateExerciseForm from "./forms/teacher/CreateExerciseForm";
 
 type Resource = Course | ModuleRenderSchema;
 type Props = {
@@ -71,6 +73,12 @@ Props) => {
   }, [showModal]);
 
   useEffect(() => {
+    if (exerciseToUpdate) {
+      console.log(exerciseToUpdate);
+    }
+  }, [exerciseToUpdate]);
+
+  useEffect(() => {
     if (!resourceType) {
       if (
         action === Action.CREATEMODULE ||
@@ -110,13 +118,13 @@ Props) => {
       console.log("I will filter modules");
 
       setResourceToUpdate(getResourceToUpdate(resourceId, resource));
-    } /* else if (action === Action.UPDATEEXERCISE) {
-        console.log("I will filter weird exercise array");
-        if (exerciseData) {
-          setExerciseToUpdate(getExerciseToUpdate(resourceId, exerciseData));
-        }
-      } */
-  }, [resourceId, resource, action /* , exerciseData */]);
+    } else if (action === Action.UPDATEEXERCISE) {
+      console.log("I will filter weird exercise array");
+      if (exerciseData) {
+        setExerciseToUpdate(getExerciseToUpdate(resourceId, exerciseData));
+      }
+    }
+  }, [resourceId, resource, action, exerciseData]);
 
   const publishClickHandler = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -208,6 +216,20 @@ Props) => {
       return null;
     }
   };
+  //Make util
+  const getExerciseToUpdate = (
+    exerciseId: number,
+    exercises: ExerciseData[] | null
+  ) => {
+    if (!exercises || exercises.length <= 0) return null;
+
+    const filteredExercise = exercises.filter(
+      (exercise) => exercise.exercise.id === exerciseId
+    );
+
+    return filteredExercise.length <= 0 ? null : filteredExercise[0];
+  };
+
   return (
     <section className="w-full h-full flex flex-col gap-2 p-2">
       {/* List header */}
@@ -219,7 +241,7 @@ Props) => {
         <p>Radera</p>
       </div>
       {/* list of courses */}
-      {!resourceToUpdate ? (
+      {!resourceToUpdate && !exerciseToUpdate ? (
         <>
           {resourceData &&
             resourceData.map((item, index) => (
@@ -304,9 +326,9 @@ Props) => {
               </button>
               <strong>
                 {" "}
-                <p>Module name: {resourceToUpdate.title}</p>
+                <p>Module name: {resourceToUpdate!.title}</p>
               </strong>
-              <p>publicerad: {resourceToUpdate.published ? "ja" : "nej"}</p>
+              <p>publicerad: {resourceToUpdate!.published ? "ja" : "nej"}</p>
               <UpdateModuleForm
                 userModule={resourceToUpdate as ModuleRenderSchema}
                 hasSubmitted={hasSubmitted}
@@ -315,8 +337,43 @@ Props) => {
               />
             </div>
           )}
+
+          {action === Action.UPDATEEXERCISE && (
+            <UpdateExerciseForm
+              exercise={exerciseToUpdate!}
+              hasSubmitted={hasSubmitted}
+              setHasSubmitted={setHasSubmitted}
+              setShowModal={setShowModal}
+            />
+          )}
+
+          {action === Action.CREATEEXERCISE && (
+            <>
+              <button
+                onClick={() => {
+                  setResourceToUpdate(null);
+                  setResourceId(0);
+                }}
+              >
+                Tillbaka
+              </button>
+              <strong>
+                {" "}
+                <p>Module name: {resourceToUpdate!.title}</p>
+              </strong>
+              <p>publicerad: {resourceToUpdate!.published ? "ja" : "nej"}</p>
+              <CreateExerciseForm
+                moduleId={resourceToUpdate!.id}
+                setShowModal={setShowModal}
+              />
+            </>
+          )}
         </>
       )}
+
+      {/* {!exerciseToUpdate ? (
+
+      ):()} */}
     </section>
   );
 };

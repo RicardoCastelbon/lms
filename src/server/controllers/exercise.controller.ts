@@ -86,9 +86,16 @@ export const updateExerciseController = async ({
   ctx: IContext;
 }) => {
   try {
+    let slug;
+    if (input.title) {
+      slug = slugilizer(input.title);
+    }
     const exercise: Exercise = await ctx.prisma.exercise.update({
       where: { id: Number(exerciseId.exerciseId) },
-      data: input,
+      data: {
+        slug: slug,
+        ...input,
+      },
     });
 
     return {
