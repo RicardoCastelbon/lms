@@ -1,20 +1,15 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import parse from "html-react-parser";
-// import { Course_lib, Exercise_lib, Module_lib } from "@prisma/client";
 import { Plus } from "lucide-react";
+import { useSession } from "next-auth/react";
 
 import LibCard from "./forms/teacher/LibCard";
 import { LibResource, LibResourceObject } from "@/src/lib/types/resourceTypes";
 import { CourseAction, Action } from "@/src/lib/enums/actionEnums";
 import CreateCourseForm from "./forms/teacher/CreateCourseForm";
 import CreateModuleForm from "./forms/teacher/CreateModuleForm";
-import CreateExerciseForm from "./forms/teacher/CreateExerciseForm";
 import ResourceSelection from "./ResourceSelection";
-import { useSession } from "next-auth/react";
 import { ModuleRenderSchema } from "@/src/common/validation/module-end-user";
-// import { courseId } from "@/src/common/validation/course-end-user";
-// import { ResourceObject } from "@/src/pages/dashboard";
-// type Resource = Course_lib[] | Module_lib[] | Exercise_lib[];
 
 type Props = {
   resource: LibResource;
@@ -23,8 +18,6 @@ type Props = {
   setShowModal: Dispatch<SetStateAction<boolean>>;
   showModal: boolean;
   modules?: ModuleRenderSchema[];
-  // setIsCreateFormOpen: Dispatch<SetStateAction<boolean>>;
-  // selectLibResourceHandler: (selectedResource: ResourceObject) => void;
   action: Action | CourseAction;
 };
 
@@ -32,11 +25,9 @@ const LibSelection = ({
   resource,
   educationId,
   courseId,
-  // setIsCreateFormOpen,
   modules,
   showModal,
   setShowModal,
-  // selectLibResourceHandler,
   action,
 }: Props) => {
   const [resourceData, setResourceData] = useState<LibResource | null>(null); // what type?
@@ -58,28 +49,18 @@ const LibSelection = ({
     }
   }, [showModal]);
 
-  /*  useEffect(() => {
-    console.log(isCreateFormOpen);
-  }, [isCreateFormOpen]); */
-
   //Filter searchResult as user types.
   useEffect(() => {
     console.log(searchTerm);
     setResourceData(filterSearchHandle(resource, searchTerm));
   }, [searchTerm, resource]);
 
-  //
   const infoClickHandler = (id: number) => {
     console.log(id);
     setSelectedResource(getResourceData(resource, id));
     setReadInfo(true);
     setSearchTerm("");
   };
-
-  /* const selectLibResourceHandler = (selectedResource: ResourceObject) => {
-    setLibData(selectedResource);
-    // setIsCreateFormOpen(true);
-  }; */
 
   //get the clicked recource when clicking info to set "selectedResource". This acts as object to display description
   //Does not work for exercises (yet) - Niclas
@@ -220,14 +201,9 @@ const LibSelection = ({
                 role={session?.user.role}
                 setShowModal={setShowModal} //used to reset form data if form is closed.
                 showModal={showModal}
-                // setResourceId={setResourceId}
                 resource={modules}
                 action={action}
               />
-              {/*  <CreateExerciseForm
-                moduleId={moduleToUpdate.id}
-                setShowModal={setShowModal}
-              /> */}
             </>
           )}
         </>

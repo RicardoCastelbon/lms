@@ -1,7 +1,8 @@
-import { Course, Exercise, Module } from "@prisma/client";
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import { Course } from "@prisma/client";
 import { Trash2 } from "lucide-react";
 import { trpc } from "@/src/common/trpc";
+
 import { ModuleRenderSchema } from "@/src/common/validation/module-end-user";
 import { Action, CourseAction } from "@/src/lib/enums/actionEnums";
 import { useRouter } from "next/router";
@@ -10,12 +11,16 @@ import { ResourceType } from "@/src/lib/enums/resourceTypeEnum";
 import UpdateModuleForm from "./forms/teacher/UpdateModuleForm";
 import UpdateExerciseForm from "@/src/components/ui/forms/teacher/UpdateExerciseForm";
 import CreateExerciseForm from "./forms/teacher/CreateExerciseForm";
+import UpdateCourseForm from "./forms/teacher/UpdateCourseForm";
+import {
+  getResourceToUpdate,
+  getExerciseToUpdate,
+} from "@/src/lib/utils/resourceUtils";
 
-type Resource = Course | ModuleRenderSchema;
+export type Resource = Course | ModuleRenderSchema;
 type Props = {
   resource?: Course[] | ModuleRenderSchema[];
   exercises?: ExerciseData[];
-  // setResourceId: Dispatch<SetStateAction<number>>;
   role: string | undefined | null;
   action: Action | CourseAction;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -73,12 +78,6 @@ Props) => {
   }, [showModal]);
 
   useEffect(() => {
-    if (exerciseToUpdate) {
-      console.log(exerciseToUpdate);
-    }
-  }, [exerciseToUpdate]);
-
-  useEffect(() => {
     if (!resourceType) {
       if (
         action === Action.CREATEMODULE ||
@@ -108,18 +107,19 @@ Props) => {
     }
   }, [action, resourceType]);
 
-  //Selects the module by id with the given resourceId whenever resourceId is updated within ResrouceSelection.
+  //Selects resoruce to update depending on which action is set currently when resourceId changes.
   useEffect(() => {
     if (
       action === Action.CREATEMODULE ||
       action === Action.UPDATEMODULE ||
-      action === Action.CREATEEXERCISE
+      action === Action.CREATEEXERCISE ||
+      action === CourseAction.UPDATECOURSE
     ) {
-      console.log("I will filter modules");
+      // console.log("I will filter modules");
 
       setResourceToUpdate(getResourceToUpdate(resourceId, resource));
     } else if (action === Action.UPDATEEXERCISE) {
-      console.log("I will filter weird exercise array");
+      // console.log("I will filter weird exercise array");
       if (exerciseData) {
         setExerciseToUpdate(getExerciseToUpdate(resourceId, exerciseData));
       }
@@ -202,7 +202,7 @@ Props) => {
 
   //Function to run whenever a resource is clicked in the resource list in component ResourceSelection when clicking update course button
   // make util
-  const getResourceToUpdate = (
+  /*   const getResourceToUpdate = (
     moduleId: number,
     resource: Resource[] | undefined
   ) => {
@@ -215,9 +215,9 @@ Props) => {
     } else {
       return null;
     }
-  };
+  }; */
   //Make util
-  const getExerciseToUpdate = (
+  /*  const getExerciseToUpdate = (
     exerciseId: number,
     exercises: ExerciseData[] | null
   ) => {
@@ -228,21 +228,23 @@ Props) => {
     );
 
     return filteredExercise.length <= 0 ? null : filteredExercise[0];
-  };
+  }; */
 
   return (
     <section className="w-full h-full flex flex-col gap-2 p-2">
       {/* List header */}
-      <div className="w-full px-4 flex justify-between items-center">
-        {/* <div className="flex gap-"> */}
-        <h3>Kursnamn</h3>
-        {action === Action.UPDATEEXERCISE && <h3>Uppgift</h3>}
-        {/* </div> */}
-        <p>Radera</p>
-      </div>
-      {/* list of courses */}
+
+      {/* list of resources */}
       {!resourceToUpdate && !exerciseToUpdate ? (
         <>
+          <div className="w-full px-4 flex justify-between items-center">
+            {/* <div className="flex gap-"> */}
+            {resourceType === ResourceType.COURSE && <h3>Kursnamn</h3>}
+            {resourceType === ResourceType.MODULE && <h3>Modulnamn</h3>}
+            {action === Action.UPDATEEXERCISE && <h3>Uppgift</h3>}
+            {/* </div> */}
+            <p>Radera</p>
+          </div>
           {resourceData &&
             resourceData.map((item, index) => (
               <div
@@ -314,6 +316,23 @@ Props) => {
         </>
       ) : (
         <>
+          {action === CourseAction.UPDATECOURSE && (
+            <div>
+              <button
+                onClick={() => {
+                  setResourceToUpdate(null);
+                  setResourceId(0);
+                }}
+              >
+                Tillbaka
+              </button>
+
+              <UpdateCourseForm
+                course={resourceToUpdate as Course}
+                setShowModal={setShowModal}
+              />
+            </div>
+          )}
           {action === Action.UPDATEMODULE && (
             <div>
               <button
@@ -339,16 +358,7 @@ Props) => {
           )}
 
           {action === Action.UPDATEEXERCISE && (
-            <UpdateExerciseForm
-              exercise={exerciseToUpdate!}
-              hasSubmitted={hasSubmitted}
-              setHasSubmitted={setHasSubmitted}
-              setShowModal={setShowModal}
-            />
-          )}
-
-          {action === Action.CREATEEXERCISE && (
-            <>
+            <div>
               <button
                 onClick={() => {
                   setResourceToUpdate(null);
@@ -359,9 +369,23 @@ Props) => {
               </button>
               <strong>
                 {" "}
-                <p>Module name: {resourceToUpdate!.title}</p>
+                <p>Modulnamn: {exerciseToUpdate!.moduleName}</p>
               </strong>
-              <p>publicerad: {resourceToUpdate!.published ? "ja" : "nej"}</p>
+              {/*  <p>
+                publicerad:{" "}
+                {exerciseToUpdate!.exercise.published ? "ja" : "nej"}
+              </p> */}
+              <UpdateExerciseForm
+                exercise={exerciseToUpdate!}
+                hasSubmitted={hasSubmitted}
+                setHasSubmitted={setHasSubmitted}
+                setShowModal={setShowModal}
+              />
+            </div>
+          )}
+
+          {action === Action.CREATEEXERCISE && (
+            <>
               <CreateExerciseForm
                 moduleId={resourceToUpdate!.id}
                 setShowModal={setShowModal}
@@ -370,10 +394,6 @@ Props) => {
           )}
         </>
       )}
-
-      {/* {!exerciseToUpdate ? (
-
-      ):()} */}
     </section>
   );
 };

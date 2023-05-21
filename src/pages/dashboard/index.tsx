@@ -7,15 +7,13 @@ import { IconContext } from "react-icons";
 import { nextAuthOptions } from "@/src/common/auth";
 import { getServerSession } from "next-auth";
 import { createServerSideHelpers } from "@trpc/react-query/server";
-import { Plus, X, FileEdit, Trash2 } from "lucide-react";
+import { Plus, FileEdit } from "lucide-react";
 
 import UserLayout from "@/src/components/ui/UserLayout";
 import CourseCard from "@/src/components/ui/cards/CourseCard";
-// import ColorSelect from "@/src/components/ui/dropdowns/ColorSelect";
-import CreateCourseForm from "@/src/components/ui/forms/teacher/CreateCourseForm";
 import Modal from "@/src/components/ui/modals/Modal";
 import { serverRouter } from "@/src/server/routers";
-import { IContext, createContext } from "@/src/server/context";
+import { createContext } from "@/src/server/context";
 import {
   Course,
   Course_lib,
@@ -223,14 +221,16 @@ const Dashboard = ({ courses, education, courseLib }: Props) => {
 
           {action === CourseAction.UPDATECOURSE && (
             <>
-              {!courseToUpdate ? (
-                <ResourceSelection
-                  role={session?.user.role}
-                  setResourceId={setResourceId}
-                  resource={courses}
-                  action={CourseAction.UPDATECOURSE}
-                />
-              ) : (
+              {/*   {!courseToUpdate ? ( */}
+              <ResourceSelection
+                role={session?.user.role}
+                // setResourceId={setResourceId}
+                showModal={showModal}
+                setShowModal={setShowModal}
+                resource={courses}
+                action={action}
+              />
+              {/* /*   ) : (
                 <div>
                   <button
                     onClick={() => {
@@ -245,7 +245,7 @@ const Dashboard = ({ courses, education, courseLib }: Props) => {
                     setShowModal={setShowModal}
                   />
                 </div>
-              )}
+              )} */}
             </>
           )}
         </Modal>
