@@ -1,8 +1,8 @@
 import { CourseIdSchema } from "@/src/common/validation/course-end-user";
 import { FilterQueryInput } from "@/src/common/validation/education";
 import { EducationIdSchema } from "@/src/common/validation/global";
-import CoursesPage from "@/src/pages/admin/courses";
-import students from "@/src/pages/dashboard/[course]/students";
+// import CoursesPage from "@/src/pages/admin/courses";
+// import students from "@/src/pages/dashboard/[course]/students";
 import { Education, Module, Prisma, User } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { Context } from "vm";
@@ -13,7 +13,7 @@ import {
 } from "../../common/validation/student";
 import { IContext } from "../context";
 
-export const findStudentController = async ({
+export const findStudent = async ({
   input,
   ctx,
 }: {
@@ -53,7 +53,7 @@ export const findStudentController = async ({
   }
 };
 
-export const findAllStudentsController = async ({
+export const findAllStudents = async ({
   filterQuery,
   ctx,
 }: {

@@ -7,7 +7,7 @@ import {
 } from "../../../common/validation/module-lib";
 
 import {
-  createModuleLibController,
+  createModuleLib,
   getOneModuleLib,
   getAllModulesLib,
   updateModuleLib,
@@ -26,7 +26,7 @@ export const moduleLibRouter = t.router({
     })
     .input(moduleLibInputSchema)
     .output(moduleLibOutputSchema)
-    .mutation(({ input, ctx }) => createModuleLibController({ input, ctx })),
+    .mutation(({ input, ctx }) => createModuleLib({ input, ctx })),
 
   getMany: t.procedure
     .meta({

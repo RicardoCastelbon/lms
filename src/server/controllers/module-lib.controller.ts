@@ -8,7 +8,7 @@ import {
 } from "../../common/validation/module-lib"
 import { IContext } from "../context";
 
-export const createModuleLibController = async ({
+export const createModuleLib = async ({
   input,
   ctx,
 }: {

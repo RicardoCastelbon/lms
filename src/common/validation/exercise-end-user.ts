@@ -7,7 +7,7 @@ const exercise = z
     title: z.string(),
     slug: z.string(),
     content: z.string(),
-    moduleId: z.number(),
+    moduleId: z.number().nullish(),
   })
   .or(
     z
@@ -16,7 +16,7 @@ const exercise = z
         title: z.string(),
         slug: z.string(),
         content: z.string(),
-        moduleId: z.number(),
+        moduleId: z.number().nullish(),
       })
       .array()
   );
@@ -38,7 +38,7 @@ const error = z
 export const exerciseInputSchema = z.object({
   title: z.string(),
   content: z.string(),
-  moduleId: z.number(),
+  moduleId: z.number()
 });
 
 //Default resource output schema, used in all outputs.
