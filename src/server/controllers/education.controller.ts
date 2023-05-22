@@ -16,7 +16,7 @@ import {
   EducationInput,
 } from "../../common/validation/education";
 
-export const createEducationController = async ({
+export const createEducation = async ({
   input,
   ctx,
 }: {
@@ -60,7 +60,7 @@ export const createEducationController = async ({
   }
 };
 
-export const updateEducationController = async ({
+export const updateEducation = async ({
   paramsInput,
   input,
   ctx,
@@ -111,7 +111,7 @@ export const updateEducationController = async ({
   }
 };
 
-export const findEducationController = async ({
+export const findEducation = async ({
   input,
   ctx,
 }: {
@@ -151,7 +151,7 @@ export const findEducationController = async ({
   }
 };
 // Find educations paginated
-export const findAllEducationsController = async ({
+export const findAllEducationsPagination = async ({
   filterQuery,
   ctx,
 }: {
@@ -232,7 +232,7 @@ export const findAllEducations = async ({ ctx }: { ctx: IContext }) => {
   }
 };
 
-export const deleteEducationController = async ({
+export const deleteEducation = async ({
   input,
   ctx,
 }: {

@@ -10,7 +10,7 @@ import { IContext } from "../context";
 import { EducationIdSchema, educationId } from "@/src/common/validation/global";
 import { slugilizer } from "../utils/controller-utils";
 
-export const addCourse = async ({
+export const createCourse = async ({
   input,
   ctx,
 }: {

@@ -1,11 +1,11 @@
 import { privateProcedure, t, teacherProcedure } from "../trpc";
 import {
-  createModuleController,
-  deleteModuleController,
-  findAllModulesByCourseIdController,
-  findAllModulesController,
+  createModule,
+  deleteModule,
+  findAllModulesByCourseId,
+  findAllModules,
   findModuleController,
-  updateModuleController,
+  updateModule,
 } from "../controllers/module.controller";
 import {
   moduleOutputSchema,
@@ -26,7 +26,7 @@ export const moduleRouter = t.router({
     })
     .input(moduleInputSchema)
     .output(moduleOutputSchema)
-    .mutation(({ input, ctx }) => createModuleController({ input, ctx })),
+    .mutation(({ input, ctx }) => createModule({ input, ctx })),
 
   getOne: privateProcedure
     .meta({
@@ -49,7 +49,7 @@ export const moduleRouter = t.router({
     .input(filterQuery)
     .output(moduleOutputSchema)
     .query(({ input, ctx }) =>
-      findAllModulesController({ filterQuery: input, ctx })
+    findAllModules({ filterQuery: input, ctx })
     ),
 
   getManyByCourseId: privateProcedure
@@ -62,7 +62,7 @@ export const moduleRouter = t.router({
     .input(courseId)
     .output(moduleOutputSchema)
     .query(({ input, ctx }) =>
-      findAllModulesByCourseIdController({ input, ctx })
+      findAllModulesByCourseId({ input, ctx })
     ),
 
   update: teacherProcedure
@@ -75,7 +75,7 @@ export const moduleRouter = t.router({
     .input(updateModuleInputSchema)
     .output(moduleOutputSchema)
     .mutation(({ input, ctx }) =>
-      updateModuleController({
+    updateModule({
         input,
         ctx,
       })
@@ -91,6 +91,6 @@ export const moduleRouter = t.router({
     .input(moduleId)
     .output(moduleOutputSchema)
     .mutation(({ input, ctx }) =>
-      deleteModuleController({ input: input, ctx })
+    deleteModule({ input: input, ctx })
     ),
 });

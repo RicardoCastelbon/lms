@@ -1,12 +1,12 @@
 import { t } from "../trpc";
 import {
-  createExerciseController,
-  deleteExerciseController,
-  findAllExercisesByModuleIdController,
-  findAllExercisesController,
-  findExerciseController,
-  updateExerciseController,
+    deleteExercise,
+  findAllExercisesByModuleId,
+  findAllExercises,
+  findExercise,
+    updateExercise,
   getOneExerciseBySlug,
+  createExercise,
 } from "../controllers/exercise.controller";
 import {
   exerciseOutputSchema,
@@ -17,6 +17,7 @@ import {
   exerciseSlug,
 } from "../../common/validation/exercise-end-user";
 import { moduleId } from "@/src/common/validation/module-end-user";
+import { updateEducation } from "../controllers/education.controller";
 
 export const exerciseRouter = t.router({
   create: t.procedure
@@ -28,7 +29,7 @@ export const exerciseRouter = t.router({
     })
     .input(exerciseInputSchema)
     .output(exerciseOutputSchema)
-    .mutation(({ input, ctx }) => createExerciseController({ input, ctx })),
+    .mutation(({ input, ctx }) => createExercise({ input, ctx })),
 
   getOne: t.procedure
     .meta({
@@ -39,7 +40,7 @@ export const exerciseRouter = t.router({
     })
     .input(exerciseId)
     .output(exerciseOutputSchema)
-    .query(({ input, ctx }) => findExerciseController({ input: input, ctx })),
+    .query(({ input, ctx }) => findExercise({ input: input, ctx })),
 
   getExerciseBySlug: t.procedure
     .meta({
@@ -62,7 +63,7 @@ export const exerciseRouter = t.router({
     .input(filterQuery)
     .output(exerciseOutputSchema)
     .query(({ input, ctx }) =>
-      findAllExercisesController({ filterQuery: input, ctx })
+      findAllExercises({ filterQuery: input, ctx })
     ),
 
   getManyByModuleId: t.procedure
@@ -75,7 +76,7 @@ export const exerciseRouter = t.router({
     .input(moduleId)
     .output(exerciseOutputSchema)
     .query(({ input, ctx }) =>
-      findAllExercisesByModuleIdController({ input, ctx })
+      findAllExercisesByModuleId({ input, ctx })
     ),
 
   update: t.procedure
@@ -88,7 +89,7 @@ export const exerciseRouter = t.router({
     .input(updateExerciseInputSchema)
     .output(exerciseOutputSchema)
     .mutation(({ input, ctx }) =>
-      updateExerciseController({
+    updateExercise({
         exerciseId: input,
         input: input.body,
         ctx,
@@ -105,6 +106,6 @@ export const exerciseRouter = t.router({
     .input(exerciseId)
     .output(exerciseOutputSchema)
     .mutation(({ input, ctx }) =>
-      deleteExerciseController({ input: input, ctx })
+      deleteExercise({ input: input, ctx })
     ),
 });

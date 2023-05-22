@@ -9,7 +9,7 @@ import {
 } from "../../common/validation/exercise_lib";
 import { IContext } from "../context";
 
-export const createExerciseLibController = async ({
+export const createExerciseLib = async ({
   input,
   ctx,
 }: {

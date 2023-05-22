@@ -421,7 +421,7 @@ const CourseOverview = ({ modules, course }: Props) => {
                               hasSubmitted={hasSubmitted}
                               setHasSubmitted={setHasSubmitted}
                               setShowModal={setShowModal}
-                    / >
+                    />
 
                 </div>
               )}
