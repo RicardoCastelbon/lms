@@ -33,7 +33,7 @@ const moduleEndUser = z
         startDate: z.string(),
         endDate: z.string(),
         content: z.string(),
-        courseId: z.number(),
+        courseId: z.number().nullish(),
         published: z.boolean(),
 
         // course: z.object({}),
@@ -45,7 +45,7 @@ const moduleEndUser = z
             content: z.string(),
             published: z.boolean(),
 
-            moduleId: z.number(),
+            moduleId: z.number().nullish(),
           })
           .array(),
       })

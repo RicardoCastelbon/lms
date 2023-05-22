@@ -1,5 +1,5 @@
-import { Module } from "@prisma/client";
-import React, { useEffect, useState } from "react";
+import { Exercise, Module } from "@prisma/client";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Link from "next/link";
 
 import {
@@ -21,14 +21,12 @@ import { Action } from "@/src/lib/enums/actionEnums";
 import { ModuleRenderSchema } from "@/src/common/validation/module-end-user";
 import { useRouter } from "next/router";
 import { trpc } from "@/src/common/trpc";
-import { Trash2 } from "lucide-react";
 
-// type Props = {
-//   module: ModuleRenderSchema;
-//   modalClickHandler: (action: Action) => void;
-// };
+
+type Resource = Exercise | ModuleRenderSchema;
 
 type Props = {
+   resource?: Exercise[] ;
   userModule: ModuleRenderSchema;
   modalClickHandler: (action: Action) => void;
   role: string | null | undefined;
@@ -40,13 +38,16 @@ const ModuleAccordion = ({
   modalClickHandler,
   getModuleId,
   role,
-}: Props) => {
+}: 
+Props) => {
+
   const [desktopVersion, setdesktopVersion] = useState<boolean>(true);
   const [screenWidth, setScreenWidth] = useState<number>();
   const { data: session } = useSession();
   const [isPublished, setIsPublished] = useState<boolean>(false);
   const { mutateAsync } = trpc.module.update.useMutation();
-
+  const { mutateAsync: deleteExerciseAsync } =
+    trpc.exercise.delete.useMutation();
   const router = useRouter();
   // console.log(typeof router.query.course);
   useEffect(() => {
@@ -100,6 +101,8 @@ const ModuleAccordion = ({
       setIsPublished(!isPublished);
     }
   };
+
+
   return (
     <Accordion type="single" collapsible>
       <AccordionItem value="item-1">
@@ -192,12 +195,6 @@ const ModuleAccordion = ({
                         <Check />
                       </span>
                     </Link>
-                     <button
-                    //  onClick={() => handleTrashClick(exercise)}
-                     className="absolute right-0 top-3 mt-1 mr-10" // position the trash icon
-                   >
-                     <Trash2 className="h- w-5 text-black" />
-                   </button>
                        </div>
                   ))}
               </AccordionContent>
@@ -211,25 +208,3 @@ const ModuleAccordion = ({
 
 export default ModuleAccordion;
 
-{/*  <button className="flex justify-between w-full bg-accent text-white text-left p-4 hover:bg-blue-400">
-  <div className="flex">
-    <span className=" mr-4">
-      <ClipboardList />
-    </span>
-    <span>Filstrukture i React</span>
-  </div>
-  <span className="">
-    <Check />
-  </span>
-</button> */}
-{/*  <button className="flex justify-between w-full bg-accent text-white text-left p-4 hover:bg-blue-400">
-  <div className="flex">
-    <span className=" mr-4">
-      <ClipboardList />
-    </span>
-    <span>Components i React</span>
-  </div>
-  <span className="">
-    <Check />
-  </span>
-</button> */}
