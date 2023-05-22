@@ -7,9 +7,9 @@ import { Education, Module, Prisma, User } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { Context } from "vm";
 import {
-    StudentIdSchema,
-    StudentInputSchema,
-    UpdateStudentInputSchema,
+  StudentIdSchema,
+  StudentInputSchema,
+  UpdateStudentInputSchema,
 } from "../../common/validation/student";
 import { IContext } from "../context";
 
@@ -98,62 +98,60 @@ export const findAllStudents = async ({
 };
 
 export const getStudentsByEducationId = async ({
-    input,
-    ctx,
-  }: {
-    input: EducationIdSchema;
-    ctx: IContext;
-  }) => {
-    try {
-      if (!ctx.session || !ctx.session.user || !ctx.session.user.educationId) {
-        // Handle the case when session or user or educationId is not available
-        return {
-          success: false,
-          code: 400,
-          message: "Invalid session data",
-          students: null,
-        };
-      }
-  
-      const educationId = input.educationId; // Use the educationId from the input directly
-  
-  
-      const users: User[] = await ctx.prisma.user.findMany({
-        where: { educationId: Number(educationId) },
-      });
-  
-  
-      if (users.length <= 0) {
-        console.log("No users found");
-        return {
-          success: false,
-          code: 404,
-          message: "No users found, please try again",
-          students: null,
-        };
-      } else {
-        return {
-          success: true,
-          code: 200,
-          message: "Resource found",
-          students: users,
-          error: undefined,
-        };
-      }
-    } catch (error) {
-      console.log("An error occurred:", error);
-  
+  input,
+  ctx,
+}: {
+  input: EducationIdSchema;
+  ctx: IContext;
+}) => {
+  try {
+    if (!ctx.session || !ctx.session.user || !ctx.session.user.educationId) {
+      // Handle the case when session or user or educationId is not available
       return {
         success: false,
-        code: 500,
-        message: "An unexpected error occurred, please try again later.",
+        code: 400,
+        message: "Invalid session data",
         students: null,
-        error: {
-          code: "INTERNAL_SERVER_ERROR",
-          message: "An unexpected error occurred, please try again later.",
-        },
       };
     }
-  };
-  
 
+    const educationId = input.educationId; // Use the educationId from the input directly
+
+    console.log("educationId", educationId);
+
+    const users: User[] = await ctx.prisma.user.findMany({
+      where: { educationId: Number(educationId) },
+    });
+
+    if (users.length <= 0) {
+      console.log("No users found");
+      return {
+        success: false,
+        code: 404,
+        message: "No users found, please try again",
+        students: null,
+      };
+    } else {
+      return {
+        success: true,
+        code: 200,
+        message: "Resource found",
+        students: users,
+        error: undefined,
+      };
+    }
+  } catch (error) {
+    console.log("An error occurred:", error);
+
+    return {
+      success: false,
+      code: 500,
+      message: "An unexpected error occurred, please try again later.",
+      students: null,
+      error: {
+        code: "INTERNAL_SERVER_ERROR",
+        message: "An unexpected error occurred, please try again later.",
+      },
+    };
+  }
+};

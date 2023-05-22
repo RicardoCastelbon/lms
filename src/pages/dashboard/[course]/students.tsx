@@ -7,6 +7,8 @@ import { createServerSideHelpers } from "@trpc/react-query/server";
 import { User } from "@prisma/client";
 import { getSession, useSession } from "next-auth/react";
 import { UserCheck } from "lucide-react";
+import { getServerSession } from "next-auth";
+import { nextAuthOptions } from "@/src/common/auth";
 type Props = {
   users: User[];
 };
@@ -130,14 +132,20 @@ const students = ({ users }: Props) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (context: any) => {
-  const session = await getSession(context);
-
+  // const session = await getSession(context);
+  const currentSession = await getServerSession(
+    context.req,
+    context.res,
+    nextAuthOptions
+  );
   const helpers = createServerSideHelpers({
     router: serverRouter,
     ctx: await createContext(context),
   });
 
-  const educationId = String(session?.user?.educationId);
+  console.log("session?.user?.educationId", currentSession?.user.educationId);
+
+  const educationId = String(currentSession?.user.educationId);
 
   const res = await helpers.users.getManyByEducationId.fetch({
     educationId: educationId,
