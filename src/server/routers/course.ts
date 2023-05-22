@@ -10,7 +10,7 @@ import {
 } from "../../common/validation/course-end-user";
 import { educationId, noInput } from "@/src/common/validation/global";
 import {
-  addCourse,
+  createCourse,
   deleteCourse,
   getAllCourses,
   getCoursesByEducationId,
@@ -29,7 +29,7 @@ export const courseRouter = t.router({
     })
     .input(courseInputSchema)
     .output(courseOutputSchema)
-    .mutation(({ input, ctx }) => addCourse({ input, ctx })),
+    .mutation(({ input, ctx }) => createCourse({ input, ctx })),
   getMany: privateProcedure
     .meta({
       openapi: {

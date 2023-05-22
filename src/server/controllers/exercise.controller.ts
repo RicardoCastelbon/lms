@@ -12,7 +12,7 @@ import {
 import { IContext } from "../context";
 import { slugilizer } from "../utils/controller-utils";
 
-export const createExerciseController = async ({
+export const createExercise = async ({
   input,
   ctx,
 }: {
@@ -76,7 +76,7 @@ export const createExerciseController = async ({
   }
 };
 
-export const updateExerciseController = async ({
+export const updateExercise = async ({
   exerciseId,
   input,
   ctx,
@@ -125,7 +125,7 @@ export const updateExerciseController = async ({
   }
 };
 
-export const findExerciseController = async ({
+export const findExercise = async ({
   input,
   ctx,
 }: {
@@ -205,7 +205,7 @@ export const getOneExerciseBySlug = async ({
   }
 };
 
-export const findAllExercisesController = async ({
+export const findAllExercises = async ({
   filterQuery,
   ctx,
 }: {
@@ -249,7 +249,7 @@ export const findAllExercisesController = async ({
   }
 };
 
-export const findAllExercisesByModuleIdController = async ({
+export const findAllExercisesByModuleId = async ({
   input,
   ctx,
 }: {
@@ -289,7 +289,7 @@ export const findAllExercisesByModuleIdController = async ({
   }
 };
 
-export const deleteExerciseController = async ({
+export const deleteExercise = async ({
   input,
   ctx,
 }: {

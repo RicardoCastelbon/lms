@@ -1,11 +1,11 @@
 import { t } from "../trpc";
 import {
-  createEducationController,
-  deleteEducationController,
-  findAllEducations,
-  findAllEducationsController,
-  findEducationController,
-  updateEducationController,
+  createEducation,
+  deleteEducation,
+    findAllEducations,
+  findAllEducationsPagination,
+  findEducation,
+  updateEducation,
 } from "../controllers/education.controller";
 import {
   createEducationSchema,
@@ -32,7 +32,7 @@ export const educationRouter = t.router({
     })
     .input(educationInputSchema)
     .output(educationOutputSchema)
-    .mutation(({ input, ctx }) => createEducationController({ input, ctx })),
+    .mutation(({ input, ctx }) => createEducation({ input, ctx })),
 
   //GET ONE EDUCATION
   getOne: t.procedure
@@ -44,7 +44,7 @@ export const educationRouter = t.router({
     })
     .input(educationId)
     .output(educationOutputSchema)
-    .query(({ input, ctx }) => findEducationController({ input, ctx })),
+    .query(({ input, ctx }) => findEducation({ input, ctx })),
 
   //GET MANY EDUCATIONS Pagination
   getMany: t.procedure
@@ -57,7 +57,7 @@ export const educationRouter = t.router({
     .input(filterQuery)
     .output(educationOutputSchema)
     .query(({ input, ctx }) =>
-      findAllEducationsController({ filterQuery: input, ctx })
+    findAllEducationsPagination({ filterQuery: input, ctx })
     ),
   //GET ALL EDUCATIONS
   getAll: t.procedure
@@ -82,7 +82,7 @@ export const educationRouter = t.router({
     .input(updateEducationSchema)
     .output(educationOutputSchema)
     .mutation(({ input, ctx }) =>
-      updateEducationController({
+    updateEducation({
         paramsInput: input,
         input: input.body,
         ctx,
@@ -99,5 +99,5 @@ export const educationRouter = t.router({
     })
     .input(educationId)
     .output(educationOutputSchema)
-    .mutation(({ input, ctx }) => deleteEducationController({ input, ctx })),
+    .mutation(({ input, ctx }) => deleteEducation({ input, ctx })),
 });

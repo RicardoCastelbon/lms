@@ -107,7 +107,7 @@ export const moduleRenderSchema = z.object({
   startDate: z.string(),
   endDate: z.string(),
   content: z.string(),
-  courseId: z.number(),
+  courseId: z.number().optional(),
   // course: z.object({}),
   published: z.boolean(),
 
