@@ -7,12 +7,12 @@ import {
 } from "../../../common/validation/exercise_lib";
 
 import {
-  createExerciseLibController,
+  createExerciseLib,
   deleteExerciseLib,
   getAllExercisesLib,
   getOneExerciseLib,
   updateExerciseLib,
-} from "../../controllers/exercise_lib.controller";
+} from "../../controllers/exercise-lib.controller";
 import { z } from "zod";
 import {
   FilterQuerySchema,
@@ -30,7 +30,7 @@ export const exerciseLibRouter = t.router({
     })
     .input(exerciseLibInputSchema)
     .output(exerciseLibOutputSchema)
-    .mutation(({ input, ctx }) => createExerciseLibController({ input, ctx })),
+    .mutation(({ input, ctx }) => createExerciseLib({ input, ctx })),
   getMany: privateProcedure
     .meta({
       openapi: {
@@ -86,16 +86,3 @@ export const exerciseLibRouter = t.router({
     ),
 });
 
-//GET ONE Course
-// getOne: t.procedure
-//   .meta({
-//     openapi: {
-//       method: "GET",
-//       path: "/course-lib/getOne/{course_libId}",
-//     },
-//   })
-//   .input(exerciseLibInputSchema)
-//   .output(exerciseLibId);
-// .query(({ input, ctx }) =>
-//   findExerciseLibController({ paramsInput: input, ctx })
-// ),

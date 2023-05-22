@@ -11,7 +11,7 @@ import {
 } from "../../common/validation/module-end-user";
 import { IContext } from "../context";
 
-export const createModuleController = async ({
+export const createModule = async ({
   input,
   ctx,
 }: {
@@ -74,7 +74,7 @@ export const createModuleController = async ({
   }
 };
 
-export const updateModuleController = async ({
+export const updateModule = async ({
   // moduleId,
   input,
   ctx,
@@ -135,7 +135,7 @@ export const findModuleController = async ({
       where: { id: Number(input.moduleId) },
     });
 
-    if (module === null) {
+    if (userModule === null) {
       return {
         success: false,
         code: 404,
@@ -163,7 +163,7 @@ export const findModuleController = async ({
   }
 };
 
-export const findAllModulesController = async ({
+export const findAllModules= async ({
   filterQuery,
   ctx,
 }: {
@@ -181,7 +181,8 @@ export const findAllModulesController = async ({
       include: {
         exercises: true,
       },
-    });
+    })
+    
     if (userModules.length <= 0) {
       return {
         success: false,
@@ -210,7 +211,7 @@ export const findAllModulesController = async ({
   }
 };
 
-export const findAllModulesByCourseIdController = async ({
+export const findAllModulesByCourseId = async ({
   input,
   ctx,
 }: {
@@ -224,6 +225,8 @@ export const findAllModulesByCourseIdController = async ({
         exercises: true,
       },
     });
+    // Check for null moduleId and replace with default value (e.g., -1)
+
     // const foundResources = [...userModules];
     // console.log(...userModules);
 
@@ -255,7 +258,7 @@ export const findAllModulesByCourseIdController = async ({
   }
 };
 
-export const deleteModuleController = async ({
+export const deleteModule = async ({
   input,
   ctx,
 }: {
