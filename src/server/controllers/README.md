@@ -19,7 +19,7 @@ Here is how the controllers and routes are connected:
 
 3. The controllers return an object that follows the structure defined in the output validation schema. The returned object that follows the structure defined in the output validation schema. The returned object inclueds information about the success or failure of the operation, the HTTP status code, a descriptive message, and the relevant course_lib resource or error information.
 
-By understanding the relastionshipbetween the controllers and the routes, you as a developer can navigate through the codebase and undestand how the different parts of the application are connected. The input and output validation schemas should provide a clear undestanding of the expected data formats and the structure of the responses.
+By understanding the relationship between the controllers and the routes, you as a developer can navigate through the codebase and undestand how the different parts of the application are connected. The input and output validation schemas should provide a clear undestanding of the expected data formats and the structure of the responses.
 
 Here is a exemple of one of the controllers and the structure:
 
