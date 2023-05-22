@@ -3,19 +3,16 @@ import type { GetServerSideProps, NextPage } from "next";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { IconContext } from "react-icons";
-// import { trpc } from "@/src/common/trpc";
 import { nextAuthOptions } from "@/src/common/auth";
 import { getServerSession } from "next-auth";
 import { createServerSideHelpers } from "@trpc/react-query/server";
-import { Plus, X, FileEdit, Trash2 } from "lucide-react";
+import { Plus, FileEdit } from "lucide-react";
 
 import UserLayout from "@/src/components/ui/UserLayout";
 import CourseCard from "@/src/components/ui/cards/CourseCard";
-// import ColorSelect from "@/src/components/ui/dropdowns/ColorSelect";
-import CreateCourseForm from "@/src/components/ui/forms/teacher/CreateCourseForm";
 import Modal from "@/src/components/ui/modals/Modal";
 import { serverRouter } from "@/src/server/routers";
-import { IContext, createContext } from "@/src/server/context";
+import { createContext } from "@/src/server/context";
 import {
   Course,
   Course_lib,
@@ -210,7 +207,6 @@ const Dashboard = ({ courses, education, courseLib }: Props) => {
         >
           {action === CourseAction.CREATECOURSE && (
             <>
-              {/* {!isCreateFormOpen ? ( */}
               <LibSelection
                 educationId={education.id}
                 setShowModal={setShowModal} //used to reset form data if form is closed.
@@ -223,29 +219,13 @@ const Dashboard = ({ courses, education, courseLib }: Props) => {
 
           {action === CourseAction.UPDATECOURSE && (
             <>
-              {!courseToUpdate ? (
-                <ResourceSelection
-                  role={session?.user.role}
-                  setResourceId={setResourceId}
-                  resource={courses}
-                  action={CourseAction.UPDATECOURSE}
-                />
-              ) : (
-                <div>
-                  <button
-                    onClick={() => {
-                      setCourseToUpdate(null);
-                      setResourceId(0);
-                    }}
-                  >
-                    Tillbaka
-                  </button>
-                  <UpdateCourseForm
-                    course={courseToUpdate}
-                    setShowModal={setShowModal}
-                  />
-                </div>
-              )}
+              <ResourceSelection
+                role={session?.user.role}
+                showModal={showModal}
+                setShowModal={setShowModal}
+                resource={courses}
+                action={action}
+              />
             </>
           )}
         </Modal>
@@ -279,8 +259,6 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
   });
 
   const courseLibRes = await helpers.courseLib.getMany.fetch();
-  // const moduleLibRes = await helpers.moduleLib.getMany.fetch();
-  const exerciseLibRes = await helpers.exercise_lib.getMany.fetch();
 
   //filter result depending on the role of the logged in user
   const filterCoursesByRole = (role: UserRole, resource: Course[]) => {
@@ -308,11 +286,6 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
   const education = eduRes.success && JSON.parse(JSON.stringify(eduRes));
   const courseLib =
     courseLibRes.success && JSON.parse(JSON.stringify(courseLibRes.courseLib));
-  // const moduleLib =
-  //   moduleLibRes.success && JSON.parse(JSON.stringify(moduleLibRes.moduleLib));
-  const exerciseLib =
-    exerciseLibRes.success &&
-    JSON.parse(JSON.stringify(exerciseLibRes.exerciseLib));
 
   const filteredCourses = filterCoursesByRole(userRole, courses); //<- filter the JSON parsed data before sending it to props.
 
@@ -321,8 +294,8 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
       session: currentSession,
       courses: filteredCourses,
       education: !education ? null : education.education,
-      // courseLib: userRole === Role.TEACHER ? courseLib : [],
-      courseLib: userRole === Role.TEACHER ? exerciseLib : [],
+      courseLib: userRole === Role.TEACHER ? courseLib : [],
+      // courseLib: userRole === Role.TEACHER ? exerciseLib : [],
     },
   };
 };

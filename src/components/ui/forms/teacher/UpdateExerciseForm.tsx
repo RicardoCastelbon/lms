@@ -20,7 +20,10 @@ import {
 } from "@/src/common/validation/module-end-user";
 import { trpc } from "@/src/common/trpc";
 import { Exercise } from "@prisma/client";
-import { ExerciseInputSchema, UpdateExerciseInputSchema } from "@/src/common/validation/exercise-end-user";
+import {
+  ExerciseInputSchema,
+  UpdateExerciseInputSchema,
+} from "@/src/common/validation/exercise-end-user";
 import { ExerciseData } from "@/src/pages/dashboard/[course]";
 
 type Props = {
@@ -31,33 +34,27 @@ type Props = {
   hasSubmitted: boolean;
 };
 
-const UpdateModuleForm = ({
-    hasSubmitted,
-    setHasSubmitted,
-    exercise,
-    setShowModal,
-    
+const UpdateExerciseForm = ({
+  hasSubmitted,
+  setHasSubmitted,
+  exercise,
+  setShowModal,
 }: Props) => {
-    const [exerciseToUpdate, setExerciseToUpdate] = useState<ExerciseData | null>(null);
   const {
     handleSubmit,
     control,
     reset,
     formState: { errors },
     setValue,
-  } = useForm<ExerciseData>({
-    defaultValues: exerciseToUpdate ? {
-        moduleName: exerciseToUpdate.moduleName,
-        exercise: {
-          id: exerciseToUpdate.exercise.id,
-          moduleId: exerciseToUpdate.exercise.moduleId,
-          title: exerciseToUpdate.exercise.title,
-          slug: exerciseToUpdate.exercise.slug,
-          content: exerciseToUpdate.exercise.content,
-          published: exerciseToUpdate.exercise.published,
-        },
-      } : undefined,
-    });
+  } = useForm<UpdateExerciseInputSchema>({
+    defaultValues: {
+      exerciseId: String(exercise.exercise.id),
+      body: {
+        title: exercise.exercise.title,
+        content: exercise.exercise.content,
+      },
+    },
+  });
 
   const { quill, quillRef } = useQuill();
   const { mutateAsync } = trpc.exercise.update.useMutation();
@@ -66,29 +63,23 @@ const UpdateModuleForm = ({
     if (quill) {
       quill!.root.innerHTML = exercise.exercise.content;
     }
-    /* return () => {
-      course = {};
-    }; */
-  }, [exercise, quill]);exercise
+  }, [exercise, quill]);
 
   const onSubmit = useCallback(
-    async (data: ExerciseData) => {
+    async (data: UpdateExerciseInputSchema) => {
       try {
-        // let selectedIcon = iconName;
-        data.exercise.content = String(quill?.root.innerHTML);
-        // data.published = false; // needed?
-        // data.moduleId = moduleId;
-  
+        data.body.content = String(quill?.root.innerHTML);
+
         console.log(data);
         const result = await mutateAsync({
-            exerciseId: String(exercise.exercise.id),
+          exerciseId: String(exercise.exercise.id),
           body: {
-            title: data.exercise.title,
-            content: data.exercise.content,
-            moduleId: data.exercise.moduleId,
+            title: data.body.title,
+            content: data.body.content,
+            // moduleId: data.exercise.moduleId,
           },
         });
-  
+
         if (result.success) {
           setHasSubmitted(true);
           quill!.root.innerHTML = "";
@@ -100,16 +91,23 @@ const UpdateModuleForm = ({
         reset();
       }
     },
-    [mutateAsync, quill, reset]
+    [
+      mutateAsync,
+      quill,
+      reset,
+      exercise.exercise.id,
+      setHasSubmitted,
+      setShowModal,
+    ]
   );
-  
+
   return (
     <form className="md:flex gap-4 block" onSubmit={handleSubmit(onSubmit)}>
       {/* left side */}
       <section className="flex-1 flex flex-col gap-4">
         {/* form group */}
         <Controller
-          name="exercise.title"
+          name="body.title"
           control={control}
           rules={{ required: "Ange ett namn på övningen" }}
           render={({ field: { value, onChange, onBlur, name, ...field } }) => (
@@ -127,12 +125,12 @@ const UpdateModuleForm = ({
                 className="input bg-muted h-[40px] input-bordered w-full mt-2 rounded-md pl-2"
               />
               <p className="text-xs text-red-500 mt-1">
-                {errors?.exercise?.title?.message}
+                {errors?.body?.title?.message}
               </p>
             </div>
           )}
         />
-    
+
         <button
           type="submit"
           className="bg-indigo-500 text-white py-2 px-6 rounded-sm hover:bg-indigo-50 hover:text-foreground"
@@ -146,7 +144,7 @@ const UpdateModuleForm = ({
           <p>Modulinformation</p>
         </div>
         <Controller
-          name="exercise.content"
+          name="body.content"
           control={control}
           rules={{
             // required: "Ange en beskrivande text av uppgiften",
@@ -170,7 +168,7 @@ const UpdateModuleForm = ({
                 ref={quillRef}
               />
               <p className="text-xs text-red-500 mt-1">
-                {errors?.exercise?.content?.message}
+                {errors?.body?.content?.message}
               </p>
             </div>
           )}
@@ -180,4 +178,4 @@ const UpdateModuleForm = ({
   );
 };
 
-export default UpdateModuleForm;
+export default UpdateExerciseForm;

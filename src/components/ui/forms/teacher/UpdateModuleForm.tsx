@@ -91,7 +91,7 @@ const UpdateModuleForm = ({
         reset();
       }
     },
-    [mutateAsync, quill, reset]
+    [mutateAsync, quill, reset, setHasSubmitted, setShowModal, userModule.id]
   );
 
   return (

@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from "react";
-import UserLayout from "@/src/components/ui/UserLayout";
 import { Plus } from "lucide-react";
-import Modal from "@/src/components/ui/modals/Modal";
-import CreateModuleForm from "@/src/components/ui/forms/teacher/CreateModuleForm";
 import { GetServerSideProps } from "next";
 import { getServerSession } from "next-auth";
 import { nextAuthOptions } from "@/src/common/auth";
@@ -11,17 +8,16 @@ import { serverRouter } from "@/src/server/routers";
 import { createContext } from "@/src/server/context";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { Course, Exercise, Module } from "@prisma/client";
+import { Course, Exercise_lib, Module_lib, Role } from "@prisma/client";
+
+import Modal from "@/src/components/ui/modals/Modal";
+import UserLayout from "@/src/components/ui/UserLayout";
 import ModuleAccordion from "@/src/components/ui/cards/ModuleAccordion";
-import CreateExerciseForm from "@/src/components/ui/forms/teacher/CreateExerciseForm";
 import { Action } from "@/src/lib/enums/actionEnums";
 import { ModuleRenderSchema } from "@/src/common/validation/module-end-user";
 import ResourceSelection from "@/src/components/ui/ResourceSelection";
 // import { ModuleAction } from "@/src/lib/enums/actionEnums";
-import UpdateModuleForm from "@/src/components/ui/forms/teacher/UpdateModuleForm";
-import UpdateExerciseForm from "@/src/components/ui/forms/teacher/UpdateExerciseForm";
-
-
+import LibSelection from "@/src/components/ui/LibSelection";
 
 export interface ExerciseData {
   moduleName: string;
@@ -37,37 +33,29 @@ export interface ExerciseData {
 type Props = {
   modules: ModuleRenderSchema[];
   course: Course;
+  moduleLib: Module_lib[];
+  exerciseLib: Exercise_lib[];
 };
 
-const CourseOverview = ({ modules, course }: Props) => {
+const CourseOverview = ({ modules, course, moduleLib, exerciseLib }: Props) => {
   const [desktopVersion, setdesktopVersion] = useState<boolean>(true);
   const [screenWidth, setScreenWidth] = useState<number>();
   const [showModal, setShowModal] = useState<boolean>(false);
   const [action, setAction] = useState<Action>();
   const [modalHeader, setModalHeader] = useState<string>("");
   const [moduleId, setModuleId] = useState<number>(0);
-  const [isCreatedExercise, setIsCreatedExercise] = useState<boolean>(false);
 
   //array of combined module + exercise data
   const [exerciseData, setExerciseData] = useState<ExerciseData[] | null>(null);
-
-  //To be set within the ResourceSelect component whenever a list item is clicked.
-  const [resourceId, setResourceId] = useState<number>(0);
-  //To be selected course from when resourceId is set ResourceSelection, always reset this to NULL.
-  const [moduleToUpdate, setModuleToUpdate] =
-    useState<ModuleRenderSchema | null>(null);
-  const [exerciseToUpdate, setExerciseToUpdate] = useState<ExerciseData | null>(
-    null
-  );
-  const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
 
   const { data: session } = useSession();
   const router = useRouter();
 
   useEffect(() => {
-    console.log(session);
-    console.log(modules);
+    console.log(moduleLib);
+  }, [moduleLib]);
 
+  useEffect(() => {
     if (!session) {
       router.push("/401");
     }
@@ -82,14 +70,6 @@ const CourseOverview = ({ modules, course }: Props) => {
       setdesktopVersion(false);
     }
   }, []);
-
-  useEffect(() => {
-    console.log(exerciseData);
-  }, [exerciseData]);
-
-  useEffect(() => {
-    console.log(exerciseToUpdate);
-  }, [exerciseToUpdate]);
 
   //Remove open state for sidenav when screen width > 768px
   useEffect(() => {
@@ -110,64 +90,9 @@ const CourseOverview = ({ modules, course }: Props) => {
   }, [screenWidth]);
 
   useEffect(() => {
-    if (!showModal) {
-      setModuleToUpdate(null);
-      setResourceId(0);
-    }
-  }, [showModal]);
-
-  useEffect(() => {
-    console.log(action);
-
     getModalHeader(action);
   }, [action]);
 
-  //Selects the module by id with the given resourceId whenever resourceId is updated within ResrouceSelection.
-  useEffect(() => {
-    if (
-      action === Action.CREATEMODULE ||
-      action === Action.UPDATEMODULE ||
-       action === Action.CREATEEXERCISE
-    ) {
-      console.log("I will filter modules");
-
-      setModuleToUpdate(getModuleToUpdate(resourceId, modules));
-    } else if (action === Action.UPDATEEXERCISE) {
-      console.log("I will filter weird exercise array");
-      if (exerciseData) {
-        setExerciseToUpdate(getExerciseToUpdate(resourceId, exerciseData));
-      }
-    }
-  }, [resourceId, modules, action, exerciseData]);
-
-  //Function to run whenever a resource is clicked in the resource list in component ResourceSelection when clicking update course button
-  // make util
-  const getModuleToUpdate = (
-    moduleId: number,
-    modules: ModuleRenderSchema[]
-  ) => {
-    if (modules.length <= 0) return null;
-
-    const filteredModule = modules.filter((module) => module.id === moduleId);
-
-    return filteredModule.length <= 0 ? null : filteredModule[0];
-  };
-  //Get exercise to update
-  // make util
-  const getExerciseToUpdate = (
-    exerciseId: number,
-    exercises: ExerciseData[] | null
-  ) => {
-    if (!exercises || exercises.length <= 0) return null;
-
-    const filteredExercise = exercises.filter(
-      (exercise) => exercise.exercise.id === exerciseId
-    );
-
-    return filteredExercise.length <= 0 ? null : filteredExercise[0];
-  };
-
-  
   const modalClickHandler = (action: Action) => {
     setAction(action);
     setShowModal((prev) => !prev);
@@ -229,11 +154,13 @@ const CourseOverview = ({ modules, course }: Props) => {
               <div className="w-full">
                 <ul className="flex font-medium text-slate-400">
                   <li className="md:w-48 ">Moduler</li>
-             
+
                   {desktopVersion && <li className="w-36">Status</li>}
                   {desktopVersion && <li className="w-32">Uppgifter</li>}
-                  {desktopVersion && <li className="w-32 ml-auto">Publicerad</li>}
-                                  </ul>
+                  {desktopVersion && (
+                    <li className="w-32 ml-auto">Publicerad</li>
+                  )}
+                </ul>
               </div>
               {modules &&
                 modules?.map((module: ModuleRenderSchema) => (
@@ -317,115 +244,44 @@ const CourseOverview = ({ modules, course }: Props) => {
           setShowModal={setShowModal}
         >
           {action === Action.CREATEMODULE && (
-            <CreateModuleForm courseId={course?.id} />
+            <LibSelection
+              courseId={course.id}
+              setShowModal={setShowModal} //used to reset form data if form is closed.
+              showModal={showModal} //pass showModal to reset "isCreateFormOpen" - state
+              action={action} // pass action to conditionally render the correct create form
+              resource={moduleLib}
+            />
           )}
 
           {action === Action.UPDATEMODULE && (
             <>
-              {!moduleToUpdate ? (
-                <ResourceSelection
-                  role={session?.user.role}
-                  setResourceId={setResourceId}
-                  resource={modules}
-                  action={Action.UPDATEMODULE}
-                />
-              ) : (
-                <div>
-                  <button
-                    onClick={() => {
-                      setModuleToUpdate(null);
-                      setResourceId(0);
-                    }}
-                  >
-                    Tillbaka
-                  </button>
-                  {/* <p>Module id: {moduleToUpdate.id}</p> */}
-                 <strong> <p>Module name: {moduleToUpdate.title}</p></strong>
-                 <p>
-                    publicerad:{" "}
-                    {moduleToUpdate.published ? "ja" : "nej"}
-                  </p>
-                  <UpdateModuleForm
-                    userModule={moduleToUpdate}
-                    hasSubmitted={hasSubmitted}
-                    setHasSubmitted={setHasSubmitted}
-                    setShowModal={setShowModal}
-                  />
-                </div>
-              )}
+              <ResourceSelection
+                role={session?.user.role}
+                resource={modules}
+                action={Action.UPDATEMODULE}
+                showModal={showModal}
+                setShowModal={setShowModal} //<- should be a memoized clickhandler-function to eliminate unessessary renders
+              />
             </>
           )}
-
           {action === Action.CREATEEXERCISE && (
-            <>
-              {!moduleToUpdate ? (
-                <ResourceSelection
-                  role={session?.user.role}
-                  setResourceId={setResourceId}
-                  resource={modules}
-                  action={action}
-                />
-              ) : (
-                <div>
-                  <button
-                    onClick={() => {
-                      setModuleToUpdate(null);
-                      setResourceId(0);
-                    }}
-                  >
-                    Tillbaka
-                  </button>
-                  <CreateExerciseForm
-                    moduleId={moduleToUpdate.id}
-                    setShowModal={setShowModal}
-                  />
-                </div>
-              )}
-            </>
+            <LibSelection
+              setShowModal={setShowModal} //used to reset form data if form is closed.
+              showModal={showModal} //pass showModal to reset "isCreateFormOpen" - state
+              action={action} // pass action to conditionally render the correct create form
+              resource={exerciseLib}
+              modules={modules}
+            />
           )}
-          {action === Action.UPDATEEXERCISE && (
-            <>
-              {!exerciseToUpdate ? (
-                <ResourceSelection
-                  role={session?.user.role}
-                  setResourceId={setResourceId}
-                  // resource={exerciseData!}
-                  exercises={exerciseData!}
-                  action={action}
-                />
-              ) : (
-                <div>
-                  <button
-                    onClick={() => {
-                      setModuleToUpdate(null);
-                      setResourceId(0);
-                    }}
-                  >
-                    Tillbaka
-                  </button>
-                  <p>id: {exerciseToUpdate.exercise.id}</p>
-                  <p>namn: {exerciseToUpdate.exercise.title}</p>
-                  
-                  <p>
-                    publicerad:{" "}
-                    {exerciseToUpdate.exercise.published ? "ja" : "nej"}
-                  </p>
-                  {/* <p>modulId: {exerciseToUpdate.exercise.moduleId}</p>
-                  <p>Content: {exerciseToUpdate.exercise.content}</p> */}
-                  {/* <CreateExerciseForm
-                    moduleId={moduleToUpdate.id}
-                    setShowModal={setShowModal}
-                  /> */}
-                  <UpdateExerciseForm 
-                              exercise={exerciseToUpdate}
-                              hasSubmitted={hasSubmitted}
-                              setHasSubmitted={setHasSubmitted}
-                              setShowModal={setShowModal}
-                    />
 
-                </div>
-              )}
-            </>
+          {action === Action.UPDATEEXERCISE && (
+            <ResourceSelection
+              role={session?.user.role}
+              setShowModal={setShowModal} //used to reset form data if form is closed.
+              showModal={showModal} //pass showModal to reset "isCreateFormOpen" - state
+              exercises={exerciseData!}
+              action={action}
+            />
           )}
         </Modal>
       </UserLayout>
@@ -434,6 +290,8 @@ const CourseOverview = ({ modules, course }: Props) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (context: any) => {
+  type UserRole = string | undefined | null;
+
   const currentSession = await getServerSession(
     context.req,
     context.res,
@@ -446,6 +304,7 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
     ctx: await createContext(context),
   });
   //might have to cast context to string
+  const userRole = currentSession && (currentSession.user.role as string);
   const slug = String(context.params.course);
 
   //fetch the course from params to get the courseId
@@ -453,29 +312,33 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
     courseSlug: slug,
   });
 
+  const moduleLibRes = await helpers.moduleLib.getMany.fetch();
+  const exerciseLibRes = await helpers.exercise_lib.getMany.fetch();
+
   // const courseId = course.course.id as string
 
   // fetch all the modules with with courseId
   const res = await helpers.module.getManyByCourseId.fetch({
     courseId: course?.course?.id,
   });
-  // console.log(res);
-  //fetch all the exercises
-  /*  const exercises = await helpers.exercise.getManyByModuleId.fetch({
-    modu
-  });  */
 
   //Needed to serialize Date objects for createdAt + updatedAt otherwise error is thrown
   const modules = JSON.parse(JSON.stringify(res.module));
-  // console.log(...modules);
 
   const courseData = JSON.parse(JSON.stringify(course));
+  const moduleLib =
+    moduleLibRes.success && JSON.parse(JSON.stringify(moduleLibRes.moduleLib));
+  const exerciseLib =
+    exerciseLibRes.success &&
+    JSON.parse(JSON.stringify(exerciseLibRes.exerciseLib));
 
   return {
     props: {
       session: currentSession,
       modules: [...modules],
       course: courseData.course,
+      moduleLib: userRole === Role.TEACHER ? moduleLib : [],
+      exerciseLib: userRole === Role.TEACHER ? exerciseLib : [],
     },
   };
 };

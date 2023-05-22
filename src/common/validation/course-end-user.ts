@@ -13,13 +13,6 @@ const course = z
     published: z.boolean(),
     createdAt: z.date(),
     updatedAt: z.date(),
-    /*  education: z
-      .object({
-        connect: z.object({
-          id: z.number(),
-        }),
-      })
-      .optional(), */
   })
   .or(
     z
@@ -64,6 +57,7 @@ export const courseInputSchema = z.object({
   published: z.boolean(),
 });
 
+//Used to type the update form for courses.
 export const courseUpdateFormSchema = z.object({
   id: z.number(),
   title: z.string(),
