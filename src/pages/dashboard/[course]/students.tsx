@@ -13,7 +13,7 @@ type Props = {
   users: User[];
 };
 
-const students = ({ users }: Props) => {
+const Students = ({ users }: Props) => {
   const [desktopVersion, setdesktopVersion] = useState<boolean>(true);
   const [screenWidth, setScreenWidth] = useState<number>();
 
@@ -106,22 +106,33 @@ const students = ({ users }: Props) => {
             </div>
             {users &&
               users.map((user: User) => (
-                <ul key={user.id} className="flex font-medium py-5 pl-2 ">
+                <ul
+                  key={user.id}
+                  className="flex font-medium py-5 pl-2 cursor-pointer hover:bg-purple-100"
+                >
                   <li className="md:w-56">
                     {user.firstName} {user.lastName}
                   </li>
-                  {/*  {desktopVersion && (
-                    <li className="w-56">
-                      <div className="w-28 h-6 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500"></div>
-                    </li>
-                  )} */}
-                  {/*  {desktopVersion && (
-                    <li className="w-56">
-                      <div className="w-28 h-6 rounded-full bg-gradient-to-r from-cyan-600 to-blue-700"></div>
-                    </li>
-                  )} */}
-                  {/* {desktopVersion && <li className="w-32">VG</li>} */}
-                  {/*  {desktopVersion && <li>VG</li>} */}
+                  {user.id === session?.user.userId ? (
+                    <>
+                      {desktopVersion && (
+                        <li className="w-56 flex gap-5">
+                          <div className="w-28 h-6 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500"></div>
+                          <span>3/5</span>
+                        </li>
+                      )}
+                      {desktopVersion && (
+                        <li className="w-56 flex gap-5">
+                          <div className="w-28 h-6 rounded-full bg-gradient-to-r from-cyan-600 to-blue-700"></div>
+                          <span>3/5</span>
+                        </li>
+                      )}
+                      {desktopVersion && <li className="w-32">VG</li>}
+                      {desktopVersion && <li>VG</li>}
+                    </>
+                  ) : (
+                    ""
+                  )}
                 </ul>
               ))}
           </section>
@@ -160,4 +171,4 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
   };
 };
 
-export default students;
+export default Students;

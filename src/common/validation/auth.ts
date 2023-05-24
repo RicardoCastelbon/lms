@@ -8,7 +8,7 @@ export const loginSchema = z.object({
 });
 
 export const signUpSchema = loginSchema.extend({
-  education: z.number().or(z.string()),
+  education: z.number(),
   firstName: z.string(),
   lastName: z.string(),
   // errors: z.object({}).optional(),

@@ -1,5 +1,5 @@
-import { Exercise, Module } from "@prisma/client";
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Exercise } from "@prisma/client";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 
 import {
@@ -8,25 +8,24 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/src/components/ui/accordion";
-import { Check, ClipboardList, Plus } from "lucide-react";
+import { Check, ClipboardList } from "lucide-react";
 import parse from "html-react-parser";
 import { useSession } from "next-auth/react";
-import { GetServerSideProps } from "next";
-import { getServerSession } from "next-auth";
-import { nextAuthOptions } from "@/src/common/auth";
-import { createServerSideHelpers } from "@trpc/react-query/server";
-import { serverRouter } from "@/src/server/routers";
-import { createContext } from "@/src/server/context";
+// import { GetServerSideProps } from "next";
+// import { getServerSession } from "next-auth";
+// import { nextAuthOptions } from "@/src/common/auth";
+// import { createServerSideHelpers } from "@trpc/react-query/server";
+// import { serverRouter } from "@/src/server/routers";
+// import { createContext } from "@/src/server/context";
 import { Action } from "@/src/lib/enums/actionEnums";
 import { ModuleRenderSchema } from "@/src/common/validation/module-end-user";
 import { useRouter } from "next/router";
 import { trpc } from "@/src/common/trpc";
 
-
-type Resource = Exercise | ModuleRenderSchema;
+// type Resource = Exercise | ModuleRenderSchema;
 
 type Props = {
-   resource?: Exercise[] ;
+  resource?: Exercise[];
   userModule: ModuleRenderSchema;
   modalClickHandler: (action: Action) => void;
   role: string | null | undefined;
@@ -38,9 +37,7 @@ const ModuleAccordion = ({
   modalClickHandler,
   getModuleId,
   role,
-}: 
-Props) => {
-
+}: Props) => {
   const [desktopVersion, setdesktopVersion] = useState<boolean>(true);
   const [screenWidth, setScreenWidth] = useState<number>();
   const { data: session } = useSession();
@@ -49,13 +46,13 @@ Props) => {
   const { mutateAsync: deleteExerciseAsync } =
     trpc.exercise.delete.useMutation();
   const router = useRouter();
-  // console.log(typeof router.query.course);
-  useEffect(() => {
+
+  /*   useEffect(() => {
     if (userModule) {
       // setIsPublished(userModule.published);
     }
     // console.log("usermodule", userModule);
-  }, [userModule]);
+  }, [userModule]); */
 
   useEffect(() => {
     if (window.innerWidth > 768) {
@@ -102,69 +99,69 @@ Props) => {
     }
   };
 
-
   return (
     <Accordion type="single" collapsible>
       <AccordionItem value="item-1">
-<AccordionTrigger>
-  <div className="w-full">
-    <ul className="flex">
-      <li className="md:w-48 text-left">
-        <ClipboardList />
-        {userModule && userModule.title}
-      </li>
-      {desktopVersion && <li className="w-36 text-left">status</li>}
-      {desktopVersion && (
-        <li className="w-32 text-left">exercises completed</li>
-      )}
+        <AccordionTrigger>
+          <div className="w-full">
+            <ul className="flex">
+              <li className="md:w-48 text-left">
+                <ClipboardList />
+                {userModule && userModule.title}
+              </li>
+              {desktopVersion && <li className="w-36 text-left">status</li>}
+              {desktopVersion && (
+                <li className="w-32 text-left">exercises completed</li>
+              )}
 
-{desktopVersion &&
-  (session?.user.role === "TEACHER" ? (
-    <li className="w-32 ml-auto">
-      <div
-        className={
-          userModule.published
-            ? "bg-red-500 text-white py-2 px-6 rounded-sm hover:bg-red-50 hover:text-foreground"
-            : "bg-green-500 text-white py-2 px-6 rounded-sm hover:bg-green-50 hover:text-foreground"
-        }
-        onClick={(e) => publishClickHandler(e, userModule)}
-      >
-        {userModule.published ? "Nej" : "Ja"}
-      </div>
-    </li>
-  ) : (
-          ""
-        ))}
-    </ul>
-  </div>
-</AccordionTrigger>
-
+              {desktopVersion &&
+                (session?.user.role === "TEACHER" ? (
+                  <li className="w-32 ml-auto">
+                    <div
+                      className={
+                        userModule.published
+                          ? "bg-red-500 text-white py-2 px-6 rounded-sm hover:bg-red-50 hover:text-foreground"
+                          : "bg-green-500 text-white py-2 px-6 rounded-sm hover:bg-green-50 hover:text-foreground"
+                      }
+                      onClick={(e) => publishClickHandler(e, userModule)}
+                    >
+                      {userModule.published ? "Nej" : "Ja"}
+                    </div>
+                  </li>
+                ) : (
+                  ""
+                ))}
+            </ul>
+          </div>
+        </AccordionTrigger>
 
         <AccordionContent>
           <div>
-          <div>
-          <ul className="mb-4">
-  <li className="w-32 flex">
-    <span>Startdatum: </span> 
-    <span className="ml-1"><strong>{userModule && userModule.startDate}</strong></span>
-  </li>
+            <div>
+              <ul className="mb-4">
+                <li className="w-32 flex">
+                  <span>Startdatum: </span>
+                  <span className="ml-1">
+                    <strong>{userModule && userModule.startDate}</strong>
+                  </span>
+                </li>
 
-  {desktopVersion && 
-    <li className="w-32 flex">
-      <span>In.datum: </span>
-      <span className="ml-1"><strong>{userModule && userModule.endDate}</strong></span>
-    </li>
-  }
-</ul>
-
+                {desktopVersion && (
+                  <li className="w-32 flex">
+                    <span>In.datum: </span>
+                    <span className="ml-1">
+                      <strong>{userModule && userModule.endDate}</strong>
+                    </span>
+                  </li>
+                )}
+              </ul>
             </div>
-              
+
             {userModule?.content && typeof userModule.content === "string"
               ? parse(userModule.content)
               : "Loading..."}
           </div>
           <Accordion type="single" collapsible>
-
             <AccordionItem value="item-1">
               <AccordionTrigger>
                 <div className="w-full">
@@ -180,22 +177,22 @@ Props) => {
                   userModule &&
                   userModule.exercises.map((exercise, index) => (
                     <div key={index} className="relative">
-                    <Link
-                      href={`/${router.asPath}/exercise/${exercise.slug}`}
-                      key={index}
-                      className="flex justify-between w-11/12 bg-accent text-white text-left p-4 hover:bg-blue-400" // set width to 11/12
-                    >
-                      <div className="flex">
-                        <span className=" mr-4">
-                          <ClipboardList />
+                      <Link
+                        href={`/${router.asPath}/exercise/${exercise.slug}`}
+                        key={index}
+                        className="flex justify-between w-11/12 bg-accent text-white text-left p-4 hover:bg-blue-400" // set width to 11/12
+                      >
+                        <div className="flex">
+                          <span className=" mr-4">
+                            <ClipboardList />
+                          </span>
+                          <span>{exercise.title}</span>
+                        </div>
+                        <span className="">
+                          <Check />
                         </span>
-                        <span>{exercise.title}</span>
-                      </div>
-                      <span className="">
-                        <Check />
-                      </span>
-                    </Link>
-                       </div>
+                      </Link>
+                    </div>
                   ))}
               </AccordionContent>
             </AccordionItem>
@@ -207,4 +204,3 @@ Props) => {
 };
 
 export default ModuleAccordion;
-
