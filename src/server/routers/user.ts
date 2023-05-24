@@ -6,15 +6,17 @@ import { loginSchema, signUpSchema } from "../../common/validation/auth";
 import { TRPCError } from "@trpc/server";
 import { Education, Role } from "@prisma/client";
 import { log } from "console";
-import { studentOutputSchema,  } from "@/src/common/validation/student";
-import { educationId, noInput, EducationIdSchema } from "@/src/common/validation/global";
-import {  getStudentsByEducationId } from "../controllers/student.controller";
+import { studentOutputSchema } from "@/src/common/validation/student";
+import {
+  educationId,
+  noInput,
+  EducationIdSchema,
+} from "@/src/common/validation/global";
+import { getStudentsByEducationId } from "../controllers/student.controller";
 import { z } from "zod";
 import { getEducationById } from "@/src/lib/services/education";
 
-
 export const userRouter = t.router({
-
   signup: t.procedure.input(signUpSchema).mutation(async ({ input, ctx }) => {
     const { email, password, education, firstName, lastName } = input;
     try {
@@ -72,15 +74,14 @@ export const userRouter = t.router({
     }
   }),
 
-
-getManyByEducationId: t.procedure
-.meta({
-  openapi: {
-    method: "GET",
-    path: "/users/getMany/{educationId}",
-  },
-})
-.input( educationId )
-.output(studentOutputSchema)
-.query(({ input, ctx }) => getStudentsByEducationId({ input, ctx }))
+  getManyByEducationId: t.procedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/users/getMany/{educationId}",
+      },
+    })
+    .input(educationId)
+    .output(studentOutputSchema)
+    .query(({ input, ctx }) => getStudentsByEducationId({ input, ctx })),
 });
