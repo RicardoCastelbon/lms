@@ -1,16 +1,16 @@
 # Validation
 
-### Types from prisma is used where possible!
+### Types from prisma are used where possible!
 
-_Note! "Resource" are used throughout this readme, it refers to any data source in the database, e.g "user", "course", "module" etc._
+_Note! "Resource" are used throughout this readme, and it refers to any data source in the database, e.g "user", "course", "module" etc._
 
-Validation between frontend and backend is handled by creating schemas with zod. It acts as a single source of truth for all resources stored in the db.
+Validation between frontend and backend are handled by creating schemas with zod. It acts as a single source of truth for all resources stored in the db.
 
 Zod validation files are found in `.src/common/validation `
 
 A schema is created whenever there are data passed to the backend, as well as data returned from the backend.
 
-The schemas are then infered as types and exported to use throughout the project.
+The schemas are then inferred as types and exported to use throughout the project.
 The Zod documentation can be found here for further reading:
 [Zod documentation](https://zod.dev/ "Zod Documentation")
 
