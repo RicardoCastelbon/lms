@@ -7,13 +7,13 @@ import { Controller, useForm } from "react-hook-form";
 import { trpc } from "../common/trpc";
 import {
   createEducationSchema,
-  CreateEducationInput,
+  EducationInput,
 } from "../common/validation/education";
 import { useCallback } from "react";
 
 const EducationPage: NextPage = () => {
   const router = useRouter();
-  const { handleSubmit, control, reset } = useForm<CreateEducationInput>({
+  const { handleSubmit, control, reset } = useForm<EducationInput>({
     defaultValues: {
       name: "",
     },
@@ -23,14 +23,14 @@ const EducationPage: NextPage = () => {
   const { mutateAsync } = trpc.education.create.useMutation();
 
   const onSubmit = useCallback(
-    async (data: CreateEducationInput) => {
+    async (data: EducationInput) => {
       try {
         const result = await mutateAsync(data);
       } catch (err) {
         console.error(err);
       }
     },
-    [mutateAsync, router, reset]
+    [mutateAsync]
   );
 
   return (

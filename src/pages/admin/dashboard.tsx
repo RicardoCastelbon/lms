@@ -33,36 +33,33 @@ type Props = {
   }[];
 };
 
-const Dashboard: NextPage =  ()=> {
-
-const adminCreate = [
-  {
-    id: 1,
-    name: "Utbildningar",
-    exercises: 14,
-    slug: "/admin/educations",
-  },
-  {
-    id: 2,
-    name: "Kurser",
-    exercises: 12,
-    slug: "/admin/courses",
-  },
-  {
-    id: 3,
-    name: "Moduler",
-    exercises: 14,
-    slug: "/admin/modules",
-  },
-  {
-    id: 4,
-    name: "Övningar",
-    exercises: 14,
-    slug: "/admin/exercises",
-    
-  },
-
-];
+const Dashboard: NextPage = () => {
+  const adminCreate = [
+    {
+      id: 1,
+      name: "Utbildningar",
+      exercises: 14,
+      slug: "/admin/educations",
+    },
+    {
+      id: 2,
+      name: "Kurser",
+      exercises: 12,
+      slug: "/admin/courses",
+    },
+    {
+      id: 3,
+      name: "Moduler",
+      exercises: 14,
+      slug: "/admin/modules",
+    },
+    {
+      id: 4,
+      name: "Övningar",
+      exercises: 14,
+      slug: "/admin/exercises",
+    },
+  ];
   const [sideBarClass, setSideBarClass] = useState<boolean>(false);
 
   const { data: session, status } = useSession();
@@ -87,22 +84,21 @@ const adminCreate = [
       <div className="flex-flex sm:flex-row">
         <UserLayout role={session?.user.role ?? ""}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full md:w-3/6 lg:w-4/6 mx-auto mt-4">
-            {adminCreate.map((create) => (
+            {adminCreate.map((create, index) => (
               <AdminCreateCards
-  id={create.id}
-  name={create.name}
-  // title={create}
-  slug={create.slug}
-/>            ))}
+                key={index}
+                id={create.id}
+                name={create.name}
+                // title={create}
+                slug={create.slug}
+              />
+            ))}
           </div>
-          <div className="mt-8">
-            {/* <CalendarDemo /> */}
-          </div>
+          <div className="mt-8">{/* <CalendarDemo /> */}</div>
         </UserLayout>
       </div>
     </div>
   );
-  
 };
 
 export default Dashboard;

@@ -163,7 +163,7 @@ export const findModuleController = async ({
   }
 };
 
-export const findAllModules= async ({
+export const findAllModules = async ({
   filterQuery,
   ctx,
 }: {
@@ -175,14 +175,14 @@ export const findAllModules= async ({
     const limit = filterQuery.limit || 10;
     const skip = (page - 1) * limit;
 
-    const userModules: ModuleRenderSchema[] = await ctx.prisma.module.findMany({
+    const userModules = await ctx.prisma.module.findMany({
       skip,
       take: limit,
       include: {
         exercises: true,
       },
-    })
-    
+    });
+
     if (userModules.length <= 0) {
       return {
         success: false,

@@ -12,7 +12,7 @@ import { Role } from "@prisma/client";
 import { IAdminLogin, adminLoginSchema } from "../../common/validation/auth";
 import { Button } from "@/src/components/ui/button";
 
-const adminLogin: NextPage = () => {
+const AdminLogin: NextPage = () => {
   const { handleSubmit, control, reset } = useForm<IAdminLogin>({
     defaultValues: {
       email: "",
@@ -40,17 +40,17 @@ const adminLogin: NextPage = () => {
 
   const onSubmit = useCallback(
     async (data: IAdminLogin) => {
-      // setLoginAttempted(true); 
+      // setLoginAttempted(true);
       console.log(onSubmit);
       try {
-       const res =  await signIn("AdminCredentials", { 
+        const res = await signIn("AdminCredentials", {
           ...data,
           // callbackUrl: "/admin/dashboard",
-          redirect: false, 
+          redirect: false,
         });
         // kolla om res.status === 200
-        if(res?.status === 200) {
-            setLoginAttempted(true)
+        if (res?.status === 200) {
+          setLoginAttempted(true);
         }
         reset();
       } catch (err) {
@@ -107,11 +107,10 @@ const adminLogin: NextPage = () => {
             />
 
             <div className="w-full flex items-center justify-between max-w-md text-primary mt-8 hover:text-muted">
-                     <Link href='/admin/sign-up' className='link'>
+              <Link href="/admin/sign-up" className="link">
                 Not a member?
               </Link>
               <Button>Login</Button>
-        
             </div>
           </form>
         </div>
@@ -120,4 +119,4 @@ const adminLogin: NextPage = () => {
   );
 };
 
-export default adminLogin;
+export default AdminLogin;

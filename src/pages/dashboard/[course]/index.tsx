@@ -158,7 +158,7 @@ const CourseOverview = ({ modules, course, moduleLib, exerciseLib }: Props) => {
                   {desktopVersion && <li className="w-36">Status</li>}
                   {desktopVersion && <li className="w-32">Uppgifter</li>}
                   {desktopVersion && (
-                    <li className="w-32 ml-auto">Publicerad</li>
+                    <li className="w-32 ml-auto">Publicera</li>
                   )}
                 </ul>
               </div>
@@ -319,6 +319,7 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
 
   // fetch all the modules with with courseId
   const res = await helpers.module.getManyByCourseId.fetch({
+    /* @ts-ignore */
     courseId: course?.course?.id,
   });
 
